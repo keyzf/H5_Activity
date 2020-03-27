@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<title>新人大礼包</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="stylesheet" type="text/css" href="res/css/wxact.css" />
+	</head>
+	<body>
+		<img class="act_top" src="//themes.51pingce.net/css/act_0114/act_0114_top.png">
+		<img class="top" src="//themes.51pingce.net/css/act_0114/act_0114_main_top.png">
+		<div class="act_con x">
+			<div class="main">
+				<div class="item">
+					<span>1</span>
+					<p>关注公众号并登录微信端</p>
+					<p>即可获取价值288元新人大礼包！</p>
+				</div>
+				<div class="item">
+					<span>2</span>
+					<p>点击右上角分享本链接，邀请好友关注</p>
+					<p>还可获取超值优惠券</p>
+				</div>
+			</div>
+			<img class="bottom" src="//themes.51pingce.net/css/act_0114/act_0114_main_bottom.png">
+			<div class="tip">
+				<div class="item">
+					<p class="title">新人礼包领取方式</p>
+					<p class="tips">电科商城微信公众号→电科购物商城主页→我的→请登录→输入账号、密码登录→即可获得大礼包</p>
+				</div>
+				<div class="item">
+					<p class="title">查看优惠券方式</p>
+					<p class="tips">电科商城微信公众号→电科服务→个人中心→优惠券中查看优惠券获取情况</p>
+				</div>
+			</div>
+		</div>
+		<div class="act_bottom x">
+			<img class="img" src="//themes.51pingce.net/css/act_0114/act_0114_bottom.png">
+			<span class="btn js-btn"></span>
+		</div>
+		<div class="popup">
+			<div class="bg"></div>
+			<img src="//themes.51pingce.net/css/act_0114/point.png">
+		</div>
+		<script src="//themes.51pingce.net/js/ningXun-1.8.mini.js"></script>
+		<script src="./res/public/wxjs-sdk.js"></script>
+		<script src="./res/public/md5.min.js"></script>
+		<script type="text/javascript">
+			// 判断是否是微信浏览器
+			var ua = window.navigator.userAgent.toLowerCase();
+			var guid = gParam("guid");
+			var shareuid = gParam("shareuid");
+			// 页面url
+			if (ua.match(/micromessenger/i) == 'micromessenger') {
+				$(".act_con").removeClass("x")
+				$(".act_bottom").removeClass("x")
+			}
+			$(document).on("click", ".popup", function() {
+				$(".popup").removeClass("x");
+			});
+			$(document).on("click", ".js-btn", function() {
+				if (ua.match(/micromessenger/i) == 'micromessenger') {
+					$(".popup").addClass("x");
+				} else {
+
+				}
+			});
+			$(document).ready(function() {
+				var url = window.location.href.split('#')[0];
+				var timestamp = new Date().getTime();
+				var jm = "/" + url + "?token=''&url=" + url + "&nonce=" + timestamp + "&apitoken=" + timestamp;
+				var signStr = md5(jm);
+				$.ajax({
+					url: 'https://www.holdsoft.cn/mall/wxservicenumber/getjssdkconfig',
+					data: {
+						url: url,
+						nonce: timestamp,
+						apitoken: timestamp,
+						sign: signStr
+					},
+					dataType: 'json',
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader('MVer', '19111801');
+						xhr.setRequestHeader('AppCode', 'WXMall');
+						xhr.setRequestHeader('content-type', 'application/json');
+						xhr.setRequestHeader('dtype', 'WX');
+						xhr.setRequestHeader('uniquekey', generateUUID());
+					},
+					success: function(res) {
+						if (res.code == 0) {
+							let data = res.result.data;
+							wx.config({
+								debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+								appId: data.appId, // 必填，公众号的唯一标识
+								timestamp: data.timestamp, // 必填，生成签名的时间戳
+								nonceStr: data.nonceStr, // 必填，生成签名的随机串
+								signature: data.signature, // 必填，签名
+								jsApiList: [
+									'updateAppMessageShareData',
+									'updateTimelineShareData'
+								] // 必填，需要使用的JS接口列表
+							});
+							var param = "";
+							if (guid != null) {
+								param = "?shareuid=" + guid;
+							}
+							wx.ready(function() {
+								var shareData = {
+									title: '钱多，速来！电科商城微信端发钱啦！',
+									desc: '马上领取288元大礼包，还有更多神秘好礼！',
+									link: 'http://ets.51pingce.net/activity/act_20200114.html' + param,
+									imgUrl: 'http://themes.51pingce.net/activityimg/act_20200114_share.png',
+									success: function(res) {
+										//用户点击分享后的回调，这里可以进行统计，例如分享送金币之类的  
+										//request.post('/api/member/share');
+									},
+									cancel: function(res) {}
+								};
+								//分享给朋友接口
+								wx.updateAppMessageShareData(shareData);
+								//分享到朋友圈接口  
+								wx.updateTimelineShareData(shareData);
+							});
+						}
+					}
+				});
+			});
+			if (shareuid != null && getCookie("wxsharemark"+shareuid) == "") {
+				setCookie("wxsharemark"+shareuid, true, 60);
+				$.ajax({
+					url: 'https://www.holdsoft.cn/mall/rebateactivity/getRebateCouponFromShare',
+					type: 'GET',
+					data: {
+						guid: shareuid
+					},
+					dataType: 'json',
+					success: function(res) {
+					}
+				});
+			};
+
+			function generateUUID() {
+				var d = new Date().getTime();
+				if (window.performance && typeof window.performance.now === "function") {
+					d += performance.now(); //use high-precision timer if available
+				}
+				var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+					var r = (d + Math.random() * 16) % 16 | 0;
+					d = Math.floor(d / 16);
+					return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+				});
+				return uuid;
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+html {
+    min-height: 100%;
+    position: relative;
+    font-size: 12px;
+}
+body {
+    background: #f7f7f7;
+}
+li {
+    list-style: none;
+}
+p,
+span,
+a,
+li {
+    font-family: MicrosoftYaHei;
+}
+img{
+    display: block;
+    font-size: 0;
+    width: 100%;
+    margin-top: -1px;
+}
+.act_con{
+    margin-top: -1px;
+    background: url(//themes.51pingce.net/css/act_0114/act_0114_con.png) repeat-y;
+    background-size: 100%;
+    .main{
+        background: url(//themes.51pingce.net/css/act_0114/act_0114_main_con.png) repeat-y;
+        background-size: 100% 100%;
+        margin-bottom: -21px;
+        .item{
+            margin-top: -10px;
+            text-align: center;
+            font-size: 14px;
+            position: relative;
+            margin-bottom: 20px;
+            span{
+                display: block;
+                width: 40px;
+                height: 40px;
+                background: url(//themes.51pingce.net/css/act_0114/act_0114_tip.png) no-repeat center;
+                background-size: 100% 100%;
+                text-align: center;
+                line-height: 46px;
+                margin: 0 auto;
+                color: #FFF;
+                text-align: left;
+                padding-left: 11px;
+                font-size: 20px;
+            }
+            p{
+                color: #da3e2f;
+                font-weight: bold;
+            }
+        }
+    }
+    .tip{
+        padding:10px 30px 30px;
+        .item{
+            text-align: center;
+            color: #FFF;
+            .title{
+                font-size: 16px;
+                font-weight: bold;
+                line-height: 30px;
+            }
+            .tips{
+                font-size: 12px;
+                line-height: 20px;
+                padding-bottom: 10px;
+            }
+        }
+    }
+    &.x{
+        .main{
+            .item{
+                span{
+                    display: none;
+                }
+                &:nth-child(2){
+                    display: none;
+                }
+            }
+        }
+		.tip{
+		    padding:10px 30px 0px;
+			}
+    }
+}
+.act_bottom{
+    position: relative;
+    .btn{
+        background: url(//themes.51pingce.net/css/act_0114/act_0114_btn.png) no-repeat center;
+        background-size: 100% 100%;
+        width: 182.5px;
+        height: 42px;
+        margin: 0 auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin-top: -20px;
+    }
+    &.x{
+        .btn{
+            display: none;
+        }
+    }
+}
+.popup{
+    display: none;
+    .bg{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba($color: #000000, $alpha: 0.7);
+    }
+    img{
+        position: absolute;
+        right: 6%;
+        width: 80%;
+        top: 6%;
+    }
+    &.x{
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: block;
+    }
+}

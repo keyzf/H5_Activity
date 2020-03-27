@@ -1,0 +1,27 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: ets
+  jackson:
+    default-property-inclusion: NON_NULL
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ets?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2b8
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+  level:
+    ningxun: debug
+  file:
+    name: ./logs/ets.log
+wechat:
+  appid: wx769f1c0cc1156be0
+  secret: 3cb096e35176b45329afcc00cc519fe4
+  

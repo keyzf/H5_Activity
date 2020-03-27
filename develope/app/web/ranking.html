@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<title>排行榜</title>
+		<link rel="stylesheet" type="text/css" href="res/css/pcstyle.css" />
+		<script type="text/javascript" src="res/public/ningXun-1.8.mini.js"></script>
+	</head>
+	<body>
+		<div id="nav">
+			<ul class="main nav-con">
+				<li><a href="index.html">首页</a></li>
+				<li><a href="detail.html">赛事详情</a></li>
+				<li class="x">排行榜</li>
+				<li><a href="sign.html">大赛报名</a></li>
+				<li><a href="download.html">资料下载</a></li>
+			</ul>
+			<img src="res/img/ranking-bg.png" alt="背景" class="nav-img" height="220">
+		</div>
+		<div class="main ranking">
+			<p class="title">排行榜</p>
+			<div class="ranking-con">
+				<div class="classify">
+					<div class="classify-item x" data-id="1">
+						<div>扶贫农业组<div class="tip"><span></span>
+								<p>销售总额*0.2+成交订单总数*0.2+诚信度*0.2+扶贫影响力*0.2+店铺日平均访问量*0.05+店铺日平均访问用户数*0.05+转发访问用户总数*0.1</p>
+							</div>
+						</div>
+					</div>
+					<div class="classify-item" data-id="2">
+						<div>扶贫商贸组<div class="tip"><span></span>
+								<p>销售总额*0.2+成交订单总数*0.2+诚信度*0.2+扶贫影响力*0.2+店铺日平均访问量*0.05+店铺日平均访问用户数*0.05+转发访问用户总数*0.1</p>
+							</div>
+						</div>
+					</div>
+					<div class="classify-item" data-id="3">
+						<div>大学生助力扶贫组<div class="tip"><span></span>
+								<p>销售总额*0.2+成交订单总数*0.2+诚信度*0.2+扶贫影响力*0.2+店铺日平均访问量*0.05+店铺日平均访问用户数*0.05+转发访问用户总数*0.1</p>
+							</div>
+						</div>
+					</div>
+					<div class="classify-item" data-id="4">
+						<div>爆款商品<div class="tip"><span></span>
+								<p>成交单量排名第一的单品商品</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="good" style="display: none;">
+					<div class="list" style="background: #f2f2f2;">
+						<div class="item">
+							<div class="ranking-left">
+								排名
+							</div>
+							<div class="ranking-cen">
+								商品名称
+							</div>
+							<div class="ranking-right">
+								销售量
+							</div>
+						</div>
+					</div>
+					<div id="goodTem" style="display: none;">
+						<div class="item">
+							<div class="ranking-left">
+								<span>1</span>
+							</div>
+							<div class="ranking-cen">
+								<img src="res/img/app_cord.png">
+								<div>
+									<p class="name">商品名称</p>
+									<p class="tips">店铺名称</p>
+								</div>
+							</div>
+							<div class="ranking-right">
+								<p class="tip">8256</p>
+							</div>
+						</div>
+					</div>
+					<div class="list goodsList">
+						<!-- <div class="item">
+					        <div class="ranking-left">
+					            <span class="x">1</span>
+					        </div>
+					        <div class="ranking-cen">
+					            <img src="res/img/app_cord.png" >
+					            <div>
+					                <p>商品名称</p>
+					                <p class="tips">店铺名称</p>
+					            </div>
+					        </div>
+					        <div class="ranking-right">
+					            <p class="tip">8256</p>
+					        </div>
+					    </div> -->
+					</div>
+				</div>
+				<div id="shop">
+					<div class="list" style="background: #f2f2f2;">
+						<div class="item">
+							<div class="ranking-left">
+								排名
+							</div>
+							<div class="ranking-cen">
+								店铺名称
+							</div>
+							<div class="ranking-right">
+								分值
+							</div>
+						</div>
+					</div>
+					<div id="template" style="display: none;">
+						<div class="item">
+							<div class="ranking-left">
+								<span>1</span>
+							</div>
+							<div class="ranking-cen">
+								<p class="tip">德云社扶贫电商小组</p>
+							</div>
+							<div class="ranking-right">
+								<p class="tip">8256</p>
+							</div>
+						</div>
+					</div>
+					<div class="list shopList">
+
+					</div>
+				</div>
+
+				<div class="empty" style="display: none;">
+					<img src="res/img/empty.png" width="68">
+				</div>
+				<div class="more" style="display: none;">
+					<p>加载更多</p>
+					<img src="res/img/more.png">
+				</div>
+			</div>
+		</div>
+
+		<div id="foorter">
+			<div class="main">
+				<div class="for-left">
+					<p class="tips">报名及培训热线</p>
+					<p>0311-87091225</p>
+				</div>
+				<div class="for-con">
+					<p class="titie">河北省电商扶贫创业大赛</p>
+					<p class="tip">网站：www.register.holdsoft.cn</p>
+					<!-- <p class="tip">邮箱：ITMC@ITMC.CN</p> -->
+					<p class="tip">本次活动最终解释权归共青团河北省委所有</p>
+				</div>
+				<div class="for-right">
+					<div>
+						<img src="res/img/wxcord.png">
+						<p>微信报名</p>
+					</div>
+					<div>
+						<img src="res/img/app_cord.png">
+						<p>APP下载</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="res/js/ranking.js"></script>
+</html>

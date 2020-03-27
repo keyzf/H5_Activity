@@ -1,0 +1,614 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-sizing: border-box; }
+
+a {
+  text-decoration: none;
+  color: inherit; }
+
+html {
+  min-height: 100%;
+  position: relative;
+  padding-bottom: 240px; }
+
+body {
+  background: #f7f7f7; }
+
+li {
+  list-style: none; }
+
+p,
+span,
+a,
+li {
+  font-family: MicrosoftYaHei; }
+
+.main {
+  width: 1120px;
+  min-width: 1120px;
+  margin: 0 auto;
+  overflow: hidden; }
+
+#nav {
+  background: #fff;
+  min-width: 1120px; }
+  #nav .nav-con {
+    text-align: center; }
+    #nav .nav-con li {
+      display: inline-block;
+      padding: 10px 20px;
+      color: #333333;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 14px 0; }
+      #nav .nav-con li.x {
+        color: #fd5321;
+        font-weight: 700; }
+  #nav .nav-img {
+    width: 100%;
+    min-width: 1120px; }
+
+.procedure {
+  margin-top: -340px;
+  position: relative; }
+  .procedure .title {
+    font-size: 60px;
+    color: #fff;
+    font-weight: 600;
+    text-align: center; }
+  .procedure .tip {
+    margin-top: 36px;
+    color: #fff;
+    font-size: 30px;
+    text-align: center; }
+  .procedure .head {
+    font-size: 26px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 0px;
+    color: #000000;
+    text-align: center; }
+  .procedure .head-tip {
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: -1px;
+    color: #d1d1d1;
+    text-align: center;
+    vertical-align: middle; }
+    .procedure .head-tip img {
+      height: 4px;
+      max-width: 60px;
+      vertical-align: middle;
+      margin: 0 10px; }
+  .procedure .procedure-con {
+    margin: 40px 0;
+    background: #fff;
+    padding: 36px; }
+    .procedure .procedure-con .procedure-list {
+      margin-top: 60px;
+      margin-bottom: 40px;
+      overflow: hidden; }
+      .procedure .procedure-con .procedure-list .procedure-item {
+        width: 20%;
+        float: left;
+        text-align: center; }
+        .procedure .procedure-con .procedure-list .procedure-item img {
+          width: 100px;
+          height: 110px;
+          margin-bottom: 30px; }
+  .procedure .store {
+    margin-top: 20px;
+    border-bottom: 2px solid #d1d1d1;
+    vertical-align: text-bottom; }
+    .procedure .store .item-list {
+      display: inline-block;
+      width: 50%; }
+      .procedure .store .item-list span {
+        font-size: 18px;
+        color: #333333;
+        padding: 4px 0;
+        margin-right: 24px;
+        cursor: pointer;
+        font-weight: 600;
+        line-height: 32px;
+        display: inline-block; }
+        .procedure .store .item-list span.x {
+          border-bottom: 2px solid #fd5321; }
+    .procedure .store .search {
+      display: inline-block;
+      vertical-align: text-bottom;
+      width: 49%;
+      text-align: right; }
+      .procedure .store .search .search-text {
+        height: 36px;
+        background-color: #ffffff;
+        border: solid 1px #a8b3c7;
+        padding: 0 10px; }
+      .procedure .store .search .btn {
+        font-size: 14px;
+        color: #000000;
+        padding: 8px 25px;
+        margin-left: 10px;
+        background: #ffffff;
+        border: solid 1px #a8b3c7;
+        cursor: pointer; }
+  .procedure .store-list {
+    overflow: hidden; }
+    .procedure .store-list .store-item {
+      width: 30.3%;
+      margin: 1.5%;
+      padding: 10px;
+      background-color: #ffffff;
+      border: solid 1px #dcdcdc;
+      float: left; }
+      .procedure .store-list .store-item img {
+        max-width: 100%;
+        height: 180px;
+        margin: 0 auto;
+        display: block; }
+      .procedure .store-list .store-item .store-title {
+        font-size: 20px;
+        color: #020202;
+        margin: 12px 0;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+      .procedure .store-list .store-item .store-tip {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        height: 66px;
+        word-break: break-all;
+        color: #555555; }
+  .procedure .more {
+    margin-top: 20px;
+    margin-bottom: 40px; }
+    .procedure .more p {
+      background-color: #ffffff;
+      border: solid 1px #dcdcdc;
+      font-size: 18px;
+      color: #020202;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer; }
+    .procedure .more img {
+      width: 14px;
+      height: 20px;
+      margin: 10px auto;
+      display: block; }
+
+.empty {
+  text-align: center;
+  padding: 60px; }
+
+.unit {
+  background: url(../img/unit-bg.png) no-repeat center;
+  min-width: 1120px;
+  padding: 60px 0; }
+  .unit .head {
+    font-size: 26px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 0px;
+    color: #000000;
+    text-align: center; }
+  .unit .head-tip {
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: -1px;
+    color: #d1d1d1;
+    text-align: center;
+    vertical-align: middle; }
+    .unit .head-tip img {
+      height: 4px;
+      max-width: 60px;
+      vertical-align: middle;
+      margin: 0 10px; }
+  .unit .unit-list {
+    overflow: hidden;
+    padding-top: 70px;
+    margin-right: -2%; }
+    .unit .unit-list .unit-item {
+      width: 23%;
+      margin-right: 2%;
+      float: left;
+      background: #ffffff;
+      padding: 30px;
+      text-align: center; }
+      .unit .unit-list .unit-item img {
+        width: 100px;
+        height: 100px;
+        margin-top: -100px; }
+      .unit .unit-list .unit-item .unit-title {
+        height: 42px; }
+
+#foorter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #353535;
+  color: #fff;
+  padding: 36px 0;
+  text-align: center;
+  font-size: 16px;
+  min-width: 1120px; }
+  #foorter p {
+    margin: 14px 0; }
+  #foorter .for-left {
+    width: 30%;
+    display: inline-block;
+    float: left;
+    font-size: 26px; }
+    #foorter .for-left .tips {
+      margin: 0;
+      font-size: 16px; }
+  #foorter .for-con {
+    border-right: solid 1px #828282;
+    border-left: solid 1px #828282;
+    width: 40%;
+    display: inline-block;
+    float: left; }
+    #foorter .for-con .titie {
+      font-weight: 600; }
+  #foorter .for-right {
+    width: 30%;
+    display: inline-block;
+    float: left;
+    text-align: right; }
+    #foorter .for-right div {
+      text-align: center;
+      width: 48%;
+      display: inline-block; }
+      #foorter .for-right div img {
+        width: 94px;
+        height: 94px; }
+
+.ranking {
+  margin-top: -140px;
+  margin-bottom: 60px; }
+  .ranking .title {
+    font-size: 36px;
+    color: #f5f5f5;
+    padding-left: 40px; }
+  .ranking .ranking-con {
+    margin-top: 30px;
+    background: #ffffff;
+    position: relative;
+    padding: 30px; }
+    .ranking .ranking-con .list {
+      overflow: hidden; }
+      .ranking .ranking-con .list .item {
+        text-align: center;
+        padding: 4px 0;
+        line-height: 40px;
+        font-size: 16px;
+        vertical-align: middle; }
+        .ranking .ranking-con .list .item .ranking-left {
+          width: 19%;
+          display: inline-block;
+          vertical-align: middle; }
+          .ranking .ranking-con .list .item .ranking-left .x {
+            background: url(../img/medal.png) no-repeat center;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            color: #fff; }
+        .ranking .ranking-con .list .item .ranking-cen {
+          width: 50%;
+          display: inline-block;
+          vertical-align: middle; }
+          .ranking .ranking-con .list .item .ranking-cen p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; }
+          .ranking .ranking-con .list .item .ranking-cen img {
+            width: 20%;
+            display: inline-block;
+            vertical-align: middle; }
+          .ranking .ranking-con .list .item .ranking-cen div {
+            width: 76%;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1.2;
+            text-align: left; }
+            .ranking .ranking-con .list .item .ranking-cen div p {
+              text-overflow: inherit;
+              white-space: inherit; }
+            .ranking .ranking-con .list .item .ranking-cen div .tips {
+              color: #999999; }
+        .ranking .ranking-con .list .item .ranking-right {
+          width: 29%;
+          display: inline-block;
+          vertical-align: middle; }
+        .ranking .ranking-con .list .item.second {
+          background: #f7f7f7; }
+    .ranking .ranking-con .more {
+      margin-top: 20px;
+      margin-bottom: 40px; }
+      .ranking .ranking-con .more p {
+        background-color: #ffffff;
+        border: solid 1px #dcdcdc;
+        font-size: 18px;
+        color: #020202;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer; }
+      .ranking .ranking-con .more img {
+        width: 14px;
+        height: 20px;
+        margin: 10px auto;
+        display: block; }
+  .ranking .form-list {
+    margin: 30px 0;
+    padding: 30px 50px;
+    background: #ffffff;
+    position: relative; }
+    .ranking .form-list .form-item {
+      margin: 16px 0; }
+      .ranking .form-list .form-item .laber {
+        width: 15%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: right;
+        padding-right: 20px; }
+        .ranking .form-list .form-item .laber:before {
+          content: '*';
+          display: inline-block;
+          vertical-align: middle;
+          color: red;
+          font-size: 12px;
+          margin-right: 2px; }
+      .ranking .form-list .form-item .item-cen {
+        width: 84%;
+        display: inline-block;
+        vertical-align: middle; }
+        .ranking .form-list .form-item .item-cen input,
+        .ranking .form-list .form-item .item-cen textarea,
+        .ranking .form-list .form-item .item-cen select {
+          width: 100%;
+          border: solid 1px #c0c0c0;
+          border-radius: 4px;
+          line-height: 38px;
+          font-size: 16px;
+          padding: 0 10px;
+          min-height: 40px; }
+        .ranking .form-list .form-item .item-cen input:focus {
+          border: solid 1px #218cdf;
+          outline: none; }
+        .ranking .form-list .form-item .item-cen textarea:focus {
+          border: solid 1px #218cdf;
+          outline: none; }
+        .ranking .form-list .form-item .item-cen select:focus {
+          border: solid 1px #218cdf;
+          outline: none; }
+        .ranking .form-list .form-item .item-cen .img-add {
+          display: inline-block;
+          text-align: center;
+          margin-right: 10px;
+          cursor: pointer; }
+          .ranking .form-list .form-item .item-cen .img-add img {
+            height: 100px; }
+      .ranking .form-list .form-item.san .laber:before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        color: red;
+        font-size: 12px;
+        margin-right: 2px; }
+      .ranking .form-list .form-item.san .form-item {
+        display: inline-block;
+        width: 66%;
+        font-size: 16px;
+        vertical-align: middle;
+        margin: 0; }
+        .ranking .form-list .form-item.san .form-item .laber {
+          width: 36%; }
+          .ranking .form-list .form-item.san .form-item .laber:before {
+            content: '';
+            display: inline-block;
+            vertical-align: middle;
+            color: red;
+            font-size: 12px;
+            margin-right: 2px; }
+        .ranking .form-list .form-item.san .form-item .item-cen {
+          width: 62%;
+          display: inline-block;
+          vertical-align: middle; }
+          .ranking .form-list .form-item.san .form-item .item-cen input {
+            width: 100%;
+            border: solid 1px #c0c0c0;
+            border-radius: 4px;
+            line-height: 38px;
+            font-size: 16px;
+            padding: 0 10px;
+            min-height: 40px; }
+          .ranking .form-list .form-item.san .form-item .item-cen input:focus {
+            border: solid 1px #218cdf;
+            outline: none; }
+      .ranking .form-list .form-item.san .item-cen {
+        width: 84%;
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 0; }
+        .ranking .form-list .form-item.san .item-cen input {
+          width: 20%;
+          border: solid 1px #c0c0c0;
+          border-radius: 4px;
+          line-height: 38px;
+          font-size: 16px;
+          padding: 0 10px;
+          min-height: 40px;
+          vertical-align: middle; }
+        .ranking .form-list .form-item.san .item-cen input:focus {
+          border: solid 1px #218cdf;
+          outline: none; }
+        .ranking .form-list .form-item.san .item-cen span {
+          width: 14%;
+          display: inline-block;
+          background: #e3e3e3;
+          border: solid 1px #c0c0c0;
+          border-radius: 5px;
+          text-align: center;
+          height: 40px;
+          line-height: 38px;
+          vertical-align: middle;
+          cursor: pointer;
+          font-size: 16px; }
+    .ranking .form-list .form-code {
+      text-align: right;
+      overflow: hidden; }
+      .ranking .form-list .form-code .item-cen {
+        width: 85%;
+        float: right; }
+        .ranking .form-list .form-code .item-cen input {
+          width: 80%;
+          border: solid 1px #c0c0c0;
+          border-radius: 4px;
+          line-height: 38px;
+          font-size: 16px;
+          padding: 0 10px;
+          min-height: 40px;
+          margin-right: 5%; }
+        .ranking .form-list .form-code .item-cen input:focus {
+          border: solid 1px #218cdf;
+          outline: none; }
+        .ranking .form-list .form-code .item-cen .code-tip {
+          width: 14%;
+          display: inline-block;
+          background: #e3e3e3;
+          border: solid 1px #c0c0c0;
+          border-radius: 5px;
+          text-align: center;
+          height: 40px;
+          line-height: 38px;
+          vertical-align: middle;
+          cursor: pointer; }
+    .ranking .form-list .btns {
+      text-align: center;
+      margin-top: 30px; }
+      .ranking .form-list .btns .btn {
+        display: inline-block;
+        background: #fd5321;
+        border-radius: 5px;
+        width: 140px;
+        text-align: center;
+        font-size: 16px;
+        line-height: 36px;
+        color: #ffffff;
+        cursor: pointer; }
+  .ranking .info-list {
+    margin: 20px 0;
+    padding: 34px 50px;
+    background: #ffffff;
+    position: relative; }
+    .ranking .info-list .form-item {
+      margin: 16px 0; }
+      .ranking .info-list .form-item .laber {
+        width: 49%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: right;
+        padding-right: 20px; }
+      .ranking .info-list .form-item .item-cen {
+        width: 50%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: left; }
+  .ranking .classify {
+    border-bottom: 2px solid #d1d1d1; }
+    .ranking .classify .classify-item {
+      display: inline-block;
+      padding: 4px 0;
+      cursor: pointer;
+      margin-right: 20px;
+      font-size: 17px; }
+      .ranking .classify .classify-item .tip {
+        position: relative;
+        display: inline-block; }
+        .ranking .classify .classify-item .tip span {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          background: url(../img/tip.png) no-repeat center;
+          vertical-align: middle; }
+        .ranking .classify .classify-item .tip p {
+          position: absolute;
+          display: none;
+          left: 0;
+          top: 100%;
+          width: 440px;
+          padding: 10px;
+          background: #ffffff;
+          border-radius: 6px;
+          box-shadow: 0px 1px 5px 0px rgba(3, 3, 3, 0.1);
+          border: solid 1px #ffffff; }
+        .ranking .classify .classify-item .tip:hover span {
+          background: url(../img/tips.png) no-repeat center; }
+        .ranking .classify .classify-item .tip:hover p {
+          display: block; }
+      .ranking .classify .classify-item.x {
+        border-bottom: 3px solid #fd5321; }
+
+.down {
+  margin-top: -140px;
+  margin-bottom: 60px; }
+  .down .title {
+    font-size: 36px;
+    color: #f5f5f5;
+    padding-left: 40px; }
+  .down .down-con {
+    margin-top: 30px;
+    background: #ffffff;
+    position: relative;
+    padding: 30px; }
+    .down .down-con .subnav-list {
+      width: 24%;
+      display: inline-block;
+      vertical-align: text-top;
+      text-align: center; }
+      .down .down-con .subnav-list .subnav-item {
+        margin: 20px 0;
+        border: solid 1px #e3e3e3;
+        font-size: 18px;
+        color: #494949;
+        display: inline-block;
+        padding: 12px 0px;
+        cursor: pointer;
+        width: 90%;
+        text-align: center; }
+        .down .down-con .subnav-list .subnav-item.x {
+          color: #d42b23;
+          border-bottom: solid 2px #d42b23; }
+    .down .down-con .subnav-cen {
+      width: 75%;
+      display: inline-block;
+      vertical-align: text-top; }
+      .down .down-con .subnav-cen .tities {
+        font-size: 20px;
+        color: #333333;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 2px solid #e3e3e3; }
+      .down .down-con .subnav-cen .downshow .down-item {
+        margin: 20px 0;
+        border-left: 2px solid #d42b23;
+        padding: 25px 30px;
+        background: #f5f7fa;
+        cursor: pointer; }
+        .down .down-con .subnav-cen .downshow .down-item span {
+          vertical-align: middle;
+          font-size: 24px;
+          color: #494949;
+          line-height: 40px; }
+        .down .down-con .subnav-cen .downshow .down-item img {
+          float: right; }
