@@ -40,19 +40,10 @@ const request = (method, url, data, header_diy) => {
             data,
             header: header_c,
             success: (res) => {
-                let rul = location.href;
                 if (res.data.code == 401) {
                     reject(res)
                 } else if (res.data.code == 20000) {
-                    if(rul.indexOf("/pages/")<0 || rul.indexOf("/home/home")>0){
-                        uni.navigateTo({
-                            url: '/pages/public/login'
-                        });
-                    }else {
-                        uni.redirectTo({
-                            url: '/pages/public/login'
-                        });
-                    }
+                    Vue.prototype.$jump.gotoLogin();
                 } else if (res.data.code == 10001) {
                     uni.showToast({
                         title: res.data.msg,
@@ -62,15 +53,7 @@ const request = (method, url, data, header_diy) => {
                     uni.removeStorageSync('companyguid')
                     uni.removeStorageSync('uniquekey')
                     setTimeout(function() {
-                        if(rul.indexOf("/pages/")<0 || rul.indexOf("/home/home")>0){
-                            uni.navigateTo({
-                                url: '/pages/public/login'
-                            });
-                        }else {
-                            uni.redirectTo({
-                                url: '/pages/public/login'
-                            });
-                        }
+                        Vue.prototype.$jump.gotoLogin();
                     }, 800);
                 } else {
                     resolve(res)
@@ -120,9 +103,7 @@ const sign = (url, data) => {
     if (userInfo) {
         data.guid = userInfo.guid;
         token = userInfo.token;
-        //data.token = userInfo.token;
-    } else {
-        //data.token = '';
+        // data.token = userInfo.token;
     }
     let timestamp = new Date().getTime();
     data.nonce = timestamp;
@@ -147,9 +128,16 @@ const header = () => {
         uniquekey = generateUUID();
         uni.setStorageSync('uniquekey', uniquekey);
     }
+    var AppCode;
+    var ua = window.navigator.userAgent.toLowerCase();
+    if (ua.match(/holdmall/i) == 'holdmall') {
+        AppCode = uni.getStorageSync('parameter').AppCode;
+    } else {
+        AppCode = 'WXMall';
+    }
     return {
         'MVer': '19111801',
-        'AppCode': 'WXMall',
+        'AppCode': AppCode,
         'content-type': 'application/json',
         'dtype': 'WX',
         'uniquekey': uniquekey,

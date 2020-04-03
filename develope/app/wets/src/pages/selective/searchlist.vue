@@ -8,7 +8,10 @@
                 <!-- 原样式 end -->
             </view>
             <view class="navbar">
-                <view class="nav-item" :class="{ current: condition === 1 }" @click="tabClick(1)"><text>综合</text></view>
+                <view class="nav-item" :class="{ current: condition === 1 || condition === 5}" @click="tabClick(1)">
+                    <text>{{ sort == 1 ? '综合' : '新品优先' }}</text>
+                    <view class="p-box"><text :class="{ active: condition === 5 || condition === 1 }" class="yticon icon-shang xia"></text></view>
+                </view>
                 <view class="nav-item" :class="{ current: condition === 2 }" @click="tabClick(2)">销量</view>
                 <view class="nav-item" :class="{ current: condition == 3 || condition == 4 }" @click="tabClick(3)">
                     <text>价格</text>
@@ -25,12 +28,18 @@
                 <view class="item-con">
                     <view class="title clamp">{{ item.name }}</view>
                     <view class="price-box clamp">
-                        <text class="price"><text>￥</text>{{ item.price }}</text>
+                        <text class="price">{{ item.price }}</text>
                     </view>
                 </view>
             </view>
         </view>
-        <uni-load-more :status="loadingType"></uni-load-more>
+        <view class="entry" v-if="goodsList.length == 0">
+            <image src="../../static/searchlists.png" mode="aspectFit"></image>
+            <view class="tip">
+                抱歉，没有找到商品额~
+            </view>
+        </view>
+        <uni-load-more :status="loadingType" v-if="goodsList.length > 0"></uni-load-more>
     </view>
 </template>
 
@@ -46,6 +55,7 @@ export default {
         return {
             keyword: 0,
             sort: 1,
+            activityID:0,
             loadingType: 'more',
             goodsList: [],
             pagesize: 12,
@@ -55,6 +65,7 @@ export default {
     },
     onLoad(options) {
         this.keyword = options.keyword || '';
+        this.activityID = options.activityID;
         this.loadData();
     },
     //下拉刷新
@@ -82,12 +93,13 @@ export default {
                 this.lastid = '';
             }
             let data = {
-                cguid:'187fcec7f8774156bf76295a83769bd0',
+                activityID:this.activityID,
                 keyword: this.keyword,
+                condition:this.condition,
                 pagesize: this.pagesize,
-                lid: this.lastid,
+                lastid: this.lastid
             };
-            this.$ajax.get('shopproduct/productsearch', data).then(res => {
+            this.$ajax.get('search/smartSearch', data).then(res => {
                 if (res.data.code == 0) {
                     let list = res.data.result.data;
                     //判断是否还有下一页，有是more  没有是nomore(测试数据判断大于20就没有了)
@@ -110,11 +122,14 @@ export default {
             this.$jump.jumpMethod(id);
         },
         tabClick(index) {
-            if (this.condition === index && index !== 3) {
+            if (this.condition === index && index !== 3 && index !== 1) {
                 return;
             }
             if (index === 3) {
                 this.condition = this.condition === 3 ? 4 : 3;
+            }else if (index === 1) {
+                this.condition = this.condition === 1 ? 5 : 1;
+                this.sort = this.condition === 1 ? 1 : 5;
             } else {
                 this.condition = index;
             }
@@ -191,9 +206,6 @@ page,
 
 .placeholder-class {
     color: #9e9e9e;
-}
-.price text{
-    font-size: 24rpx;
 }
 .search-keyword {
     width: 100%;
@@ -552,6 +564,19 @@ page,
                 margin-top: 10rpx;
             }
         }
+    }
+}
+.entry{
+    image{
+        width: 200rpx;
+        height: 200rpx;
+        display: block;
+        margin: 50rpx auto 10rpx auto;
+    }
+    .tip{
+        font-size: 28rpx;
+        text-align: center;
+        color: #969696;
     }
 }
 </style>

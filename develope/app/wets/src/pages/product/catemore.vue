@@ -47,7 +47,31 @@ export default {
             });
         },
         tablist(item) {
-            if (item.code == 'PROMOTION') {
+            if (item.code == 'POSTER') {
+                uni.navigateTo({
+                    url: '/pages/selective/selective?id=' + item.activityid.split('@')[0] +"&cguid="+ item.cguid
+                });
+            } else if (item.code == 'RANKLIST') {
+                uni.navigateTo({
+                    url: '/pages/product/ranking'
+                });
+            } else if (item.code == 'GROUPBUYING') {
+                uni.navigateTo({
+                    url: '/pages/product/assemble'
+                });
+            } else if (item.code == 'BENEFIT') {
+                uni.navigateTo({
+                    url: '/pages/product/welfare'
+                });
+            }  else if (item.code == 'COUPON') {
+                uni.navigateTo({
+                    url: '/pages/user/coupon'
+                });
+            } else if (item.code == 'HELPPOOR_COMPETITION') {
+                uni.navigateTo({
+                    url: '/pages/ranking/index'
+                });
+            } else if (item.code == 'PROMOTION') {
                 uni.navigateTo({
                     url: '/pages/product/catelist?id=' + item.activityid
                 });
@@ -74,6 +98,8 @@ export default {
                 uni.navigateTo({
                     url: '/pages/product/product?productid=' + item.productid
                 });
+            } else if (item.code == 'HELP_POOR_COMPETITION') {
+                location.href = '';
             } else {
                 this.$api.msg('功能开发中');
             }

@@ -1,9 +1,13 @@
-var guid;
+var guid ;
+// var guid;
 var isAndroid;
 var isiOS;
 var isNoApp;
-var token;
-var pub_url = "http://114.115.217.252:8001/";
+var token ;
+var MVer = '20020301';
+var AppCode ;
+var pub_url = "http://api.holdsoft.cn/mall/";
+// var pub_url = "http://10.10.6.141:8002/";
 
 //判断浏览器内核
 $(function () {
@@ -13,11 +17,8 @@ $(function () {
     // alert('是否是Android：'+isAndroid);
     // alert('是否是iOS：'+isiOS);
     isNoApp = u.toLowerCase().match(/MicroMessenger/i) == 'micromessenger';
+	// guidCallback();
     initBridge();
-    setTimeout(function () {
-        // getTopdata();
-        // earninglist();
-    },3000)
     // getTopdata();
     // earninglist();
 });
@@ -81,8 +82,6 @@ function mcallHandler(callname, data, callback) {
     // }
 }
 
-
-
 //初始化函数
 function initBridge() {  
     if(isNoApp){    
@@ -98,10 +97,12 @@ function initBridge() {
         connectWebViewJavascriptBridge(function (bridge) {
             //注册回调函数，第一次连接时调用 初始化函数
             bridge.init();
-
             bridge.registerHandler("GetUser", function (data, responseCallback) {
-                // alert("进入bridge android" + JSON.parse(data).guid);               
+				    // getTopdata();
+				    // earninglist();
                guid = JSON.parse(data).guid;
+               token = JSON.parse(data).token;
+                AppCode = JSON.parse(data).AppCode;
                guidCallback();
             });
 
@@ -114,14 +115,14 @@ function initBridge() {
             bridge.registerHandler('GetUser', function (data, responseCallback) {
                 // alert("进入bridge ios");
                 guid = data.guid;
+                token = data.token;
+                AppCode = data.AppCode;
                 console.log("GetUser called with:", data);
                 guidCallback();
             })
         })
     }
-    
 }
-
 
 /**
  * 分享
@@ -156,6 +157,7 @@ function sing(url,data){
     data.sign = hex_md5(jm);
     return data;
 }
+
 //获取url参数
 function getQueryVariable(variable) {
 	var query = window.location.search.substring(1);
@@ -237,13 +239,18 @@ function publicAjax(path, dataJson,type) {
     dataJson =  sing(path,dataJson)
 	const promise = new Promise((resolve, reject) => {
 		$.ajax({
+            headers: {
+                MVer: MVer,
+                AppCode:AppCode
+            },
 			type: type,
 			url: pub_url + path,
 			dataType: 'json',
 			data: dataJson,
 			success: function(data) {
-                if(data.code == 0){
-                    resolve(data) 
+			    // console.log(data);
+                if(data.code == "0"){
+                    resolve(data)
                 }else{
                     alert("发生异常,刷新后再试!")
                     return;

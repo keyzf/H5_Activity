@@ -39,7 +39,6 @@ export default {
 				this.$ajax.get('login/setPassword', {
                     password: md5(this.newPassword)
                 }).then(res => {
-					console.log(res);
 					if (res.data.code == 0) {
 						this.$api.msg('密码设置成功');
 						// this.logout();

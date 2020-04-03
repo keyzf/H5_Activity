@@ -695,7 +695,7 @@ button[type='default'] {
         display: flex;
         flex-direction: column;
         width: 48%;
-        margin-bottom: 40upx;
+        margin-bottom: 30rpx;
         background: #fff;
         border-radius: 20rpx;
         overflow: hidden;
@@ -778,8 +778,8 @@ button[type='default'] {
         display: inline-block;
         vertical-align: middle;
         image {
-            height: 40rpx;
-            width: 120rpx;
+            height: 34rpx;
+            width: 100rpx;
             vertical-align: middle;
             border-radius: 6rpx;
         }

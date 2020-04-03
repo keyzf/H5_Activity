@@ -1,33 +1,32 @@
 var lid;
 var signupGroup = 1;
-var pageSize =8;
+var pageSize = 10;
 var moreMark = true;
 
-
-$(window).scroll(function() {
+$(window).scroll(function () {
     var scrollTop = $(window).scrollTop();
     var scrollHeight = $(window).height();
     var totalHeight = $(document).height();
     if ((scrollTop + scrollHeight + 50) > totalHeight && moreMark) {
-        console.log("加载更多")
-            lid = $(".list .item").last().attr("data-id");
-            console.log("======lid:"+lid);
-			if (signupGroup === "1") {
-                earninglist();
-            } else if (signupGroup === "2") {
-                myinviteRecordlist();
-            } else if (signupGroup === "3") {
-                inviteRecordlist();
-            }
+        lid = $(".list .item").last().attr("data-id");
+        console.log("======lid:" + lid);
+        rankinglist();
+        // 	if (signupGroup === "1") {
+        //         earninglist();
+        //     } else if (signupGroup === "2") {
+        //         myinviteRecordlist();
+        //     } else if (signupGroup === "3") {
+        //         inviteRecordlist();
+        //     }
     }
 });
 
 
 //获取完 guid后的回调
-function guidCallback(){
+function guidCallback() {
     //do something
     getTopdata(); //页面信息
-    earninglist();//第一个列表的数据  
+    rankinglist();//第一个列表的数据
 };
 
 /**
@@ -70,7 +69,7 @@ function guidCallback(){
 /**
  * 返回
  */
-$(document).on("click", ".main .icon_left", function () {
+$(document).on("click", ".icon .icon_left", function () {
     console.log("返回");
     mcallHandler("CallNative", {'key': 'back'})
 })
@@ -78,8 +77,21 @@ $(document).on("click", ".main .icon_left", function () {
 /**
  * 弹窗
  */
-$(document).on("click", ".mainbody .topview .icon .iocn_right", function () {
+$(document).on("click", ".icon .iocn_right", function () {
     console.log("点击显示弹窗");
+    // $(location).attr('href', "../20200319/share_activity.html");
+    // $(window).attr('location', "../20200319/share_activity.html");
+    // $(location).prop('href', "../20200319/share_activity.html");
+    // window.location.href = "../20200319/share_activity.html";
+    // var a = document.createElement('a');
+    // a.href = "../20200319/share_activity.html";
+    // a.target = '_blank';
+    // a.id=myid;
+    // document.body.appendChild(a);
+    // var alink = document.getElementById(myid);
+    // alink.click();
+    // alink.parentNode.removeChild(a);
+    // scrControl(0);
     $(".pupwindow").show();
     $(".mask").show();
 })
@@ -89,36 +101,77 @@ $(document).on("click", ".mainbody .topview .icon .iocn_right", function () {
  */
 $(document).on("click", ".pupwindow .close", function () {
     console.log("点击关闭弹窗");
+    // scrControl(1);
     $(".pupwindow").hide();
     $(".mask").hide();
 })
+
+function bodyScroll(event){
+    event.preventDefault();
+}
+
+function scrControl(t){
+    if(t == 0){ //禁止滚动
+        document.body.addEventListener('touchmove', this.bodyScroll, { passive: false });
+        // document.getElementById("#pupw").removeEventListener('touchmove', this.bodyScroll, { passive: false });
+    }else if( t == 1){ //开启滚动
+        document.body.removeEventListener('touchmove',this.bodyScroll, {passive: false});
+        // document.getElementById("pupw").removeEventListener('touchmove', this.bodyScroll, { passive: false });
+    }
+}
 
 /**
  * 获取顶部数据
  */
 function getTopdata() {
-let paramjson = {
-   "guid": guid,
-}
-    publicAjax("HighMallServer/redpacket/redpacketshare", paramjson,"GET").then(function(result){
-         console.log(result)
+    let paramjson = {
+        "guid": guid,
+    }//HighMallServer
+    publicAjax("rank/consumeRank", paramjson, "GET").then(function (result) {
+        console.log(result)
         if (result.code == 0) {
             var data = result.result.data;
-            console.log(data)
-            $(".theme .bg").attr("src", data.backGroudImage);
-            $(".theme .tips").attr("src", data.tipsImage);
-            $(".pupwindow .content").append(data.redpacketrule.replace(/\n/g,'<br/>'));
-            $(".translate .total .number").text(data.totalIncome);
-            $(".translate .yesterday .number").text(data.ydayIncome);
+            var prize = data.prize;
+
+            $(".main .title").attr("src", data.titleImage);
+            $(".main .text").text(data.titleText);
+            $(".main .update").text(data.updateText);
+            $(".pupwindow .content").append(data.instruction.replace(/\n/g, '<br/>'));
+            $(".mybg .my .mynumber .tips").text(data.myInfo.rank);
+            if (data.myInfo.changeFlag === '1') {
+                $(".mybg .my .mynumber .rankchange").addClass("x");
+                $(".mybg .my .mynumber .rankchange").text(data.myInfo.changeNumber);
+            } else if (data.myInfo.changeFlag === '-1') {
+                $(".mybg .my .mynumber .rankchange").addClass("xx");
+                $(".mybg .my .mynumber .rankchange").text(data.myInfo.changeNumber);
+            } else if (data.myInfo.changeFlag === '0') {
+                $(".mybg .my .mynumber .rankchange").addClass("xxx");
+                $(".mybg .my .mynumber .rankchange").text("-");
+            }
+            $(".mybg .my .progress .circle").text(data.myInfo.consume);
+            $(".mybg .my .progress .z_tips").text(data.myInfo.consumeText);
+
+            if (prize == undefined || prize.length < 1) {
+                $(".ystable").hide();
+                $(".prizeexplain").hide();
+            } else {
+                $(".ystable").show();
+                $(".prizeexplain").show();
+                let $table = $(".ystable .table");
+                let html = "<tr><td>排名</td><td>奖励</td></tr>";
+                for (let i = 0; i < prize.length; i++) {
+                    html += "<tr><td>" + prize[i].title + "</td><td>" + prize[i].content + "</td></tr>"
+                }
+                $table.html(html);
+            }
         }
     })
-
 }
 
 /**
  * 获取收益记录列表数据
  */
-function earninglist() {
+function rankinglist() {
     if (moreMark) {
         moreMark = false;
         $("#more").show();
@@ -127,132 +180,76 @@ function earninglist() {
             // "guid": '9b3d1f32cb3c45cdba1d0800c38bc582',
             "guid": guid,
             "pagesize": pageSize,
-        }
-        publicAjax("HighMallServer/redpacket/incomeRecord", paramjson,"GET").then(function(result){
-               $("#more").hide();
-            // console.log(result);
+        }//HighMallServer
+        publicAjax("rank/consumeRankList", paramjson, "GET").then(function (result) {
+            $("#more").hide();
+            console.log(result);
             if (result.code == 0) {
-                $(".record .record_tip").text(result.result.data.headText);
-                var shoplist = result.result.data.incomeList;
+                var shoplist = result.result.data.rankList;
+                console.log(shoplist);
                 if (shoplist.length > 0) {
                     var _template = $($("#template").html());
                     for (var i = 0; i < shoplist.length; i++) {
                         var _clone = _template.clone();
-                        _clone.attr("data-id", shoplist[i].id)
-                        _clone.find("img").attr("src", shoplist[i].headUrl);
-                        _clone.find(".main .title").append(shoplist[i].title);
-                        _clone.find(".main .tip").append(shoplist[i].listText);
-                        _clone.find(".number").append(shoplist[i].amount);
-                        $(".list").append(_clone);
-                    }
-                    if (shoplist.length == pageSize) {
-                        moreMark = true;
-                    } else {
-                        moreMark = false;
-                        $("#noMore").show();
-                    }
-                } else {
-                    moreMark = false;
-                    $("#noMore").show();
-                }
-            }
-        })
-    }
-}
-
-/**
- * 获取我的邀请列表数据
- */
-function myinviteRecordlist() {
-    if (moreMark) {
-        moreMark = false;
-        $("#more").show();
-        
-        let paramjson = {
-            "lid": lid,
-            // "guid": '9b3d1f32cb3c45cdba1d0800c38bc582',
-            "guid": guid,
-            "pagesize": pageSize,
-        }
-        publicAjax("HighMallServer/redpacket/inviteRecord", paramjson,"GET").then(function(result){
-             $("#more").hide();
-            // console.log(result);
-            if (result.code == 0) {
-                $(".record .record_tip").text(result.result.data.headText);
-                var shoplist = result.result.data.inviteList;
-                if (shoplist.length > 0) {
-                    var _template = $($("#template").html());
-                    for (var i = 0; i < shoplist.length; i++) {
-                        var _clone = _template.clone();
-                        _clone.attr("data-id", shoplist[i].id)
-                        _clone.find("img").attr("src", shoplist[i].headurl);
-                        _clone.find(".main .title").append(shoplist[i].name);
-                        _clone.find(".main .tip").append(shoplist[i].tel);
-                        _clone.find(".number").append(shoplist[i].createtime);
-                        $(".list").append(_clone);
-                    }
-                    if (shoplist.length == pageSize) {
-                        moreMark = true;
-                    } else {
-                        moreMark = false;
-                        $("#noMore").show();
-                    }
-                } else {
-                    moreMark = false;
-                    $("#noMore").show();
-                }
-            }
-        })
-        
-      
-    }
-}
-
-/**
- * 获取邀请排行数据
- */
-function inviteRecordlist() {
-    if (moreMark) {
-        moreMark = false;
-        $("#more").show();
-        let parajson = {
-                "lid": lid,
-                // "guid": '9b3d1f32cb3c45cdba1d0800c38bc582',
-                "guid": guid,
-                "pagesize": pageSize,
-            }
-        publicAjax("HighMallServer/redpacket/inviteRank", parajson,"GET").then(function(result){
-                 $("#more").hide();
-                // console.log(result);
-                if (result.code == 0) {
-                    $(".record .record_tip").text(result.result.data.headText);
-                    var shoplist = result.result.data.rankList;
-                    if (shoplist.length > 0) {
-                        var _template = $($("#template").html());
-                        for (var i = 0; i < shoplist.length; i++) {
-                            var _clone = _template.clone();
-                            _clone.attr("data-id", shoplist[i].id)
-                            _clone.find("img").attr("src", shoplist[i].headurl);
-                            _clone.find(".main .title").append(shoplist[i].tel);
-                            // _clone.find(".main .tip").append(shoplist[i].listText);
-                            _clone.find(".number").append(shoplist[i].peoplenumber);
-                            $(".list").append(_clone);
-                        }
-                        if (shoplist.length == pageSize) {
-                            moreMark = true;
+                        let rank = shoplist[i].rank;
+                        if (rank === 1) {
+                            _clone.find(".consume").show();
+                            _clone.find(".number").hide();
+                            _clone.find(".consume").attr("src", "img/1.png");
+                        } else if (rank === 2) {
+                            _clone.find(".consume").show();
+                            _clone.find(".number").hide();
+                            _clone.find(".consume").attr("src", "img/2.png");
+                        } else if (rank === 3) {
+                            _clone.find(".consume").show();
+                            _clone.find(".number").hide();
+                            _clone.find(".consume").attr("src", "img/3.png");
                         } else {
-                            moreMark = false;
-                            $("#noMore").show();
+                            _clone.find(".consume").hide();
+                            _clone.find(".number").show();
+                            _clone.find(".number").append(rank);
+                            if (rank % 3 === 1) {
+                                _clone.find(".number").addClass('red');
+                            } else if (rank % 3 === 2) {
+                                _clone.find(".number").addClass('green');
+                            } else if (rank % 3 === 0) {
+                                _clone.find(".number").addClass('blue');
+                            }
                         }
+                        _clone.attr("data-id", shoplist[i].rank)
+                        _clone.find(".headicon").attr("src", shoplist[i].headUrl);
+                        _clone.find(".name").append(shoplist[i].name);
+
+                        if (shoplist[i].isself === 1) {//是否是自己
+                            _clone.addClass('x')
+                        }
+                        if (shoplist[i].changeFlag === "1") {//名次上升
+                            _clone.find(".tip").append(shoplist[i].changeNumber);
+                            _clone.find(".tip").addClass('xxx')
+                        } else if (shoplist[i].changeFlag === "-1") {//名次下降
+                            _clone.find(".tip").append(shoplist[i].changeNumber);
+                            _clone.find(".tip").addClass('x');
+                        } else if (shoplist[i].changeFlag === "0") {//名次没有变化
+                            _clone.find(".tip").append('-');
+                            _clone.find(".tip").addClass('xx')
+                        }
+                        $(".list").append(_clone);
+                    }
+                    if (shoplist.length == pageSize) {
+                        moreMark = true;
                     } else {
                         moreMark = false;
                         $("#noMore").show();
                     }
+                } else {
+                    moreMark = false;
+                    $("#noMore").show();
                 }
-            
-            
+                if (shoplist.length < 9) {
+                    $("#noMore").hide();
+                }
+            }
         })
- 
     }
 }
 

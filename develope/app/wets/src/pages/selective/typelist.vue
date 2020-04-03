@@ -4,7 +4,7 @@
             <div class="uni-page-head-hd">
                 <div class="uni-page-head-btn" @click="backnav"><i class="uni-btn-icon" style="color: rgb(0, 0, 0); font-size: 27px;"></i></div>
             </div>
-            <view class="nav-bd"><view class="uni-page-head__title">网易严选</view></view>
+            <view class="nav-bd"><view class="uni-page-head__title">{{name}}</view></view>
         </view>
         <view class="con" :class="{ x: backstate }">
             <view class="navbar">
@@ -42,7 +42,6 @@
                 </view>
             </view>
         </view>
-
         <uni-load-more :status="loadingType"></uni-load-more>
     </view>
 </template>
@@ -59,6 +58,7 @@ export default {
         return {
             id: 0,
             loadingType: 'more',
+            name:'网易严选',
             goodsList: [],
             pagesize: 12,
             condition: 1,
@@ -69,6 +69,7 @@ export default {
     },
     onLoad(options) {
         this.id = options.id;
+        this.name = options.name;
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/holdmall/i) == 'holdmall') {
             this.backstate = true;
@@ -615,7 +616,7 @@ page,
     .price-box {
         justify-content: inherit;
         .price{
-            font-size: 34rpx;
+            font-size: 40rpx;
             text{
                 font-size: 24rpx;
             }
@@ -624,10 +625,19 @@ page,
         .xe {
             display: inline-block;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 0 3px;
+            border-radius: 30rpx;
+            padding: 0 10rpx;
             margin-left: 5px;
+            font-size: 24rpx;
+            line-height: 32rpx;
+            height: 32rpx;
         }
     }
+}
+.goods-list .title{
+    line-height:60rpx;
+}
+.goods-list .goods-item .item-con {
+    padding:0 10rpx 10rpx 10rpx;
 }
 </style>

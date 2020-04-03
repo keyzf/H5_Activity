@@ -215,8 +215,9 @@ export default {
         },
         tablist(item) {
             if (item.code == 'POSTER') {
+                
                 uni.navigateTo({
-                    url: '/pages/selective/selective?id=' + item.activityid
+                    url: '/pages/selective/selective?id=' + item.activityid.split('@')[0]
                 });
             } else if (item.code == 'RANKLIST') {
                 uni.navigateTo({

@@ -3,14 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-        <head>
-            <meta name="format-detection" content="telephone=no">
-        </head>
         <title>分享</title>
         <script type="text/javascript" src="../ningXun-1.8.mini.js"></script>
-        <script type="text/javascript" src="consume.js"></script>
-        <script type="text/javascript" src="../publicshare.js"></script>
-        <script type="text/javascript" src="../md5.js"></script>
         <style type="text/css">
             body,
             p,
@@ -50,7 +44,7 @@
                 border: 1px solid #fff;
                 text-align: center;
                 border-radius: 5px;
-                background: #F8F8F8;
+                background: #FFFFFF;
                 transition: all 0.3s;
 
             }
@@ -101,46 +95,35 @@
                 height: 100%;
                 width: 100%;
                 position: absolute;
-                /*background-color: #000;*/
+                background-color: #FF4574;
                 z-index: 300;
-                opacity: 0.6;
-                /*filter: alpha(opacity=0.6);*/
+                opacity: 0;
+                filter: alpha(opacity=0);
             }
             .main{
                 color: #FFF;
-                background: url(img/mainbg.png) repeat;
                 background-size: 100% 100%;
-                overflow: hidden;
+                position: relative;
+                overflow: auto;
             }
             .icon{
                 padding: 10px 12px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                color: #FFFFFF;
-                position: fixed;
+                /*position: fixed;*/
                 left: 0;
                 right: 0;
-                top: 25px;
-            }
-            .icon .iocn_right{
-                cursor: pointer;
+                top: 0;
             }
             .icon .icon_left img{
-                 width: 20px;
-                 height: 20px;
-                cursor: pointer;
-            }
-
-            .main{
-                display: flex;
-                justify-content: center;
-                flex-direction: column;
+                 width: 25px;
+                 height: 25px;
             }
             .main .title{
                 font-size: 40px;
                 text-align: center;
-                margin: 60px auto 20px;
+                margin: 40px 0 10px 0;
             }
             .main .tip{
                 font-size: 14px;
@@ -194,18 +177,17 @@
                 width: 80%;
                 margin: 10px auto;
                 font-size: 12px;
-                color: #FFEE82;
             }
             .main .ystable table{
                 width: 100%;
-                border: 0.6px solid #FFEE82;
+                border: 1px solid rgba(255,255,255,0.6);
                 text-align: center;
-                border-radius: 2px;
+                border-radius: 4px;
             }
             .main .ystable table td{
                 padding: 5px 0;
-                border-left: 0.6px solid #FFEE82;
-                border-bottom: 0.6px solid #FFEE82;
+                border-left: 0.7px solid rgba(255,255,255,0.6);
+                border-bottom: 0.6px solid rgba(255,255,255,0.6);
             }
             .main .mybg{
                 font-size: 0;
@@ -220,86 +202,79 @@
             .main .mybg .bg{
                 height: 5px;
                 width: 100%;
-                /* margin: -2px 0; */
+                margin: -2px 0;
             }
             .main .mybg .my{
-                background: #FFF5B9;
+                background: #FFEE82;
                 font-size: 14px;
                 display: flex;
                 align-items: center;
-                padding: 6px 14px;
-                width: 90%;
-                margin: 14px auto;
-                border: 3px solid #F39633;
-                border-radius: 14px;
-                box-sizing: border-box;
+                padding: 6px;
             }
             .main .mybg .my .number{
-                color: #000000;
+                color: #333;
                 text-align: center;
             }
-            .main .mybg .my .mynumber .tips{
-                font-size: 18px;
+            .main .mybg .my .number .mynumber .tips{
+                font-size: 20px;
                 font-weight: bold;
                 vertical-align: middle;
             }
-            .main .mybg .my .mynumber{
-                flex: 1;
-                color: #000000;
-                margin-right: 4px;
-                word-break: break-all;
-                margin-left: 6px;
-            }
-            .main .mybg .my .mynumber .x{
+            .main .mybg .my .number .mynumber span.x{
                 font-size: 12px;
                 color: #4ABE48;
                 font-weight: 500;
                 display: inline-block;
                 vertical-align: middle;
-                margin-left: 6px;
+                margin-right: 4px;
                 background: url(img/sjt.png) no-repeat left center;
                 background-size: 8px 12px;
                 padding-left: 12px;
             }
-            .main .mybg .my .mynumber .xx{
+            .main .mybg .my .number .mynumber span.xx{
                 color: #EE3847;
                 font-weight: 500;
                 font-size: 12px;
                 display: inline-block;
                 vertical-align: middle;
-                margin-left: 6px;
-                background: url(img/xjt.png) no-repeat left center;
+                margin-right: 4px;
+                background: url(img/sjt.png) no-repeat left center;
                 background-size: 8px 12px;
                 padding-left: 12px;
             }
-
-            .main .mybg .my .mynumber .xxx{
-                color: #929292;
-                font-weight: 500;
-                font-size: 12px;
-                display: inline-block;
-                vertical-align: middle;
-                margin-left: 6px;
-                background-size: 8px 12px;
-                padding-left: 12px;
+            .main .mybg .my img{
+                width: 50px;
+                height: 50px;
+                margin: 0 4px;
+                border-radius: 4px;
+            }
+            .main .mybg .my .name{
+                flex: 1;
+                color: #333333;
+                text-align: center;
+                margin-right: 4px;
+                word-break: break-all;
             }
             .main .mybg .my .progress{
                 color: #000000;
-                font-size: 14px;
-                text-align: right;
-            }
-            .main .mybg .my .progress .z_tips{
-                color: #FD6A49;
                 font-size: 12px;
             }
             .main .mybg .my .circle{
-                font-size: 20px;
-                color: #FD2F34;
+                margin-top: 3px;
+                border: 1px solid #FE4D33;
+                height: 3px;
+                border-radius: 4px;
+            }
+            .main .mybg .my .strip{
+                background: #FF6450;
+                height: 3px;
+                border-radius: 4px;
+                width: 50%;
             }
             .ranking .item{
                 display: flex;
                 align-items: center;
-                margin: 5px 12px;
+                margin: 16px 12px;
                 background: #FFF;
                 border-radius: 8px;
                 padding: 6px;
@@ -309,33 +284,18 @@
             }
             .ranking .item .number{
                 color: #FFF;
-                width:24px;
+                width: 25px;
                 text-align: center;
-                height: 24px;
-                line-height: 24px;
+                height: 25px;
+                line-height: 25px;
                 border-radius: 50%;
-                padding: 5px;
-                margin:0 4px 0 0;
-            }
-            .ranking .item .red{
                 background: #EE3847;
-            }
-            .ranking .item .green{
-                background: #6ACE81;
-            }
-            .ranking .item .blue{
-                background: #52B6FF;
             }
             .ranking .item img{
                 width: 50px;
                 height: 50px;
                 margin: 0 4px;
                 border-radius: 4px;
-            }
-            .ranking .item img.consume{
-                width: 32px;
-                height: 45px;
-                margin:0 4px 0 0;
             }
             .ranking .item .name{
                 flex: 1;
@@ -344,23 +304,16 @@
             }
             .ranking .item .tip{
                 text-align: center;
+                color: #4ABE48;
                 font-size: 14px;
                 margin-right: 8px;
+                background: url(img/sjt.png) no-repeat left center;
                 background-size: 8px 12px;
                 padding-left: 12px;
             }
-            .ranking .item .x{
+            .ranking .item .tip.x{
                 color: #EE3847;
                 background: url(img/xjt.png) no-repeat left center;
-                background-size: 8px 12px;
-            }
-            .ranking .item .xx{
-                color: #929292;
-                background-size: 8px 12px;
-            }
-            .ranking .item .xxx{
-                color: #4ABE48;
-                background: url(img/sjt.png) no-repeat left center;
                 background-size: 8px 12px;
             }
         </style>
@@ -371,26 +324,26 @@
 
         <div class="mask"></div>
 
-        <div class="pupwindow" id="pupw">
-            <p class="title">说明</p>
-            <div class="content">发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就发设计费就放假三等奖放假啊上课就发静安寺发加咖啡机康师傅是减肥法案件发卡机是看发看手机看就机看就</div>
+        <div class="pupwindow">
+            <p class="title">通知</p>
+            <div class="content"></div>
             <div class="line"></div>
             <p class="close">我知道了</p>
         </div>
         <div class="icon">
             <div class="icon_left">
-                <img src="img/back.png" >
+                <img src="img/more.gif" >
             </div>
             <div class="iocn_right">
                 说明
             </div>
         </div>
+
         <div class="main">
-            
-            <img class="title"></img>
-            <p class="tip text"></p>
-            <p class="tip update"></p>
-            <!-- <div class="list">
+            <p class="title">年度消费排行榜</p>
+            <p class="tip">本年度的消费排行</p>
+            <p class="tip">更新于2020-11-11 12:12:20</p>
+            <div class="list">
                 <div class="item">
                     <div class="img">
                         <img src="img/2.png" >
@@ -412,59 +365,55 @@
                     </div>
                     <img class="consume" src="img/3.png" >
                 </div>
-            </div> -->
-            <div class="mybg">
-                <div class="my">
-                    <div class="number">
-                        我的排名
-                    </div>
-                    <p class="mynumber"><span class="tips">
-<!--                        未上榜-->
-                    </span><span class="rankchange">
-<!--                        526-->
-                    </span></p>
-                    <div class="progress">
-                        <p class="z_tip">
-                            累计消费金额
-                        </p>
-                        <div class="circle">
-<!--                            568-->
-                        </div>
-                        <p class="z_tips">
-<!--                            距离上一名还差100元-->
-                        </p>
-                    </div>
-                </div>
             </div>
             <div class="ystable">
-                <table border="0" cellspacing="0" cellpadding="0" class="table">
-<!--                    <tr><td>排名</td><td>奖励</td></tr>-->
-<!--                    <tr><td>Data</td><td>苹果笔记本电脑</td></tr>-->
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr><td>排名</td><td>奖励</td></tr>
+                    <tr><td>Data</td><td>苹果笔记本电脑</td></tr>
+                    <tr><td>Data</td><td>Data</td></tr>
+                    <tr><td>21-100名</td><td>Data</td></tr>
                 </table>
             </div>
-            <p class="prizeexplain" style="font-size: 12px;text-align: center;margin-bottom: 12px;">只展示前10名的排行,奖励商品将于活动结束后公布</p>
             <div class="mybg">
+                <img class="bg" src="img/mybg.png" >
+                <div class="my">
+                    <div class="number">
+                        <p>我的排名</p>
+                        <p class="mynumber"><span class="x">526</span><span class="tips">未上榜</span></p>
+                    </div>
+                    <img src="img/mainbg.png" >
+                    <p class="name">我是以至于法法师打发水电费沙发发 发撒法萨芬是方式</p>
+                    <div class="progress">
+                        <p>距离上一名还差100元</p>
+                        <div class="circle">
+                            <div class="strip"></div>
+                        </div>
+                    </div>
+                </div>
+                <img class="bg" src="img/mybg.png" >
+            </div>
+            <div class="mybg x">
+                <img class="bg" src="img/mybg.png" >
+                <div class="my">
+                    <div class="number">
+                        <p>我的排名</p>
+                        <p class="mynumber"><span class="x">526</span><span class="tips">未上榜</span></p>
+                    </div>
+                    <img src="img/mainbg.png" >
+                    <p class="name">我是以至于啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+                    <div class="progress">
+                        <p>距离上一名还差100元</p>
+                        <div class="circle">
+                            <div class="strip"></div>
+                        </div>
+                    </div>
+                </div>
                 <img class="bg" src="img/mybg.png" >
             </div>
         </div>
         <div class="ranking">
-            <div id="template" style="display: none;">
-                <div class="item">
-                    <img class="consume"  >
-                    <p class="number"></p>
-                    <img class="headicon" src="img/mainbg.png" >
-                    <p class="name"></p>
-                    <div>
-                        <p class="tip"></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="list">
-
-            </div>
             <div class="item">
-                <img class="consume" src="img/1.png" >
+                <p class="number">4</p>
                 <img src="img/mainbg.png" >
                 <p class="name">我是一直接口</p>
                 <div>
@@ -472,7 +421,7 @@
                 </div>
             </div>
             <div class="item x">
-                <img class="consume" src="img/2.png" >
+                <p class="number">7</p>
                 <img src="img/mainbg.png" >
                 <p class="name">我是一直接口</p>
                 <div>
@@ -585,16 +534,16 @@
             </div>
         </div>
         <div class="more" id="more" style="margin-bottom: 20px;display: none;"><img src="img/more.gif">正在加载...</div>
-        <div class="more" id="noMore" style="margin-bottom: 20px;display: none;">我们是有底线的</div>
-<!--        <script src="../ningXun-1.8.mini.js" type="text/javascript" charset="utf-8"></script>-->
+        <div class="more" id="noMore" style="margin-bottom: 20px;display: none;">暂无更多...</div>
+        <script src="../ningXun-1.8.mini.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript">
-            // $(window).scroll(function(event){
-            //     if($(".ranking").offset().top - $(window).scrollTop()<=130){
-            //         $(".mybg.x").show();
-            //     }else{
-            //         $(".mybg.x").hide();
-            //     }
-            // });
+            $(window).scroll(function(event){
+                if($(".ranking").offset().top - $(window).scrollTop()<=130){
+                    $(".mybg.x").show();
+                }else{
+                    $(".mybg.x").hide();
+                }
+            });
         </script>
     </body>
 </html>

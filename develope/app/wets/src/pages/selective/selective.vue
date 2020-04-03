@@ -21,7 +21,7 @@
             </template>
             <template v-if="row.elementType == 'CATEGORY'">
                 <view class="entrance" :key="row.elementId">
-                    <view class="item" v-for="(item,index) in row.detail" @click="gocategory(item.category_id)" :key="index" v-if="index<8">
+                    <view class="item" v-for="(item,index) in row.detail" @click="gocategory(item)" :key="index" v-if="index<8">
                         <image :src="item.url" mode="aspectFill"></image>
                         <view>{{item.name}}</view>
                     </view>
@@ -34,14 +34,13 @@
                         <image class="img" :src="item.productPicUrl" mode="aspectFill" v-if="index % 2 == 0"></image>
                         <view class="main">
                             <view class="title">{{item.productName}}</view>
-                            <view class="tip">{{item.detail}}</view>
-                            <view>
+                            <view class="tip" v-html="item.detail"></view>
+                            <view v-if="row.display.isShowActivity == 1">
                                 <text class="tips" v-for="im in item.activity" :key="im.content" :style="{background:im.color}">{{im.title}}</text>
                             </view>
                             <view class="price">
                                 <text class="new"><text>￥</text>{{item.newPrice}}</text>
-                                <text class="old"><text>￥</text>{{item.oldPrice}}</text>
-                                
+                                <text class="old" v-if="row.display.isShowOldPrice == 1"><text>￥</text>{{item.oldPrice}}</text>
                             </view>
                             <view class="buy">
                                 <image :src="row.display.shopcartPicUrl" mode="aspectFill"></image>
@@ -52,19 +51,22 @@
                 </view>
             </template>
             <template v-if="row.elementType == 'JUMP_PIC'">
-                <view :key="row.elementId">
+                <view :key="row.elementId" style="font-size: 0;">
                     <image class="head" :src="itm.pictureUrl" mode="aspectFill" v-for="(itm,ins) in row.detail" :key="ins" :style="{height:(750/row.display.width * row.display.height)+'rpx'}"></image>
                 </view>
             </template>
             <template v-if="row.elementType == 'CATEGORY_PRODUCT'">
-                <view class="module" :key="row.elementId">
+                <view class="module" :key="row.elementId" v-if="row.detail.length != 0" :style="{ background: row.display.spaceColor }">
                     <view class="unset">
                         <view class="item" v-for="(item,index) in row.detail" @click="goproduct(item)" :key="index">
                             <image :src="item.url" mode="aspectFill"></image>
                             <view class="title">{{item.name}}</view>
                             <view>
-                                <text class="new">{{item.newprice}}</text>
-                                <text class="old">{{item.oldprice}}</text>
+                                <text class="new">￥{{item.newprice}}</text>
+                                <text class="old" v-if="row.display.isShowOldPrice == 1">￥{{item.oldprice}}</text>
+                                <block v-if="row.display.isShowActivity == 1">
+                                    <text class="tips" v-for="im in item.activitylist" :key="im.wholetext" :style="{color:im.color,borderColor:im.color}">{{im.wholetext}}</text>
+                                </block>
                             </view>
                         </view>
                     </view>
@@ -153,6 +155,7 @@
         data() {
             return {
                 id:0,
+                cguid:0,
                 list:[],
                 selectedIndex:0,
                 select:0,
@@ -170,12 +173,20 @@
             };
         },
         onLoad(option) {
-            this.id = option.id;
+            var that = this;
             var ua = window.navigator.userAgent.toLowerCase();
             if (ua.match(/holdmall/i) == 'holdmall') {
-                this.backstate = true;
+                that.backstate = true;
+                that.$util.bridgeAndroidAndIOS(function(){
+                    that.id = uni.getStorageSync('parameter').activityID;
+                    that.load();
+                })
+            }else{
+                that.id = option.id;
+                that.cguid = option.cguid;
+                that.load();
             }
-            this.load();
+            
         },
         onPullDownRefresh() {
             this.load();
@@ -187,15 +198,10 @@
         },
         methods:{
             load(){
-                var date ={posterId:131};
-                if(this.id){
-                    date ={posterId:this.id};
-                }
+                var date = {posterId:this.id};
                 this.$ajax.get('poster/getPoster', date).then(res => {
                     if (res.data.code == 0) {
                        this.list = res.data.result.data;
-                    } else {
-                        
                     }
                 }).then(res =>{
                     var that = this;
@@ -212,7 +218,7 @@
             },
             gosearch(){
                 uni.navigateTo({
-                    url: '/pages/selective/search'
+                    url: '/pages/selective/search?activityID=' + this.id
                 });
             },
             target(index){
@@ -221,18 +227,16 @@
             goswiper(item){
                 let type = item.jumpType;
                 if(type == 'ACTIVITY'){
-                    uni.navigateTo({
-                        url: '/pages/product/catelist?id=' + item.activityid
-                    });
+                    this.$jump.jumpApp(1,item.activityId);
                 }else if(type == 'PRODUCT'){
-                    this.$jump.jumpMethod(item.productId);
+                    this.$jump.jumpApp(2,item.productId);
                 }else if(type == 'H5'){
-                    location.href = item.jumpLink;
+                    this.$jump.jumpApp(3,item.jumpLink);
                 }
             },
-            gocategory(index){
+            gocategory(item){
                 uni.navigateTo({
-                    url: '/pages/selective/typelist?id=' + index
+                    url: '/pages/selective/typelist?id=' + item.category_id +"&name="+ item.name
                 });
             },
             goproducts(item){
@@ -414,11 +418,11 @@
         }
         text{
             display: block;
-            margin: 30rpx;
-            background:url(../../static/searchse.png) no-repeat left 10rpx center #F2F2F2;
-            background-size: 40rpx 40rpx;
+            margin: 20rpx 30rpx 0 30rpx;
+            background:url(../../static/searchse.png) no-repeat left 20rpx center #F2F2F2;
+            background-size: 36rpx 36rpx;
             border-radius: 30rpx;
-            padding: 14rpx 40rpx 14rpx 60rpx;
+            padding: 14rpx 40rpx 14rpx 66rpx;
             font-size: 26rpx;
             color: #969696;
         }
@@ -445,18 +449,19 @@
     .entrance {
         overflow: hidden;
         background: #FFF;
-        padding: 20rpx;
+        padding:0 20rpx;
 
         .item {
-            padding: 10px 0;
+            padding:0 0 10px 0;
             width: 25%;
             text-align: center;
             float: left;
-            font-size: 28rpx;
+            font-size: 24rpx;
             image {
                 width: 100rpx;
                 height: 100rpx;
-                margin-top: 10rpx;
+                margin: 10rpx auto;
+                display: block;
             }
         }
     }
@@ -491,7 +496,7 @@
                     font-size: 30rpx;
                     line-height: 40rpx;
                     color: #333;
-                    font-weight: 600;
+                    font-weight: 700;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     display: -webkit-box;
@@ -522,14 +527,16 @@
                     font-size: 24rpx;
                     margin-right: 20rpx;
                     background: #0081FF;
-                    border-radius: 16rpx;
+                    border-radius: 20rpx;
                     color: #FFF;
+                    line-height: 40rpx;
+                    height: 40rpx;
                 }
 
                 .price {
                     display: flex;
                     align-items: center;
-
+                    margin-top: 6rpx;
                     .new {
                         font-size: 40rpx;
                         color: #EE3847;
@@ -552,15 +559,10 @@
                     position: absolute;
                     right: 0rpx;
                     bottom: 0rpx;
-                    border-radius: 50%;
-                    background: #EE3847;
-                    width: 50rpx;
-                    padding: 10rpx;
                     font-size: 0;
                     image{
-                        width: 30rpx;
-                        min-width: 30rpx;
-                        height: 30rpx;
+                        width: 60rpx;
+                        height: 60rpx;
                     }
                 }
 
@@ -583,7 +585,6 @@
     }
     .head{
         width: 100%;
-        margin-bottom: -4px;
     }
     .module {
         background: #a7d3fd;
@@ -607,10 +608,10 @@
                     display: -webkit-box;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
-                    height: 80rpx;
-                    line-height: 40rpx;
+                    height: 60rpx;
+                    line-height: 30rpx;
                     color: #333333;
-                    font-size: 28rpx;
+                    font-size: 24rpx;
                     padding:0 8rpx;
                     word-break:break-all;
                 }
@@ -627,6 +628,16 @@
                     font-size: 24rpx;
                     color: #929292;
                     text-decoration:line-through;
+                }
+                .tips{
+                    display: inline-block;
+                    border: 1px solid #ddd;
+                    border-radius: 30rpx;
+                    padding: 0 10rpx;
+                    margin-left: 10rpx;
+                    font-size: 24rpx;
+                    line-height: 28rpx;
+                    height: 30rpx;
                 }
             }
         }
@@ -648,14 +659,14 @@
         justify-content: space-around;
         align-items: center;
         background-color: #fff;
-        height: 80rpx;
+        height: 92rpx;
         flex: 1;
         &.x{
             width: 70%;
         }
         .item{
-            line-height: 80rpx;
-            padding: 16rpx;
+            line-height: 88rpx;
+            padding: 22rpx 16rpx;
             margin: 0 8rpx;
             white-space: nowrap;
             border-bottom: 2px solid #FFF;
@@ -680,10 +691,10 @@
         align-items: center;
         background: #FFF;
         image{
-            width: 60rpx;
+            width: 80rpx;
             height: 60rpx;
             margin-right: 10rpx;
-            padding: 20rpx 10rpx;
+            padding: 25rpx 30rpx;
         }
     }
     .elastic{
@@ -721,16 +732,16 @@
                     font-size: 28rpx;
                 }
                 image{
-                    width: 60rpx;
+                    width: 80rpx;
                     height: 60rpx;
-                    padding: 20rpx 10rpx;
+                    padding: 25rpx 30rpx;
                 }
             }
             .listse{
                 overflow: hidden;
                 .item{
                     width: 30%;
-                    margin:0 1.65% 1.65% 1.65%;
+                    margin:0 1.65% 2.65% 1.65%;
                     display: inline-block;
                     font-size: 24rpx;
                     color: #595757;
@@ -754,7 +765,7 @@
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-            height: 80rpx;
+            max-height: 80rpx;
             line-height: 40rpx;
             color: #333333;
             font-size: 28rpx;
@@ -764,7 +775,7 @@
         .price-box{
             justify-content: inherit;
             .price{
-                font-size: 34rpx;
+                font-size: 40rpx;
                 text{
                     font-size: 24rpx;
                 }
@@ -773,10 +784,16 @@
             .se{
                 display: inline-block;
                 border: 1px solid #ddd;
-                border-radius: 5px;
-                padding: 0 3px;
+                border-radius: 30rpx;
+                padding: 0 10rpx;
                 margin-left: 5px;
+                font-size: 24rpx;
+                line-height: 32rpx;
+                height: 32rpx;
             }
         }
+    }
+    .goods-list .goods-item .item-con {
+        padding: 10rpx;
     }
 </style>

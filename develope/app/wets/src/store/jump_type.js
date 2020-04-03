@@ -13,9 +13,6 @@ function jumpMethod(productId) {
             'productid':productId
         },function(responseData) {
             console.log("JS received response:", responseData)
-            // uni.showToast({
-            // 	title: responseData,
-            // })
         });
     } else {
         uni.navigateTo({
@@ -23,6 +20,72 @@ function jumpMethod(productId) {
         });
     }
 }
+
+function jumpApp(type,id) {
+    var ua = findAgent();
+    if (ua.match(/holdmall/i) == 'holdmall') {
+        // 初始化bridge
+        var data;
+        if(type == 1){
+            data = {
+                'code':'ACTIVITY',
+                'activityid':id
+            }
+        }else if(type == 2){
+            data = {
+                'code':'PRODUCT',
+                'productid':id
+            }
+        }else{
+            data = {
+                'code':'H5',
+                'jumpLink':id
+            }
+        }
+        util.mcallHandler('CallNative',{
+            'key': 'jumpbycode',
+            'jumpdata':data
+        },function(responseData) {
+            console.log("JS received response:", responseData)
+        });
+    } else {
+        if(type == 1){
+            uni.navigateTo({
+                url: '/pages/product/catelist?id=' + id
+            });
+        }else if(type == 'PRODUCT'){
+            uni.navigateTo({
+                url: '/pages/product/product?productid=' + id
+            });
+        }else if(type == 'H5'){
+            location.href = id;
+        }
+    }
+}
+
+function gotoLogin(productId) {
+    var ua = findAgent();
+    if (ua.match(/holdmall/i) == 'holdmall') {
+        // 初始化bridge
+        util.mcallHandler('CallNative',{
+            'key': 'gotoLogin'
+        },function(responseData) {
+            console.log("JS received response:", responseData)
+        });
+    } else {
+        var rul = location.href;
+        if(rul.indexOf("/pages/")<0 || rul.indexOf("/home/home")>0){
+            uni.navigateTo({
+                url: '/pages/public/login'
+            });
+        }else {
+            uni.redirectTo({
+                url: '/pages/public/login'
+            });
+        }
+    }
+}
+
 function back() {
     var ua = findAgent();
     if (ua.match(/holdmall/i) == 'holdmall') {
@@ -50,6 +113,12 @@ const jump = {
     back:() => {
         return back();
     },
+    gotoLogin:() => {
+        return gotoLogin();
+    },
+    jumpApp:(type,id) => {
+        return jumpApp(type,id);
+    }
 }
 
 export default jump

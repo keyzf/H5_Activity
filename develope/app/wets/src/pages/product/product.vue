@@ -336,7 +336,8 @@ export default {
                 code: '',
                 codetime: 0,
                 codetext: '获取验证码',
-                state: 0
+                state: 0,
+                codeState: true
             },
             backshow: false,
             progressgesture: false,
@@ -1154,13 +1155,15 @@ export default {
             	this.$api.msg('请输入正确的手机号码');
             	return;
             }
-            if (this.register.codetime == 0) {
+            if (this.register.codetime == 0 && this.register.codeState) {
+                this.register.codeState = false;
                 this.getTelCode();
             }
         },
         // 发送验证码
         getTelCode() {
             this.$ajax.get('register/getVerificationCodeInRegister', { tel: this.register.telNum }).then(res => {
+                this.register.codeState = true;
                 if (res.data.code == 0) {
                     this.$api.msg('验证码已发送，请注意查收');
                     this.register.codetext = '60秒后可重发';

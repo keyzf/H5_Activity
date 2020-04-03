@@ -34,9 +34,7 @@
 	export default {
 		data() {
 			return {
-                shopkg:false,
-                cutkg:false,
-                cguid:'',
+                activityID:'',
 				defaultKeyword: "",
 				keyword: "",
 				oldKeywordList: [],
@@ -47,14 +45,7 @@
 			}
 		},
 		onLoad(e) {
-            if(e.type){
-                this.shopkg = true;
-                this.cguid =  e.cguid;
-                this.defaultKeyword = e.type;
-            }
-            if(e.cut){
-                this.cutkg = true;
-            }
+            this.activityID =  e.activityID;
 			this.init();
 		},
         onShow() {
@@ -136,7 +127,7 @@
                 this.keyword = key;
                 this.saveKeyword(key); //保存为历史 
                 uni.navigateTo({
-                    url: '/pages/selective/searchlist?keyword='+key
+                    url: '/pages/selective/searchlist?keyword='+key+"&activityID="+this.activityID
                 })
 			},
 			//保存关键字到历史记录

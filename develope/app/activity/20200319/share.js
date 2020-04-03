@@ -4,6 +4,7 @@ var pageSize =8;
 var moreMark = true;
 
 
+
 $(window).scroll(function() {
     var scrollTop = $(window).scrollTop();
     var scrollHeight = $(window).height();
@@ -71,7 +72,11 @@ $(document).on("click", ".btn", function () {
  * 返回
  */
 $(document).on("click", ".theme .back", function () {
+    // window.opener = null;
+    // window.open('', '_self');
+    // window.close();
     mcallHandler("CallNative", {'key': 'back'})
+
 })
 
 /**
