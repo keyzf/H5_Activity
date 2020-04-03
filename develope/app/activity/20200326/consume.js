@@ -91,7 +91,7 @@ $(document).on("click", ".icon .iocn_right", function () {
     // var alink = document.getElementById(myid);
     // alink.click();
     // alink.parentNode.removeChild(a);
-    // scrControl(0);
+    scrControl(0);
     $(".pupwindow").show();
     $(".mask").show();
 })
@@ -101,7 +101,7 @@ $(document).on("click", ".icon .iocn_right", function () {
  */
 $(document).on("click", ".pupwindow .close", function () {
     console.log("点击关闭弹窗");
-    // scrControl(1);
+    scrControl(1);
     $(".pupwindow").hide();
     $(".mask").hide();
 })
