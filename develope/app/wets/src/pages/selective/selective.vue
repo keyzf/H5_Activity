@@ -257,6 +257,15 @@
                 this.scroll_left = 76*(index-1);
                 this.tablist(row,index);
                 this.elasticatart = false;
+                this._queryMultipleNodes('#luTabStatic', true).then(res => {
+                    let tabNav = res[0];
+                    if (tabNav.top <= 0) {
+                        uni.pageScrollTo({
+                            scrollTop: res[1].scrollTop + tabNav.top,
+                            duration: 0
+                        });
+                    }
+                });
             },
             tablist(item,index){
                 var that = this;
@@ -296,13 +305,9 @@
             },
             _queryMultipleNodes: function(e, notThis) {
                 return new Promise((resolve, reject) => {
-                    let view = uni.createSelectorQuery();
-                    if (!!notThis) {
-                        view.in(this);
-                    }
-                    if (!!e) {
-                        view.select(e).boundingClientRect();
-                    }
+                    let view = uni.createSelectorQuery().in(this);
+                    view.select(e).boundingClientRect();
+                    view.selectViewport().scrollOffset()
                     view.exec(function(res) {
                         resolve(res);
                     });
@@ -790,6 +795,17 @@
                 font-size: 24rpx;
                 line-height: 32rpx;
                 height: 32rpx;
+            }
+        }
+        
+        .image-wrapper {
+            width: 100%;
+            height: 330upx;
+            border-radius: 3px;
+            overflow: hidden;
+            image {
+                width: 100%;
+                height: 330upx;
             }
         }
     }

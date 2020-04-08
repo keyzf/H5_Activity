@@ -1,7 +1,7 @@
 <template>
   <view
     v-if="showPopup"
-    class="uni-popup">
+    class="uni-popup" @touchmove.stop.prevent="stopPrevent()">
     <view
       :class="[ani, animation ? 'ani' : '', !custom ? 'uni-custom' : '']"
       class="uni-popup__mask"
@@ -88,7 +88,8 @@ export default {
           this.showPopup = false
         }, 300)
       })
-    }
+    },
+    stopPrevent() {}
   }
 }
 </script>

@@ -115,24 +115,30 @@ export default {
                 location.href = redirectUrl;
             }
         } else {
-            let userInfo = uni.getStorageSync('userInfo') || '';
-            if (userInfo.guid) {
-                this.login(userInfo);
-            }
-            if(uni.getStorageSync('isopenbuildcompany') == 1){
-                this.$store.dispatch('menu_3')
-            }else{
-                this.$store.dispatch('menu_5')
-            }
-            this.$ajax.get('com/hasCompany', {}).then(res => {
-                if (res.data.code == 0) {
-                    let companyresult = res.data.result.data.companyresult; 
-                    // 0-未创建店铺，1-已创建店铺
-                    if (companyresult == 1) {
-                        this.$store.dispatch('menu_4');
-                    }
+            var ua = window.navigator.userAgent.toLowerCase();
+            if (ua.match(/holdmall/i) == 'holdmall') {
+                
+            } else {
+                let userInfo = uni.getStorageSync('userInfo') || '';
+                if (userInfo.guid) {
+                    this.login(userInfo);
                 }
-            });
+                if(uni.getStorageSync('isopenbuildcompany') == 1){
+                    this.$store.dispatch('menu_3')
+                }else{
+                    this.$store.dispatch('menu_5')
+                }
+                this.$ajax.get('com/hasCompany', {}).then(res => {
+                    if (res.data.code == 0) {
+                        let companyresult = res.data.result.data.companyresult; 
+                        // 0-未创建店铺，1-已创建店铺
+                        if (companyresult == 1) {
+                            this.$store.dispatch('menu_4');
+                        }
+                    }
+                });
+            }
+            
         }
     },
     onShow: function() {},

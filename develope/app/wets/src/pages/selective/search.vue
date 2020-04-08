@@ -9,7 +9,7 @@
 				<input type="text" :placeholder="defaultKeyword" v-model="keyword" @confirm="doSearch(false)"
 				 placeholder-class="placeholder-class" confirm-type="search">
 			</view>
-			<view class="search-btn" @tap="doSearch(false)">搜索</view>
+			<view class="search-btn" @tap="doSearch(false)">搜本店</view>
 			<!-- 原样式 end -->
 		</view>
 		<view class="search-keyword" @touchstart="blur">

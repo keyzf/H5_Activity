@@ -2,7 +2,7 @@ var lid;
 var signupGroup = 1;
 var pageSize = 10;
 var moreMark = true;
-
+var domheight;
 $(window).scroll(function () {
     var scrollTop = $(window).scrollTop();
     var scrollHeight = $(window).height();
@@ -21,17 +21,28 @@ $(window).scroll(function () {
     }
 });
 
+// $(function(){
+// 	alert('1111');
+// })
 
 //获取完 guid后的回调
+/**
+ * 切换tab
+ */
+/**
+ * 分享
+ */
+// $(document).on("click", ".btn", function () {
+//     shareFun()
+// })
+
 function guidCallback() {
     //do something
     getTopdata(); //页面信息
     rankinglist();//第一个列表的数据
+
 };
 
-/**
- * 切换tab
- */
 // $(document).on("click", ".navigation div", function () {
 //     if (!$(this).hasClass("x")) {
 //         $(this).siblings().removeClass("x");
@@ -60,13 +71,6 @@ function guidCallback() {
 // });
 
 /**
- * 分享
- */
-// $(document).on("click", ".btn", function () {
-//     shareFun()
-// })
-
-/**
  * 返回
  */
 $(document).on("click", ".icon .icon_left", function () {
@@ -91,31 +95,44 @@ $(document).on("click", ".icon .iocn_right", function () {
     // var alink = document.getElementById(myid);
     // alink.click();
     // alink.parentNode.removeChild(a);
-    scrControl(0);
+
+    // window.location.href="../20200319/share_activity.html";
+
     $(".pupwindow").show();
     $(".mask").show();
-})
+    domheight = $(window).scrollTop();
+    $("body").addClass("x");
+    $("body").attr("style","margin-top:-"+domheight + "px");
 
+    // scrControl(0);   margin-top: 500px;
+})
 /**
  * 关闭弹窗
  */
 $(document).on("click", ".pupwindow .close", function () {
     console.log("点击关闭弹窗");
-    scrControl(1);
     $(".pupwindow").hide();
     $(".mask").hide();
+    $("body").attr("style","");
+    $("body").removeClass("x");
+    $(window).scrollTop(domheight);
+    // scrControl(1);
 })
 
 function bodyScroll(event){
     event.preventDefault();
+    // event.stopPropagation();
 }
 
 function scrControl(t){
+    console.log('------------t:'+t);
     if(t == 0){ //禁止滚动
         document.body.addEventListener('touchmove', this.bodyScroll, { passive: false });
+        // document.getElementById(contentall).addEventListener('touchmove', this.bodyScroll, { passive: false });
         // document.getElementById("#pupw").removeEventListener('touchmove', this.bodyScroll, { passive: false });
     }else if( t == 1){ //开启滚动
         document.body.removeEventListener('touchmove',this.bodyScroll, {passive: false});
+        // document.getElementById(contentall).removeEventListener('touchmove',this.bodyScroll, {passive: false});
         // document.getElementById("pupw").removeEventListener('touchmove', this.bodyScroll, { passive: false });
     }
 }
@@ -128,7 +145,7 @@ function getTopdata() {
         "guid": guid,
     }//HighMallServer
     publicAjax("rank/consumeRank", paramjson, "GET").then(function (result) {
-        console.log(result)
+        console.log(result);
         if (result.code == 0) {
             var data = result.result.data;
             var prize = data.prize;

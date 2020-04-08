@@ -1,5 +1,5 @@
 <template>
-    <view class="container" :class="{ over: overf }">
+    <view class="container">
         <view id="detimal">
             <view class="carousel">
                 <swiper indicator-dots circular="true" duration="400" @change="closevideo">
@@ -173,7 +173,7 @@
 
         <!-- 规格-模态层弹窗 -->
         <!-- <view class="popup spec" :class="specClass" @touchmove.stop.prevent="stopPrevent" @click="toggleSpec"> -->
-        <view class="popup spec" :class="specClass" @click="toggleSpec">
+        <view class="popup spec" :class="specClass" @click="toggleSpec" @touchmove.stop.prevent="stopPrevent()">
             <!-- 遮罩层 -->
             <view class="mask"></view>
             <view class="layer attr-content" @click.stop="stopPrevent">
@@ -253,7 +253,7 @@
             <view class="btnse" @click="registerLogin(0)"> 登录 </view>
         </uni-popup>
         <!-- 优惠券面板 -->
-        <uni-popup ref="popup" type="bottom" @change="overk" @touchmove.stop="">
+        <uni-popup ref="popup" type="bottom" @change="overk">
             <view class="layer">
                 <!-- 优惠券页面，仿mt -->
                 <view class="coupon-item" v-for="(item, index) in couponList" :key="index">
@@ -275,7 +275,7 @@
             </view>
         </uni-popup>
         <!-- 活动 -->
-        <uni-popup ref="activitypopup" type="bottom" @change="overk" @touchmove.stop="">
+        <uni-popup ref="activitypopup" type="bottom" @change="overk">
             <view class="layer" style="min-height: 300px;">
                 <view class="activity-title">{{ activity.info }}</view>
                 <view class="c-list">

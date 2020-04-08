@@ -24,7 +24,9 @@
         </view>
         <view class="goods-list">
             <view v-for="(item, index) in goodsList" :key="index" class="goods-item" @click="navToDetailPage(item.id)">
-                <view class="image-wrapper"><uimg :src="item.url"></uimg></view>
+                <view class="image-wrapper">
+                    <image :src="item.url" mode="aspectFill"></image>
+                </view>
                 <view class="item-con">
                     <view class="title clamp">{{ item.name }}</view>
                     <view class="price-box clamp">
@@ -44,12 +46,10 @@
 </template>
 
 <script>
-import uimg from "@/components/uimg/uimg.vue";
 import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 export default {
     components: {
-        uniLoadMore,
-        uimg
+        uniLoadMore
     },
     data() {
         return {
@@ -577,6 +577,19 @@ page,
         font-size: 28rpx;
         text-align: center;
         color: #969696;
+    }
+}
+.goods-list {
+    background: #fff;
+    .image-wrapper {
+        width: 100%;
+        height: 330upx;
+        border-radius: 3px;
+        overflow: hidden;
+        image {
+            width: 100%;
+            height: 330upx;
+        }
     }
 }
 </style>
