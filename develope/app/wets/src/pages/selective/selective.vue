@@ -499,7 +499,7 @@
                 position: relative;
                 .title {
                     font-size: 30rpx;
-                    line-height: 40rpx;
+                    line-height: 36rpx;
                     color: #333;
                     font-weight: 700;
                     overflow: hidden;
@@ -514,15 +514,15 @@
 
                 .tip {
                     font-size: 24rpx;
-                    line-height: 33rpx;
+                    line-height: 30rpx;
                     color: #969696;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     display: -webkit-box;
-                    -webkit-line-clamp: 3;
+                    -webkit-line-clamp: 4;
                     -webkit-box-orient: vertical;
                     word-wrap:break-word;
-                    max-height: 99rpx;
+                    max-height: 120rpx;
                     word-break:break-all;
                 }
 

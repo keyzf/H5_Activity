@@ -17,7 +17,7 @@ $(function() {
 	isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
 	// alert('是否是Android：'+isAndroid);
 	// alert('是否是iOS：'+isiOS);
-	isNoApp = u.toLowerCase().match(/MicroMessenger/i) == 'micromessenger';
+	isNoApp = u.toLowerCase().match(/holdmall/i) != 'holdmall';
 	// guidCallback();
 	guid = sessionStorage.getItem('guid');
 	token = sessionStorage.getItem('token');
@@ -28,8 +28,6 @@ $(function() {
 		guidCallback();
 	}
 
-	// getTopdata();
-	// earninglist();
 });
 
 //ios
@@ -131,7 +129,7 @@ function initBridge() {
 			/* Initialize your app here */
 			bridge.registerHandler('GetUser', function(data, responseCallback) {
 				// alert("进入bridge ios");
-				alert(data.guid);
+				// alert(data.guid);
 				guid = data.guid;
 				token = data.token;
 				AppCode = data.AppCode;

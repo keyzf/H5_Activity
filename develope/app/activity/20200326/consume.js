@@ -7,23 +7,23 @@ $(window).scroll(function () {
     var scrollTop = $(window).scrollTop();
     var scrollHeight = $(window).height();
     var totalHeight = $(document).height();
-    if ((scrollTop + scrollHeight + 50) > totalHeight && moreMark) {
+    if ((scrollTop + scrollHeight + 100) > totalHeight && moreMark) {
         lid = $(".list .item").last().attr("data-id");
-        console.log("======lid:" + lid);
         rankinglist();
-        // 	if (signupGroup === "1") {
-        //         earninglist();
-        //     } else if (signupGroup === "2") {
-        //         myinviteRecordlist();
-        //     } else if (signupGroup === "3") {
-        //         inviteRecordlist();
-        //     }
     }
+	if (scrollTop <= 1) {
+		$(".icon").css("background-color","rgba(253, 47, 52,0.0)");
+		$('.icon .title').css("opacity",0.0);
+	} else if (scrollTop >= 100) {
+		$(".icon").css("background-color","rgba(253, 47, 52,1.0)");
+		$('.icon .title').css("opacity",1.0);
+	} else {
+		var tmp = scrollTop / 100.0
+		$('.icon').css("backgroundColor",'rgba(253, 47, 52,' + tmp + ')');
+		$('.icon .title').css("opacity",tmp);
+	}
 });
 
-// $(function(){
-// 	alert('1111');
-// })
 
 //获取完 guid后的回调
 /**
@@ -42,40 +42,16 @@ function guidCallback() {
     rankinglist();//第一个列表的数据
 
 };
-
-// $(document).on("click", ".navigation div", function () {
-//     if (!$(this).hasClass("x")) {
-//         $(this).siblings().removeClass("x");
-//         $(this).addClass("x");
-//         lid = "";
-//         moreMark = true;
-//         signupGroup = $(this).attr("data-id");
-//
-//         $(".search-text").val("");
-//         $(".store-list").empty();
-//         $(".empty").hide();
-//         $(".list").empty();
-//
-//         if (signupGroup === "1") {
-//             console.log(signupGroup)
-//             earninglist();
-//         } else if (signupGroup === "2") {
-//             console.log(signupGroup)
-//             myinviteRecordlist();
-//         } else if (signupGroup === "3") {
-//             console.log(signupGroup)
-//             inviteRecordlist();
-//         }
-//
-//     }
-// });
-
 /**
  * 返回
  */
 $(document).on("click", ".icon .icon_left", function () {
-    console.log("返回");
-    mcallHandler("CallNative", {'key': 'back'})
+    var u = navigator.userAgent;
+    if(u.toLowerCase().match(/holdmall/i) == 'holdmall'){
+        mcallHandler("CallNative", {'key': 'back'})
+    }else{
+        history.go(-1)
+    }
 })
 
 /**
@@ -103,6 +79,14 @@ $(document).on("click", ".icon .iocn_right", function () {
     domheight = $(window).scrollTop();
     $("body").addClass("x");
     $("body").attr("style","margin-top:-"+domheight + "px");
+	// console.log("----domheight-"+domheight);
+	//  if (domheight >= 100) {
+	// 	$(".icon").css("background-color","rgba(253, 47, 52,1.0)");
+	// 	$('.icon .title').css("opacity",1.0);
+	// }else{
+	// 	$(".icon").css("background-color","rgba(253, 47, 52,0.0)");
+	// 	$('.icon .title').css("opacity",0.0);
+	// }
 
     // scrControl(0);   margin-top: 500px;
 })

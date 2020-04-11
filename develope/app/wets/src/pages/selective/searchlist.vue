@@ -61,6 +61,7 @@ export default {
             pagesize: 12,
             condition: 1,
             lastid: '',
+            nextCursorMark:''
         };
     },
     onLoad(options) {
@@ -70,11 +71,11 @@ export default {
     },
     //下拉刷新
     onPullDownRefresh() {
-            this.loadData('refresh');
+        this.loadData('refresh');
     },
     //加载更多
     onReachBottom() {
-            this.loadData();
+        this.loadData();
     },
     methods: {
         //加载商品 ，带下拉刷新和上滑加载
@@ -97,7 +98,8 @@ export default {
                 keyword: this.keyword,
                 condition:this.condition,
                 pagesize: this.pagesize,
-                lastid: this.lastid
+                lastid: this.lastid,
+                nextCursorMark: this.nextCursorMark
             };
             this.$ajax.get('search/smartSearch', data).then(res => {
                 if (res.data.code == 0) {
@@ -105,7 +107,8 @@ export default {
                     //判断是否还有下一页，有是more  没有是nomore(测试数据判断大于20就没有了)
                     this.loadingType = list.length < this.pagesize ? 'nomore' : 'more';
                     if (list.length > 0) {
-                        this.lastid = list[list.length - 1].id;
+                        this.lastid = list[list.length - 1].lastid;
+                        this.nextCursorMark = list[list.length - 1].nextCursorMark;
                         this.goodsList = this.goodsList.concat(list);
                     }
                     if (type === 'refresh') {

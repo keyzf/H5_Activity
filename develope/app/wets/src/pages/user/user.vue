@@ -14,6 +14,10 @@
                     <image src="../../static/envelopeactivities.gif" mode="aspectFit"></image>
                     <text>邀请得红包</text>
                 </view> -->
+                <view class="activity" @click.stop="jumpConsumerank" v-show="user.isshowconsumerank == 1">
+                    <image :src="'../../static/consume.png'" mode="aspectFit"></image>
+                    <text>年度消费排行榜</text>
+                </view>
 			</view>
 			
 		</view>
@@ -97,7 +101,10 @@
 					img:"",
 					name:"",
 					grade:0,
-					isshowredpacketshare: 0
+					isshowredpacketshare: 0,
+                    isshowconsumerank: 0,
+                    consumerankurl: '',
+                    facepic: ''
 				},
 				orderlist: {
 					non_payment: 0,
@@ -155,6 +162,9 @@
 						this.user.name = data.userinfo.realname;
 						this.user.grade = data.userinfo.memberlevel;
 						this.user.isshowredpacketshare = data.userinfo.isshowredpacketshare;
+                        this.user.isshowconsumerank = data.userinfo.isshowconsumerank;
+                        this.user.consumerankurl = data.userinfo.consumerankurl;
+                        this.user.facepic = data.userinfo.facepic;
 						this.menu = data.menu;
 					} else {
 					    this.$api.msg('系统出错,请稍后再试');
@@ -237,6 +247,10 @@
 				uni.navigateTo({
 					url: '/pages/activity/activity'
 				})
+            },
+            jumpConsumerank() {
+                let userinfo = uni.getStorageSync('userInfo');
+                location.href = this.user.consumerankurl + '?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall';
             }
         }
     }  
