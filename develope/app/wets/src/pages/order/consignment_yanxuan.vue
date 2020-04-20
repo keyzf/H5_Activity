@@ -1,16 +1,15 @@
 <template>
     <view class="content">
-        <view class="main">
-            <view class="list-cell b-b" @click="openPopup">
+        <view class="main" v-for="(item, index) in expres" :key="index">
+            <view class="list-cell b-b" @click="openPopup(index)">
                 <view class="cell-tit">快递单号</view>
-                <view class="cell-more yticon icon-you">{{ expressnumber || '请输入快递单号' }}</view>
+                <view class="cell-more yticon icon-you">{{ item.expressnumber || '请输入快递单号' }}</view>
             </view>
-            <view class="list-cell" @click="express">
+            <view class="list-cell" @click="express(index)">
                 <view class="cell-tit">快递公司</view>
-                <view class="cell-more yticon icon-you">{{ expressname || '请选择' }}</view>
+                <view class="cell-more yticon icon-you">{{ item.expressname || '请选择' }}</view>
             </view>
         </view>
-        
         <view class="footer" @click="submit"><text class="submit">提交</text></view>
         <uni-popup ref="addclassification" type="center">
             <view class="uni-tip">
@@ -30,12 +29,20 @@ export default {
     data() {
         return {
             refundcode: '',
-            expressname: '',
             expressnumber: '',
-            expresscompanyid: ''
+            expres: [{
+                expressname: '',
+                expressnumber: '',
+                expresscompanyid: ''
+            }],
+            sendExpressType: 1,
+            showExpressNum: 1,
+            index: 0
         };
     },
     onLoad(option) {
+        this.sendExpressType = option.sendExpressType || 1;
+        this.showExpressNum = option.showExpressNum || 1;
         this.refundcode = option.refundcode;
     },
     onBackPress(){
@@ -46,40 +53,55 @@ export default {
     },
     methods: {
         // 打开窗口
-        openPopup(){
+        openPopup(index){
+            this.index = index;
             this.$refs.addclassification.open();
         },
         // 关闭窗口
         closePopup(){
+            this.expres[this.index].expressnumber = this.expressnumber;
             this.$refs.addclassification.close();
         },
         // 选择物流
-        express(){
+        express(index){
+            this.index = index;
             uni.navigateTo({
-                url: '/pages/shoporder/express'
+                url: '/pages/shoporder/express?sendExpressType=' + this.sendExpressType
             });
         },
         // 修改物流公司
         editExpress(data) {
-            this.expressname = data.expressname;
-            this.expresscompanyid = data.id;
+            this.expres[this.index].expressname = data.expressname;
+            this.expres[this.index].expresscompanyid = data.id;
         },
         // 确认发货
         submit() {
-            if (this.expressnumber.length == 0) {
-                this.openPopup();
-                return;
-            }
-            if (this.expresscompanyid.length == 0 || this.expresscompanyid == 0) {
-                this.$api.msg('请选择快递公司');
+            let expressInfoStr = new Array();
+            let msg = -1;
+            this.expres.forEach((item, index) => {
+                if (item.expressnumber.length == 0) {
+                    this.msg = index;
+                    return;
+                }
+                if (item.expresscompanyid.length == 0 || item.expresscompanyid == 0) {
+                    this.msg = index;
+                    return;
+                }
+                expressInfoStr.push({
+                    cid: item.expresscompanyid,
+                    number: item.expressnumber
+                });
+            });
+            if (msg > -1) {
+                this.$api.msg('请填写完整第' + (msg + 1) + '个物流信息');
                 return;
             }
             let data = {
                 refundcode: this.refundcode,
-                number: this.expressnumber,
-                cid: this.expresscompanyid
+                expressInfoStr: expressInfoStr,
+                guid: uni.getStorageSync('userInfo').guid
             };
-            this.$ajax.get('com/saveRefundExpress', data).then(res => {
+            this.$ajax.get('com/saveRefundExpressFix', data).then(res => {
                 console.log(res);
                 if (res.data.code) {
                     this.$api.prePage().getRefundFlowList();

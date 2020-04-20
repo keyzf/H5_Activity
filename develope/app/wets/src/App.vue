@@ -503,9 +503,21 @@ video {
 .image-wrapper {
     font-size: 0;
     border-radius: 4px;
+    position: relative;
     image {
         width: 100%;
         height: 100%;
+    }
+    .tip{
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #f0ece1;
+        font-size: 24rpx;
+        color: #9f8d58;
+        padding: 4rpx;
     }
 }
 
@@ -556,8 +568,16 @@ uni-radio .uni-radio-input.uni-radio-input-checked {
 }
 // 开关
 uni-switch .uni-switch-input.uni-switch-input-checked {
-    background: $base-color !important;
+    background: #ffffff !important;
     border-color: $base-color !important;
+}
+uni-switch .uni-switch-input.uni-switch-input-checked:after{
+    background-color: $base-color !important;
+}
+uni-switch .uni-switch-input:after, uni-switch .uni-switch-input:before{
+    height: 56rpx;
+    top: 2rpx;
+    width: 56rpx;
 }
 /*边框*/
 .b-b:after,
@@ -742,7 +762,12 @@ button[type='default'] {
     .title {
         font-size: $font-lg;
         color: $font-color-dark;
-        line-height: 80upx;
+        line-height: 1.5;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        margin-bottom: 8rpx;
         .presell {
             padding: 0rpx 8rpx;
             background: $uni-color-primary;

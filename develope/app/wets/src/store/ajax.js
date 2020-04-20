@@ -136,7 +136,7 @@ const header = () => {
         AppCode = 'WXMall';
     }
     return {
-        'MVer': '19111801',
+        'MVer': '20041501',
         'AppCode': AppCode,
         'content-type': 'application/json',
         'dtype': 'WX',

@@ -4,7 +4,7 @@
             <view class="g-item">
                 <image :src="refundinfo.orderinfo.picurl"></image>
                 <view class="right">
-                    <text class="title clamp">{{ refundinfo.orderinfo.productname }}</text>
+                    <text class="title">{{ refundinfo.orderinfo.productname }}</text>
                     <text class="spec">{{ refundinfo.orderinfo.attributeshow }}</text>
                     <!-- <view class="price-box">
                         <text class="price">￥17.8</text>
@@ -133,7 +133,7 @@ export default {
 <style lang="scss">
 page {
     background: $page-color-base;
-    padding-bottom: 100upx;
+    padding:20rpx 20rpx 100upx 20rpx;
 }
 .record {
     padding: 30upx;
@@ -203,10 +203,9 @@ page {
     }
 }
 .goods-section {
-    margin-top: 16upx;
     background: #fff;
-    padding-bottom: 1px;
-
+    padding: 10rpx;
+    border-radius: 18rpx;
     .g-header {
         display: flex;
         align-items: center;
@@ -234,8 +233,6 @@ page {
     }
     .g-item {
         display: flex;
-        margin: 20upx 30upx;
-
         image {
             flex-shrink: 0;
             display: block;
@@ -253,6 +250,10 @@ page {
         .title {
             font-size: 30upx;
             color: $font-color-dark;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
         .spec {
@@ -294,6 +295,8 @@ page {
 .yt-list {
     margin-top: 16upx;
     background: #fff;
+    border-radius: 18rpx;
+    overflow: hidden;
 }
 
 .yt-list-cell {
@@ -373,5 +376,8 @@ page {
         font-size: $font-base;
         color: $font-color-dark;
     }
+}
+.icon-you:after{
+    margin-top:-14rpx
 }
 </style>

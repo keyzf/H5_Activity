@@ -2,23 +2,40 @@
     <view class="content b-t">
         <!-- 空白页 -->
         <empty v-if="addressList.length === 0"></empty>
+        <view class="tip" v-if="addressList.length != 0">
+            <view>友情提示：家属购物要十三所职工代收哦</view>
+            <image src="../../static/add.png" mode="aspectFit"></image>
+        </view>
         <view class="list" v-for="(item, index) in addressList" :key="index" @click="checkAddress(item)">
             <view class="wrapper">
-                <view class="u-box">
-                    <view class="name">{{ item.receivername }} <text class="mention" v-show="item.isSelfPickup == 1">自提</text></view>
-                    <view class="mobile">{{ item.receivertel }}</view>
+                <view>
+                    <view class="u-box">
+                        <view class="name">
+                            {{ item.receivername }}
+                            <text class="mobile">{{ item.receivertel }}</text>
+                            <text class="mention" v-show="item.isSelfPickup == 1">自提</text>
+                            <text class="mention x" v-show="item.defaultaddressstate == 1">默认</text>
+                        </view>
+                    </view>
+                    <view class="address-box">
+                        <text class="address">{{ item.address }}</text>
+                    </view>
+                    <!-- <view class="btns">
+                        <label class="radio" @click="mrdz(item)">
+                            <radio value="r1" :checked="item.defaultaddressstate == 1" />
+                            设为默认
+                        </label>
+                        <text class="shanchu" v-show="item.level != 0" @click.stop="delAddress(item.addressid)">删除</text>
+                        <text
+                            class="bianji"
+                            v-show="customAddress == '' || customAddress == 1 || (customAddress == 2 && item.level != 0)"
+                            @click.stop="addAddress('edit', item.addressid)"
+                        >
+                            编辑
+                        </text>
+                    </view> -->
                 </view>
-                <view class="address-box">
-                    <text class="address">{{ item.address }}</text>
-                </view>
-                <view class="btns">
-                    <label class="radio" @click="mrdz(item)">
-                        <radio value="r1" :checked="item.defaultaddressstate == 1" />
-                        设为默认
-                    </label>
-                    <text class="shanchu" v-show="item.level != 0" @click.stop="delAddress(item.addressid)">删除</text>
-                    <text class="bianji"  v-show="customAddress == '' || customAddress == 1 || (customAddress == 2 && item.level != 0)" @click.stop="addAddress('edit', item.addressid)">编辑</text>
-                </view>
+                <view class="btn" v-show="customAddress == '' || customAddress == 1 || (customAddress == 2 && item.level != 0)" @click.stop="addAddress('edit', item.addressid)"><image src="../../static/addressbj.png" mode="aspectFit"></image></view>
             </view>
         </view>
         <button class="add-btn" v-show="customAddress == 1 || customAddress == ''" @click="addAddress('add', 0)">新增地址</button>
@@ -26,9 +43,9 @@
 </template>
 
 <script>
-import empty from "@/components/empty";
+import empty from '@/components/empty';
 export default {
-    components: {empty},
+    components: { empty },
     data() {
         return {
             source: 0,
@@ -36,7 +53,7 @@ export default {
             cguid: 0,
             isCustomAddress: 0,
             customAddress: '',
-			postknid: ''
+            postknid: 1
         };
     },
     onLoad(option) {
@@ -44,7 +61,7 @@ export default {
         this.cguid = option.cguid || '';
         this.customAddress = option.customAddress || '';
         this.isCustomAddress = option.isCustomAddress || '';
-		this.postknid = option.postkind || '';
+        this.postknid = option.postkind || 1;
         this.getAddressList();
     },
     onShow() {
@@ -52,41 +69,41 @@ export default {
     },
     methods: {
         // 删除地址
-        delAddress(id){
+        delAddress(id) {
             let _this = this;
             uni.showModal({
                 title: '删除地址',
                 content: '确定要删除这个地址吗?',
-                success: function (res) {
+                success: function(res) {
                     if (res.confirm) {
                         let data = {
-                            addressid:id
+                            addressid: id
                         };
-                        _this.$ajax.get('shoppingcart/deladdress',data).then(res => {
+                        _this.$ajax.get('shoppingcart/deladdress', data).then(res => {
                             if (res.data.code == 0) {
                                 _this.getAddressList();
                             } else {
                                 _this.$api.msg(res.data.msg);
                             }
                         });
-                    } else if (res.cancel) { }
+                    } else if (res.cancel) {
+                    }
                 }
             });
-            
         },
         // 修改默认地址
-        mrdz(item){
-            if(item.defaultaddressstate == 0){
+        mrdz(item) {
+            if (item.defaultaddressstate == 0) {
                 let data = {
                     defaultaddress: 1,
                     addressid: item.addressid
                 };
-                this.$ajax.get('shoppingcart/designdefaultaddress',data).then(res => {
+                this.$ajax.get('shoppingcart/designdefaultaddress', data).then(res => {
                     if (res.data.code == 0) {
-                        this.addressList.forEach(it=>{
-                            it.defaultaddressstate = 0
-                        })
-                        item.defaultaddressstate = 1
+                        this.addressList.forEach(it => {
+                            it.defaultaddressstate = 0;
+                        });
+                        item.defaultaddressstate = 1;
                     } else {
                         this.$api.msg(res.data.msg);
                     }
@@ -97,7 +114,8 @@ export default {
         getAddressList() {
             let data = {
                 cguid: this.cguid,
-                isCustomAddress: this.isCustomAddress
+                isCustomAddress: this.isCustomAddress,
+                postkind: this.postknid
             };
             this.$ajax.get('shoppingcart/selectaddressinfo', data).then(res => {
                 console.log(res);
@@ -119,8 +137,8 @@ export default {
         },
         addAddress(type, addressid) {
             let url = '/pages/address/addressManage?type=' + type + '&addressid=' + addressid;
-			if (this.postknid != '')  url += '&postkind=' + this.postknid;
-			uni.navigateTo({
+            if (this.postknid != '') url += '&postkind=' + this.postknid;
+            uni.navigateTo({
                 url: url
             });
         },
@@ -143,38 +161,42 @@ page {
     position: relative;
 }
 .list {
-    display: flex;
-    align-items: center;
     padding: 20upx 30upx;
     background: #fff;
     position: relative;
-    margin-bottom: 10rpx;
+    border-top: 1rpx solid #f1f1f1;
 }
 .wrapper {
     display: flex;
-    flex-direction: column;
-    flex: 1;
-    .btns {
-        overflow: hidden;
-        padding-top: 10rpx;
-        border-top: 1px solid #dddddd;
-        font-size: 28rpx;
-        margin-top: 16rpx;
-        .radio {
-            radio {
-                transform: scale(0.7);
-            }
-        }
-        .shanchu,
-        .bianji {
-            display: inline-block;
-            padding: 6rpx 20rpx;
-            border: 1px solid #dddddd;
-            float: right;
-            border-radius: 12rpx;
-            margin-left: 30rpx;
+    align-items: center;
+    justify-content: space-between;
+    .btn{
+        image{
+            width: 40rpx;
+            height: 40rpx;
         }
     }
+    // .btns {
+    //     overflow: hidden;
+    //     padding-top: 10rpx;
+    //     border-top: 1px solid #dddddd;
+    //     font-size: 28rpx;
+    //     margin-top: 16rpx;
+    //     .radio {
+    //         radio {
+    //             transform: scale(0.7);
+    //         }
+    //     }
+    //     .shanchu,
+    //     .bianji {
+    //         display: inline-block;
+    //         padding: 6rpx 20rpx;
+    //         border: 1px solid #dddddd;
+    //         float: right;
+    //         border-radius: 12rpx;
+    //         margin-left: 30rpx;
+    //     }
+    // }
 }
 .address-box {
     display: flex;
@@ -199,14 +221,17 @@ page {
 .u-box {
     font-size: 32upx;
     margin-bottom: 16upx;
-    .mention{
+    .mention {
         display: inline-block;
         padding: 0 12rpx;
-        border-radius: 24rpx;
+        border-radius: 10rpx;
         font-size: 24rpx;
         margin-left: 10rpx;
-        background: $base-color;
-        color: #FFFFFF;
+        background: #52B6FF;
+        color: #ffffff;
+        &.x{
+            background: #EE3847;
+        }
     }
 }
 .icon-bianji {
@@ -230,6 +255,25 @@ page {
     height: 80upx;
     font-size: 32upx;
     color: #fff;
-    background-color: $base-color;
+    background: linear-gradient(to right, #FF6401 , #EE3847);
+    border-radius: 40upx;
+}
+.tip{
+    display: flex;
+    align-items: center;
+        justify-content: space-between;
+    padding: 20rpx;
+    background: #FDF9D6;
+    color: #EE3847;
+    font-size: 24rpx;
+    view{
+        background: url(../../static/add.png) no-repeat left center;
+        background-size: 24rpx 24rpx;
+        padding-left: 30rpx;
+    }
+    image{
+        width: 30rpx;
+        height: 30rpx;
+    }
 }
 </style>

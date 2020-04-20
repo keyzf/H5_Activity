@@ -48,7 +48,9 @@
             "ios" : {},
             /* ios打包配置 */
             "sdkConfigs" : {}
-        }
+        },
+        "compilerVersion" : 3,
+        "nvueLaunchMode" : "fast"
     },
     /* SDK配置 */
     "quickapp" : {},
@@ -65,12 +67,15 @@
         "usingComponents" : true,
         "router" : {
             "base" : "",
-            "mode" : "history"
+            "mode" : "hash"
         },
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
             }
+        },
+        "devServer" : {
+            "https" : false
         }
     },
     "uniStatistics" : {

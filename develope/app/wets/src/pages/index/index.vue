@@ -277,7 +277,12 @@ export default {
                 location.href = '';
                 return;
             }
-            if (item.code == 'POSTER') {
+            if (item.code == 'CONSUMERANK') {
+                let userinfo = uni.getStorageSync('userInfo');
+                if (userinfo.guid) {
+                    location.href = item.activityid + '?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall';
+                }
+            }else if (item.code == 'POSTER') {
                 uni.navigateTo({
                     url: '/pages/product/poster?id=' + item.activityid
                 });

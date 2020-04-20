@@ -72,7 +72,8 @@
 	left: 0;
 	width: 100%;
 	background-color: #FFF;
-	border-top: 1rpx solid #DDD;
+	border-top: 1rpx solid #f1f1f1;
+    height: 100rpx;
 }
 .footer_item{
 	float: left;

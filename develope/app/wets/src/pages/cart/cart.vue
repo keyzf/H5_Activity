@@ -1,17 +1,21 @@
 <template>
     <view class="container">
         <!-- 空白页 -->
-        <view v-if="empty === true" class="empty">
-            <image src="/static/emptyCart.jpg" mode="aspectFit"></image>
-            <view class="empty-tips">
-                空空如也
-                <text class="navigator" @click="openindex">随便逛逛></text>
+        <view v-if="empty === true">
+            <view class="empty">
+                <view class="empty-tips">
+                    购物车空空如也~
+                </view>
+                <view class="btns">
+                    <view>逛逛秒杀</view>
+                    <view>看看关注</view>
+                </view>
             </view>
+            
         </view>
         <view v-else>
             <view class="naver">
-                购物车
-                <text @click="delstats">{{ delstat == false ? '编辑' : '完成' }}</text>
+                购物车<text @click="delstats">{{ delstat == false ? '编辑' : '完成' }}</text>
             </view>
             <!-- 列表 -->
             <view class="cart-list">
@@ -19,44 +23,88 @@
                     <view class="shop-item">
                         <view class="shop-title cart-item">
                             <view class="yticon icon-xuanzhong2 checkbox" :class="{ checked: item.checked }" @click="check('shop', index)"></view>
-                            <view style="flex-grow: 1;">{{ item.companyname }}</view>
-                        </view>
-                        <view class="cart-item" v-for="(items, indexs) in item.goodsinfo" :key="indexs" :class="items.isuse == 0 ? 'xj' : ''">
-                            <view class="yticon icon-xuanzhong2 checkbox" :class="{ checked: items.checked }" @click="check('item', index, indexs)"></view>
-                            <view class="image-wrapper" @click="check('item', index, indexs)">
-                                <img :src="items.pic.url" :class="[item.loaded]" />
-                                <text></text>
+                            <view style="flex-grow: 1;" class="name">
+                                <text>{{ item.companyname }}</text>
+                                <text class="tip">免运费</text>
                             </view>
-
-                            <view class="item-right">
-                                <view @click="openproduck(items)">
-                                    <view class="clamp title">{{ items.productname }}</view>
-                                    <view class="clamp attr">{{ items.attributeshow }}</view>
-                                    
-                                </view>
-                                <view class="edit">
-                                    <view class="con">
-                                        <view class="price">¥{{ items.newprice }}</view>
+                        </view>
+                        <uni-swipe-action v-for="(items, indexs) in item.goodsinfo" :key="indexs">
+                            <uni-swipe-action-item :options="options" @click="onClick" @change="change">
+                                <view class="cart-item" :class="items.isuse == 0 ? 'xj' : ''">
+                                    <view class="yticon icon-xuanzhong2 checkbox" :class="{ checked: items.checked }" @click="check('item', index, indexs)"></view>
+                                    <view class="image-wrapper" @click="check('item', index, indexs)">
+                                        <img :src="items.pic.url" :class="[item.loaded]" />
+                                        <text></text>
                                     </view>
-                                    <uni-number-box
-                                        class="step"
-                                        :min="1"
-                                        :max="items.number > items.stock ? items.number : items.stock"
-                                        :value="items.number"
-                                        :isMin="items.number === 1"
-                                        :isMax="items.number >= items.stock ? true : false"
-                                        :index="indexs"
-                                        :zindex="index"
-                                        @eventChange="numberChange"
-                                        v-if="items.isuse == 1"
-                                        :disabled="truess"
-                                    ></uni-number-box>
+                                
+                                    <view class="item-right">
+                                        <view @click="openproduck(items)">
+                                            <view class="clamp title">{{ items.productname }}</view>
+                                            <view class="clamp attr">{{ items.attributeshow }}</view>
+                                            
+                                        </view>
+                                        <view class="edit">
+                                            <view class="con">
+                                                <view class="price">¥{{ items.newprice }}</view>
+                                            </view>
+                                            <uni-number-box
+                                                class="step"
+                                                :min="1"
+                                                :max="items.number > items.stock ? items.number : items.stock"
+                                                :value="items.number"
+                                                :isMin="items.number === 1"
+                                                :isMax="items.number >= items.stock ? true : false"
+                                                :index="indexs"
+                                                :zindex="index"
+                                                @eventChange="numberChange"
+                                                v-if="items.isuse == 1"
+                                                :disabled="truess"
+                                            ></uni-number-box>
+                                        </view>
+                                        <text class="tip" v-if="items.isfull == 0 && items.isuse == 1">库存不足,请修改数量</text>
+                                    </view>
                                 </view>
-                                <text class="tip" v-if="items.isfull == 0 && items.isuse == 1">库存不足,请修改数量</text>
+                            </uni-swipe-action-item>
+                        </uni-swipe-action>
+                        
+                    </view>
+                </block>
+            </view>
+            <view class="undercarriage">
+                <view class="title">
+                    <text>已下架商品(2)</text>
+                    <text class="close">全部删除</text>
+                </view>
+                <view class="list">
+                    <view class="item xj">
+                        <view class="img">
+                            <image src="../../static/adds.png" mode="aspectFit"></image>
+                            <text></text>
+                        </view>
+                        <view class="main">
+                            <view class="titles"> 晒精华卡夫卡啦晒精华卡夫卡将 安耐晒精华卡夫卡啦卡gd... </view>
+                            <view class="tip">苍穹奶奶灰 大号</view>
+                            <view class="btn">
+                                <text>商品不支持购买</text>
+                                <text class="btns">看相似</text>
                             </view>
                         </view>
                     </view>
-                </block>
+                    <view class="item">
+                        <view class="img">
+                            <image src="../../static/adds.png" mode="aspectFit"></image>
+                            <text></text>
+                        </view>
+                        <view class="main">
+                            <view class="titles"> 晒精华卡夫卡啦晒精华卡夫卡将 安耐晒精华卡夫卡啦卡gd... </view>
+                            <view class="tip">苍穹奶奶灰 大号</view>
+                            <view class="btn">
+                                <text>商品不支持购买</text>
+                                <text class="btns">看相似</text>
+                            </view>
+                        </view>
+                    </view>
+                </view>
             </view>
             <!-- 底部菜单栏 -->
             <view class="action-section">
@@ -80,14 +128,41 @@
                 </block>
             </view>
         </view>
+        <!-- 为您推荐
+        <view class="f-header"><image :src="row.pic[0].url" :style="'width:' + row.pic[0].width + 'rpx;height:' + row.pic[0].height + 'rpx;'"></image></view>
+        <view class="goods-list">
+            <view class="goods-item" v-for="(item, index) in guess" :key="index" @click="navToDetailPage(item)">
+                <image v-if="item.isNewOnShelvesProduct == 1" class="label" :src="item.newOnShelvesProductIcon" mode="aspectFit"></image>
+                <view class="image-wrapper">
+                    <uimg :src="item.url"></uimg>
+                    <view class="tip clamp"></view>
+                </view>
+                <view class="item-con">
+                    <view class="title clamp"><text v-if="item.presell" class="presell">{{item.presell}}</text>{{ item.name }}</view>
+                    <view class="price-box clamp">
+                        <text class="price">{{ item.price }}</text>
+                        <text v-if="item.activitylist.length == 0">{{ item.sales }}</text>
+                        <view v-else>
+                            <text v-for="ite in item.activitylist" :key="ite.wholetext" :style="{color:ite.color,borderColor:ite.color}">{{ ite.wholetext }}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+         -->
+   
     </view>
 </template>
 
 <script>
+import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue'
+import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue'
 import uniNumberBox from '@/components/uni-number-box.vue';
 export default {
     components: {
-        uniNumberBox
+        uniNumberBox,
+        uniSwipeAction,
+        uniSwipeActionItem
     },
     data() {
         return {
@@ -99,7 +174,12 @@ export default {
             allChecked: false, //全选状态  true|false
             empty: false, //空白页现实  true|false
             cartList: [],
-            delstat: false
+            delstat: false,
+            options:[{text: '移入关注',style: {
+                backgroundColor: '#FFB500'
+            }}, {text: '删除',style: {
+                backgroundColor: '#FF6401'
+            }}]
         };
     },
     created(){
@@ -126,6 +206,12 @@ export default {
     },
 
     methods: {
+        onClick(e){
+          console.log('当前点击的是第'+e.index+'个按钮，点击内容是'+e.content.text)
+        },
+        change(open){
+          console.log('当前开启状态：'+ open)
+        },
         //请求数据
         load(type) {
             const data = {
@@ -462,6 +548,72 @@ export default {
 page {
     background: #f8f8f8;
 }
+.undercarriage{
+    padding: 20rpx 20rpx 20rpx 104rpx;
+    background: #FFF;
+    border-radius: 10rpx;
+    margin: 10rpx 0;
+    .title{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 28rpx;
+        color: #333;
+        margin-bottom: 20rpx;
+        .close{
+            background: #F5F5F5;
+            border-radius: 30rpx;
+            padding: 10rpx 30rpx;
+        }
+    }
+    .list{
+        .item{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .img{
+                width: 200rpx;
+                height: 200rpx;
+                position: relative;
+                image{
+                   width: 200rpx;
+                   height: 200rpx; 
+                }
+            }
+            &.xj{
+                .img{
+                    position: relative;
+                    text{
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: url(../../static/below.png) no-repeat center rgba(0, 0, 0, 0.3);
+                    }
+                }
+            }
+            .main{
+                color: #DDDDDD;
+                flex: 1;
+                padding-left: 20rpx;
+                font-size: 26rpx;
+                .btn{
+                    color: #333;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    .btns{
+                        color: #EE3847;
+                        border: 1rpx solid #EE3847;
+                        padding: 10rpx 30rpx;
+                        border-radius: 30rpx;
+                    }
+                }
+            }
+        }
+    }
+}
 .naver {
     position: fixed;
     left: 0;
@@ -489,32 +641,27 @@ page {
 .container {
     padding-bottom: 200upx;
     background: #f8f8f8;
-    border-top: 1px solid #dddddd;
+    border-top: 1px solid #f1f1f1;
     /* 空白页 */
     .empty {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100vh;
-        padding-bottom: 100upx;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
         background: #fff;
-        image {
-            width: 240upx;
-            height: 160upx;
-            margin-bottom: 30upx;
-        }
+        padding: 40rpx;
         .empty-tips {
-            display: flex;
             font-size: $font-sm + 2upx;
             color: $font-color-disabled;
-            .navigator {
-                color: $uni-color-primary;
-                margin-left: 16upx;
+            text-align: center;
+            margin-bottom: 40rpx;
+        }
+        .btns{
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            view{
+                font-size: 28rpx;
+                color: #333;
+                padding: 16rpx 40rpx;
+                border: 1rpx solid #F1f1f1;
+                border-radius: 30rpx;
             }
         }
     }
@@ -528,6 +675,17 @@ page {
     .shop-title {
         padding: 30upx 20upx 0 20upx !important;
         font-size: 28upx;
+        .name{
+            overflow: hidden;
+            .tip{
+                float: right;
+                color: #3AD49B;
+                background: #9FF3D4;
+                border-radius: 30rpx;
+                padding: 4rpx 30rpx;
+                font-size: 24rpx;
+            }
+        }
     }
 }
 .cart-item {
@@ -535,6 +693,7 @@ page {
     position: relative;
     padding: 16upx 20upx;
     align-items: center;
+    width: 100%;
     .image-wrapper {
         width: 200upx;
         height: 200upx;
@@ -627,9 +786,7 @@ page {
 }
 /* 底部栏 */
 .action-section {
-    /* #ifdef H5 */
-    margin-bottom: 50px;
-    /* #endif */
+    margin-bottom: 100rpx;
     position: fixed;
     left: 0;
     bottom: 0;
@@ -639,7 +796,7 @@ page {
     align-items: center;
     padding: 0 0 0 30upx;
     background: #ffffff;
-    border-bottom: 1rpx solid #DDD;
+    border-bottom: 1rpx solid #f1f1f1;
     .checkbox {
         height: 52upx;
         position: relative;

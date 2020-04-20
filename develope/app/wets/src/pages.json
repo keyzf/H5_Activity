@@ -77,7 +77,11 @@
         },{
             "path": "pages/cart/cart",
             "style": {
-                "navigationStyle": "custom"
+                "navigationStyle": "custom",
+                "disableScroll":true,
+                "app-plus":{
+                    "bounce":"none"
+                }
             }
         },{
             "path": "pages/public/login",
@@ -386,6 +390,11 @@
                 "navigationBarTitleText": "填写物流信息"
             }
         },{
+            "path": "pages/order/consignment_yanxuan",
+            "style": {
+                "navigationBarTitleText": "填写物流信息"
+            }
+        },{
             "path": "pages/order/orderform",
             "style": {
                 "navigationBarTitleText": "选择服务类型"
@@ -419,12 +428,16 @@
         },{
             "path": "pages/address/addressManage",
             "style": {
-                "navigationBarTitleText": "收货地址"
-            }
-        },{
-            "path": "pages/address/addressManages",
-            "style": {
-                "navigationBarTitleText": "收货地址"
+                "navigationBarTitleText": "收货地址",
+                "h5": {
+                    "titleNView": {
+                        "buttons": [{
+                            "text": "删除",
+                            "fontSize": "14",
+                            "color": "#000"
+                        }]
+                    }
+                }
             }
         },{
             "path": "pages/money/pay",

@@ -27,40 +27,50 @@
 						class="order-item"
 					>
 						<view class="i-top b-b">
-							<text class="time">{{item.companyname}}</text>
+							<view class="time">
+                                <text>{{item.companyname}}</text>
+                            </view>
 							<text class="state" :style="{color: item.stateTipColor}">{{item.statename}}</text>
 							<text 
-								v-if="item.state===9" 
+								v-show="item.state == 3 || item.state == 7" 
 								class="del-btn yticon icon-iconfontshanchu1"
 								@click="deleteOrder(index)"
 							></text>
 						</view>
+						<view>
+                            <view class="shops">
+                                <view style="min-width:0;flex: 1;" v-if="item.products.length==1">
+                                    <view class="goods-box-single" v-for="(goodsItem, goodsIndex) in item.products" :key="goodsIndex" @click="jumpOrderDetail(goodsItem)">
+                                        <image class="goods-img" :src="goodsItem.url" mode="aspectFill"></image>
+                                        <view class="right">
+                                            <text class="title clamp">{{goodsItem.productname}}</text>
+                                            <text class="attr-box">{{goodsItem.attributeshow}}  x {{goodsItem.number}}</text>
+                                            <text class="price">{{goodsItem.newprice}}</text>
+                                        </view>
+                                    </view>
+                                </view>
+                                <view v-else class="goods-box">
+                                    <scroll-view scroll-x>
+                                    	<view v-for="(goodsItem, goodsIndex) in item.products" :key="goodsIndex" @click="jumpOrderDetail(goodsItem)" class="goods-item" >
+                                    		<image class="goods-img" :src="goodsItem.url" mode="aspectFill"></image>
+                                    	</view>
+                                    </scroll-view>
+                                </view>
+                                <view class="price-box">
+                                    <view class="price">{{ item.real_price }}</view>
+                                	<view class="num">共{{ item.totalnumber }}件</view>
+                                </view>
+                            </view>
+                            
+                        </view>
 						
-						<view 
-							class="goods-box-single"
-							v-for="(goodsItem, goodsIndex) in item.products" :key="goodsIndex" @click="jumpOrderDetail(goodsItem)"
-						>
-							<image class="goods-img" :src="goodsItem.url" mode="aspectFill"></image>
-							<view class="right">
-								<text class="title clamp">{{goodsItem.productname}}</text>
-								<text class="attr-box">{{goodsItem.attributeshow}}  x {{goodsItem.number}}</text>
-								<text class="price">{{goodsItem.newprice}}</text>
-							</view>
-						</view>
-						
-						<view class="price-box">
-							共
-							<text class="num">{{ item.totalnumber }}</text>
-							件商品 实付款
-							<text class="price">{{ item.real_price }}</text>
-						</view>
 						<view class="action-box b-t" v-show="item.state < 5">
 							<button v-show="item.state == 0" class="action-btn" @click="cancelOrder('cancelOrder', item)">取消订单</button>
 							<button v-show="item.closeorderbtn == 1" class="action-btn" @click="cancelOrders(item)">取消订单</button>
 							<button v-show="item.state == 0" class="action-btn" @click="cancelOrder('resetCart', item)">退回购物车</button>
 							<button v-show="item.state == 0" class="action-btn recom" @click="nacTo('/pages/money/pay?ordernum=' + item.ordernumber + '&price=' + item.real_price)">去支付</button>
 							<button v-show="item.state == 1 || item.state == 2" class="action-btn" @click="nacTo('/pages/order/logistics?ordernum=' + item.ordernumber)">物流信息</button>
-                        	<button v-show="item.state == 3 || item.state == 7" class="action-btn" @click="deleteOrder(index)">删除订单</button>
+                        	<!-- <button v-show="item.state == 3 || item.state == 7" class="action-btn" @click="deleteOrder(index)">删除订单</button> -->
                             <button v-show="item.state == 2" class="action-btn" @click="orderOk(index)">确认收货</button>
                         </view>
 					</view>
@@ -452,11 +462,17 @@
 				}
 			}
 		}
+        .goods-img{
+            width: 120rpx;
+            height: 120rpx;
+        }
 		/* 多条商品 */
 		.goods-box{
 			height: 160upx;
 			padding: 20upx 0;
 			white-space: nowrap;
+            flex: 1;
+            min-width: 0;
 			.goods-item{
 				width: 120upx;
 				height: 120upx;
@@ -487,12 +503,12 @@
 				.title{
 					font-size: $font-base + 2upx;
 					color: $font-color-dark;
-					line-height: 1;
+					line-height: 1.2;
 				}
 				.attr-box{
 					font-size: $font-sm + 2upx;
 					color: $font-color-light;
-					padding: 10upx 12upx;
+					padding: 10upx 12upx 10rpx 0;
 				}
 				.price{
 					font-size: $font-base + 2upx;
@@ -500,21 +516,20 @@
 				}
 			}
 		}
-		
+		.shops{
+            display: flex;
+            align-items: center;
+        }
 		.price-box{
-			display: flex;
-			justify-content: flex-end;
-			align-items: baseline;
-			padding: 20upx 30upx;
-			font-size: $font-sm + 2upx;
-			color: $font-color-light;
+			padding: 20upx;
+			color: #929292;
+            text-align: right;
 			.num{
-				margin: 0 8upx;
-				color: $font-color-dark;
+				font-size: 24rpx;
 			}
 			.price{
-				font-size: $font-lg;
-				color: $font-color-dark;
+				font-size: 36rpx;
+				color: #333;
 				&:before{
 					content: '￥';
 					font-size: $font-sm;

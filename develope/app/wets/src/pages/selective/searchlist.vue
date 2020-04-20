@@ -60,7 +60,6 @@ export default {
             goodsList: [],
             pagesize: 12,
             condition: 1,
-            lastid: '',
             nextCursorMark:''
         };
     },
@@ -91,14 +90,12 @@ export default {
             }
             if (type === 'refresh') {
                 this.goodsList = [];
-                this.lastid = '';
             }
             let data = {
                 activityID:this.activityID,
                 keyword: this.keyword,
                 condition:this.condition,
                 pagesize: this.pagesize,
-                lastid: this.lastid,
                 nextCursorMark: this.nextCursorMark
             };
             this.$ajax.get('search/smartSearch', data).then(res => {
@@ -107,7 +104,6 @@ export default {
                     //判断是否还有下一页，有是more  没有是nomore(测试数据判断大于20就没有了)
                     this.loadingType = list.length < this.pagesize ? 'nomore' : 'more';
                     if (list.length > 0) {
-                        this.lastid = list[list.length - 1].lastid;
                         this.nextCursorMark = list[list.length - 1].nextCursorMark;
                         this.goodsList = this.goodsList.concat(list);
                     }

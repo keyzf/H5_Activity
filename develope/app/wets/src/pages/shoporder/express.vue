@@ -9,10 +9,12 @@
 export default {
     data() {
         return {
-            expressList: []
+            expressList: [],
+            sendExpressType: 1
         };
     },
-    onLoad() {
+    onLoad(option) {
+        this.sendExpressType = option.sendExpressType || 1;
         this.getExpressList();
     },
     onShow() {
@@ -21,7 +23,7 @@ export default {
     methods: {
         // 获取物流公司列表
         getExpressList() {
-            this.$ajax.get('com/getExpressCompanyList', {}).then(res => {
+            this.$ajax.get('com/getExpressCompanyList', {sendExpressType: this.sendExpressType}).then(res => {
                 console.log(res);
                 if (res.data.code == 0) {
                     this.expressList = res.data.result.data;

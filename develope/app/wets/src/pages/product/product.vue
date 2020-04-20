@@ -15,12 +15,17 @@
                 <image v-if="data.activityIconSwitch == 1" :src="data.activityIcon" mode="aspectFit" class="titleicon"></image>
             </view>
             <view class="rob" v-if="data.robstate <= 1">
-                <view class="con">
-                    <view class="new">{{ data.newPriceRange }}</view>
-                    <view class="old">{{ data.oldPriceRange }}</view>
+                <view class="rob">
+                    <view class="con">
+                        <view class="new">{{ data.newPriceRange }}</view>
+                        <view>
+                            <view class="old">{{ data.oldPriceRange }}</view>
+                            <text class="totalSales">{{ data.totalSales }}人已购买</text>
+                        </view>
+                    </view>
+                    <!-- <view class="tip">{{ data.robstatetext }}</view> -->
+                    <view class="time"><countdown :time="data.time" @timeup="robtip(data.robstatetext)"></countdown></view>
                 </view>
-                <view class="tip">{{ data.robstatetext }}</view>
-                <view class="time"><countdown :time="data.time" @timeup="robtip(data.robstatetext)"></countdown></view>
             </view>
             <view class="introduce-section">
                 <view class="price-box">
@@ -33,23 +38,22 @@
                     <image v-if="data.activityTitleIconSwitch == 1" :src="data.activityTitleIcon" mode="aspectFit"></image>
                     {{ data.mainheading }}
                 </view>
-                <view class="title-tip">{{ data.subheading }}</view>
-                
+                <!-- <view class="title-tip">{{ data.subheading }}</view> -->
+                <view class="title-tips">{{data.subheading}}</view>
+                <view class="title-tip-list" v-show="data.feature">
+                    <view class="tip-item">{{data.feature}}</view>
+                </view>
                 <!-- <view class="bot-row">
 				<text>销量:{{data.totalSales}}</text>
 				<text>库存: 4690</text>
 				<text>浏览量: 768</text>
 			</view> -->
             </view>
-            <view class="share-section">
-                <view class="share-icon" v-for="(item, index) in data.after_sale_list" :key="index">
-                    {{ item }}
-                </view>
-            </view>
+
             <view class="c-list">
                 <view class="c-row b-b" v-if="data.coupons" @click="toggleMask()">
                     <text class="tit">领券</text>
-                    <text class="con t-r red">{{ data.coupons }}</text>
+                    <text class="t-r red">{{ data.coupons }}</text>
                     <text class="yticon icon-you"></text>
                 </view>
                 <view class="c-row b-b" @click="openactivity()" v-if="data.activity.length != 0">
@@ -68,22 +72,10 @@
                         <text>{{ data.points }}</text>
                     </view>
                 </view>
-                <view class="c-row b-b" @click="switchaddress()">
-                    <text class="tit">配送</text>
-                    <view class="con-list clamp">
-                        <text class="con t-r red">{{ data.stockText }}</text>
-                        <text>{{ data.stockAddress }}</text>
-                    </view>
-                    <text class="yticon icon-you"></text>
-                </view>
-                <view class="c-row b-b">
-                    <text class="tit">运费</text>
-                    <view class="con-list">
-                        <text>{{ data.freight }}</text>
-                    </view>
-                </view>
+            </view>
+            <view class="c-list">
                 <view class="c-row b-b" @click="toggleSpec">
-                    <text class="tit">规格</text>
+                    <text class="tit">已选</text>
                     <view class="con">
                         <block v-if="specList.length != 0">
                             <text class="selected-text">
@@ -94,10 +86,34 @@
                     </view>
                     <text class="yticon icon-you"></text>
                 </view>
+                <view class="c-row b-b" @click="switchaddress()">
+                    <text class="tit">配送</text>
+                    <view class="con-list clamp">
+                        <view>
+                            <text class="addrese"></text>
+                            <text>{{ data.stockAddress }}</text>
+                        </view>
+                        <view>
+                            <text class="con t-r red">{{ data.stockText }}</text>
+                            <text>{{ data.stockAddress }}</text>
+                        </view>
+                    </view>
+                    <text class="yticon icon-you"></text>
+                </view>
+                <view class="c-row b-b">
+                    <text class="tit">运费</text>
+                    <view class="con-list">
+                        <text>{{ data.freight }}</text>
+                    </view>
+                </view>
+
                 <view class="c-row b-b" @click="openparameter()">
                     <text class="tit">参数</text>
                     <view class="con-list"></view>
                     <text class="yticon icon-you"></text>
+                </view>
+                <view class="share-section">
+                    <view class="share-icon" v-for="(item, index) in data.after_sale_list" :key="index">{{ item }}</view>
                 </view>
             </view>
 
@@ -110,23 +126,83 @@
                     </view>
                     <view v-if="data.companyInfo.isSelf == 0" class="tip">{{ data.companyInfo.attentionMsg }}</view>
                 </view>
-                <view class="btn">
-                    进店
-                    <text class="yticon icon-you"></text>
+                <view class="btn">进店</view>
+            </view>
+            <view class="stores-main">
+                <view class="clamp" v-for="(item, index) in companyInfos.alist" :key="index">
+                    <text>{{ item.display }}</text>
+                </view>
+                <view class="lists">
+                    <view class="item" v-for="(goods, index) in companyInfos.plist" :key="index" @click="companyGoodClick(index)">
+                        <view class="img"><image :src="goods.url" mode="aspectFill"></image></view>
+                        <view class="price">{{ goods.newprice }}</view>
+                    </view>
                 </view>
             </view>
             <!-- 评价 -->
             <view class="eva-section" @click="evaluateClick">
-                <view class="e-header yticon icon-you"><text class="tit">评价</text></view>
+                <view class="e-header">
+                    <view class="tit">
+                        <text>评价</text>
+                        <text class="tip">{{ commentInfo.num }}</text>
+                    </view>
+                    <text class=" yticon icon-you">{{ commentInfo.goodComment }}</text>
+                </view>
             </view>
+        </view>
+        <view class="recommend">
+            <view class="title">
+                <view>
+                    <image src="../../static/recommend.png" mode="aspectFit"></image>
+                    <text>为您推荐</text>
+                </view>
+            </view>
+            <swiper class="swiper" indicator-dots="true" style="height: 680rpx;">
+                <swiper-item>
+                    <view class="list">
+                        <view class="item" v-for="(goods, index) in recommends" :key="index" @click="RecommendClick(index)">
+                            <view class="img">
+                                <image :src="goods.url" mode="aspectFill"></image>
+                                <view class="tip clamp" v-show="goods.feature_short">{{ goods.feature_short }}</view>
+                            </view>
+                            <view class="titles">{{ goods.name }}</view>
+                            <view class="price">{{ goods.newprice }}</view>
+                        </view>
+                    </view>
+                </swiper-item>
+            </swiper>
         </view>
         <view class="detail-desc">
             <view class="d-header"><text>图文详情</text></view>
             <view class="detail-con" v-html="showpage"></view>
             <!-- <u-parse :content="showpage" class="conhtml"></u-parse> -->
         </view>
-        <view v-if="data.isuse == 0 && data.stockState ==0" class="maxmara">
-            {{data.stockNullText}}
+        <view v-if="data.isuse == 0 && data.stockState == 0" class="maxmara">{{ data.stockNullText }}</view>
+        <view class="recommend">
+            <view class="title">
+                <view>
+                    <image src="../../static/recommend.png" mode="aspectFit"></image>
+                    <text>看了又看</text>
+                </view>
+            </view>
+            <view class="goods-list">
+                <view class="goods-item" v-for="(item, index) in guess" :key="index" @click="navToDetailPage(item)">
+                    <image v-if="item.isNewOnShelvesProduct == 1" class="label" :src="item.newOnShelvesProductIcon" mode="aspectFit"></image>
+                    <view class="image-wrapper">
+                        <uimg :src="item.url"></uimg>
+                    </view>
+                    <view class="item-con">
+                        <view class="title clamp"><text v-if="item.presell" class="presell">{{item.presell}}</text>{{ item.name }}</view>
+                        <view class="price-box clamp">
+                            <text class="price">{{ item.price }}</text>
+                            <text v-if="item.activitylist.length == 0">{{ item.sales }}</text>
+                            <view v-else>
+                                <text v-for="ite in item.activitylist" :key="ite.wholetext" :style="{color:ite.color,borderColor:ite.color}">{{ ite.wholetext }}</text>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
         </view>
         <!-- 底部操作菜单 -->
         <view class="page-bottom" v-if="showtab && data.productkind != 4">
@@ -143,11 +219,11 @@
                 <text>购物车</text>
                 <text v-if="cartnumber != 0" class="cart-number">{{ cartnumber }}</text>
             </view>
-            <view class="action-btn-group" v-if="data.isuse == 0 && data.stockState !=0">
+            <view class="action-btn-group" v-if="data.isuse == 0 && data.stockState != 0">
                 <button type="primary" class=" action-btn no-border buy-now-btn" @click="buycard">加入购物车</button>
                 <button type="primary" class=" action-btn no-border add-cart-btn" @click="buy">立即购买</button>
             </view>
-            <view v-else-if="data.isuse == 0 && data.stockState ==0" class="action-btn-group">
+            <view v-else-if="data.isuse == 0 && data.stockState == 0" class="action-btn-group">
                 <button type="primary" class="action-btn no-border no" style="background-color: #afafaf;">立即购买</button>
             </view>
             <view v-else-if="data.isuse == 1" class="action-btn-group">
@@ -209,33 +285,32 @@
                         </view>
                     </view>
                 </scroll-view>
-                <view v-if="data.isuse == 0 && data.stockState !=0">
-                
-                <view class="shop-carc">
-                    <text style="font-size: 28upx;flex-grow: 1;">数量</text>
-                    <uni-number-box
-                        class="step"
-                        :min="1"
-                        :max="shoppingcart.stock"
-                        :value="number > shoppingcart.stock ? shoppingcart.stock : number"
-                        :isMax="number >= shoppingcart.stock ? true : false"
-                        :isMin="number === 1"
-                        @eventChange="numberChange"
-                    ></uni-number-box>
-                </view>
-                <view v-show="data.isuse == 0 && data.productkind != 4">
-                    <button class="btn" v-if="clickType != 3" @click="toggleSpec('go', 'btn')">完成</button>
-                    <view class="action-btn-group" style="margin: 32rpx auto 20rpx;" v-else>
-                        <button type="primary" class=" action-btn no-border buy-now-btn" @click="buycards">加入购物车</button>
-                        <button type="primary" class=" action-btn no-border add-cart-btn" @click="buys">立即购买</button>
+                <view v-if="data.isuse == 0 && data.stockState != 0">
+                    <view class="shop-carc">
+                        <text style="font-size: 28upx;flex-grow: 1;">数量</text>
+                        <uni-number-box
+                            class="step"
+                            :min="1"
+                            :max="shoppingcart.stock"
+                            :value="number > shoppingcart.stock ? shoppingcart.stock : number"
+                            :isMax="number >= shoppingcart.stock ? true : false"
+                            :isMin="number === 1"
+                            @eventChange="numberChange"
+                        ></uni-number-box>
                     </view>
-                </view>
-                <view v-show="data.isuse == 4 && data.productkind != 4">
-                    <button class="btn" @click="wantbuys()">{{ data.isuseDescrible }}</button>
-                </view>
-                <view v-show="data.isuse == 5 && data.productkind != 4">
-                    <button class="btn" @click="wantbuy()">{{ data.isuseDescrible }}</button>
-                </view>
+                    <view v-show="data.isuse == 0 && data.productkind != 4">
+                        <button class="btn" v-if="clickType != 3" @click="toggleSpec('go', 'btn')">完成</button>
+                        <view class="action-btn-group" style="margin: 32rpx auto 20rpx;" v-else>
+                            <button type="primary" class=" action-btn no-border buy-now-btn" @click="buycards">加入购物车</button>
+                            <button type="primary" class=" action-btn no-border add-cart-btn" @click="buys">立即购买</button>
+                        </view>
+                    </view>
+                    <view v-show="data.isuse == 4 && data.productkind != 4">
+                        <button class="btn" @click="wantbuys()">{{ data.isuseDescrible }}</button>
+                    </view>
+                    <view v-show="data.isuse == 5 && data.productkind != 4">
+                        <button class="btn" @click="wantbuy()">{{ data.isuseDescrible }}</button>
+                    </view>
                 </view>
             </view>
         </view>
@@ -243,14 +318,12 @@
         <uni-popup class="restar" ref="popup" :show="register.show" type="center" :mask-click="false">
             <text class="close" @click="registerLogin(1)"></text>
             <view class="title">手机验证登录</view>
-            <view class="uni-tip-content">
-                <input class="cell-more" type="text" maxlength="11" v-model="register.telNum" placeholder="请输入手机号" />
-            </view>
+            <view class="uni-tip-content"><input class="cell-more" type="text" maxlength="11" v-model="register.telNum" placeholder="请输入手机号" /></view>
             <view class="uni-tip-content">
                 <input class="cell-more" type="text" maxlength="10" v-model="register.code" placeholder="请输入验证码" />
                 <text @click="validataTel(register.codetime)">{{ register.codetext }}</text>
             </view>
-            <view class="btnse" @click="registerLogin(0)"> 登录 </view>
+            <view class="btnse" @click="registerLogin(0)">登录</view>
         </uni-popup>
         <!-- 优惠券面板 -->
         <uni-popup ref="popup" type="bottom" @change="overk">
@@ -365,7 +438,8 @@ export default {
                 companyInfo: {
                     isCompanyLabel: 0
                 },
-                activity: []
+                activity: [],
+                feature: ''
             },
             maskState: 0, //优惠券面板显示状态
             couponList: [],
@@ -374,7 +448,16 @@ export default {
             activity: [],
             parameter: [],
             attributes: '',
-            showtab: false
+            showtab: false,
+            commentInfo: {
+                goodComment: '好评度100%',
+                num: 4
+            },
+            recommends: [],
+            companyInfos: {
+                alist: [],
+                plist: []
+            }
         };
     },
     onBackPress() {
@@ -400,25 +483,62 @@ export default {
             SKUResult = {};
             _this.initSKU();
         });
+        this.getCommentInfo();
+        this.getRecommendForYou();
+        this.getCompanyActivityAndRecommend();
     },
-    onReady: function (res) {
-        this.videoContext = uni.createVideoContext('myVideo')
+    onReady: function(res) {
+        this.videoContext = uni.createVideoContext('myVideo');
     },
     methods: {
         ...mapMutations(['login']),
-        closevideo(){
+        closevideo() {
             this.videoContext.pause();
+        },
+        // 获取评价
+        getCommentInfo() {
+            this.$ajax.get('product/commentInfo', {
+                productid: this.id
+            }).then(res => {
+                console.log(res);
+                this.commentInfo = res.data.result.data;
+            });
+        },
+        // 为你推荐
+        getRecommendForYou() {
+            this.$ajax.get('product/recommendForYou', {
+                productid: this.id
+            }).then(res => {
+                console.log(res);
+                this.recommends = res.data.result.data;
+            });
+        },
+        // 为你推荐商品点击
+        recommendClick(index) {
+            let pid = this.recommends[index].productid;
+            uni.navigateTo({
+                url: '/pages/product/product?productid=' + pid
+            })
+        },
+        // 店铺活动和商品
+        getCompanyActivityAndRecommend() {
+            this.$ajax.get('product/getCompanyActivityAndRecommend', {
+                productid: this.id
+            }).then(res => {
+                console.log(res);
+                this.companyInfos = res.data.result.data;
+            });
         },
         // 联系店家
         chat() {
-            if(this.data.companyInfo.isSelf == 0){
+            if (this.data.companyInfo.isSelf == 0) {
                 let dataInfo = {
-                    nickName:this.data.companyInfo.companyname,
-                    username:this.data.companyCreator,
-                    avatar:this.data.companyInfo.logo
-                };            
+                    nickName: this.data.companyInfo.companyname,
+                    username: this.data.companyCreator,
+                    avatar: this.data.companyInfo.logo
+                };
                 uni.setStorage({
-                    key:'jiguang_chater_info',
+                    key: 'jiguang_chater_info',
                     data: dataInfo
                 });
                 uni.navigateTo({
@@ -439,12 +559,12 @@ export default {
             });
         },
         switchclick() {
-            this.$store.commit("add_navlist",this.$store.state.footer_store.now_page_index)
-            this.$store.commit("add_navlist",'cart')
+            this.$store.commit('add_navlist', this.$store.state.footer_store.now_page_index);
+            this.$store.commit('add_navlist', 'cart');
             // this.$store.state.footer_store.now_page_index = 'cart';
             uni.navigateTo({
-                url:'/pages/home/home'
-            })
+                url: '/pages/home/home'
+            });
         },
         robtip(it) {
             if (this.data.robstatetext == '距离结束仅剩') {
@@ -733,7 +853,15 @@ export default {
         // 选择地址
         switchaddress() {
             uni.navigateTo({
-                url: '/pages/address/address?source=1&cguid=' + this.data.companyGuid + '&isCustomAddress=' + this.data.isCustomAddress + '&customAddress=' + this.data.customAddress + '&postkind=' + this.data.postkind
+                url:
+                    '/pages/address/address?source=1&cguid=' +
+                    this.data.companyGuid +
+                    '&isCustomAddress=' +
+                    this.data.isCustomAddress +
+                    '&customAddress=' +
+                    this.data.customAddress +
+                    '&postkind=' +
+                    this.data.postkind
             });
         },
         // 切换地址
@@ -810,7 +938,20 @@ export default {
                 });
             } catch (e) {}
             if (kg) {
-                let data = {product:'[{number:' +this.number +',productid:' +this.id +',allattribute:' +this.keywords +',picid:' +this.shoppingcart.pic.id +',companyid:' +this.data.companyid +'}]'};
+                let data = {
+                    product:
+                        '[{number:' +
+                        this.number +
+                        ',productid:' +
+                        this.id +
+                        ',allattribute:' +
+                        this.keywords +
+                        ',picid:' +
+                        this.shoppingcart.pic.id +
+                        ',companyid:' +
+                        this.data.companyid +
+                        '}]'
+                };
                 this.$ajax.get('com/wantBuy', data).then(res => {
                     this.specClass = 'hide';
                     this.overf = false;
@@ -849,7 +990,17 @@ export default {
                     this.specClass = 'none';
                 }, 250);
                 uni.navigateTo({
-                    url:'/pages/product/reserveproduct?productid=' +this.id +'&keywords=' +this.specid +'&number=' +this.number +'&picid=' +this.shoppingcart.pic.id +'&companyid=' +this.data.companyid
+                    url:
+                        '/pages/product/reserveproduct?productid=' +
+                        this.id +
+                        '&keywords=' +
+                        this.specid +
+                        '&number=' +
+                        this.number +
+                        '&picid=' +
+                        this.shoppingcart.pic.id +
+                        '&companyid=' +
+                        this.data.companyid
                 });
             } else {
                 this.$api.msg('请选择规格');
@@ -1009,7 +1160,6 @@ export default {
                                         'http://ets.51pingce.net/pages/product/product?productid=' + this.id
                                     );
                                 }
-                                
                             } else {
                                 uni.hideLoading();
                                 this.$api.msg(res.data.msg);
@@ -1151,9 +1301,9 @@ export default {
         },
         // 手机号验证
         validataTel(now_time) {
-            if(!/(^1[3|4|5|7|8][0-9]{9}$)/.test(this.register.telNum)){
-            	this.$api.msg('请输入正确的手机号码');
-            	return;
+            if (!/(^1[3|4|5|7|8][0-9]{9}$)/.test(this.register.telNum)) {
+                this.$api.msg('请输入正确的手机号码');
+                return;
             }
             if (this.register.codetime == 0 && this.register.codeState) {
                 this.register.codeState = false;
@@ -1190,85 +1340,90 @@ export default {
                 this.register.show = false;
                 return;
             }
-            if(!/(^1[3|4|5|7|8][0-9]{9}$)/.test(this.register.telNum)){
-            	this.$api.msg('请输入正确的手机号码');
-            	return;
+            if (!/(^1[3|4|5|7|8][0-9]{9}$)/.test(this.register.telNum)) {
+                this.$api.msg('请输入正确的手机号码');
+                return;
             }
             if (this.register.code.length == 0) {
                 this.$api.msg('请输入正确的验证码');
                 return;
             }
             // 注册
-            this.$ajax.get('login/wxRegister', {
-                wxid: uni.getStorageSync('openid'), //uni.getStorageSync('openid'),
-                tel: this.register.telNum,
-                code: this.register.code
-            }).then(res => {
-                if (res.data.code == 0) {
-                    this.register.show = false;
-                    this.login(res.data.result.data);
-                    uni.removeStorageSync('recommendloginguid');
-                    this.login(res.data.result.data);
-                    this.$api.prePage() && (this.$api.prePage().isDoRefresh = true);
-                    uni.$emit('changeLoginState', {});
-                    uni.setStorageSync('isopenbuildcompany', res.data.result.data.isopenbuildcompany);
-                    if(res.data.result.data.isopenbuildcompany == 1){
-                        this.$store.dispatch('menu_3')
-                        //已建店 到建店页面
-                        this.isOpenShop().then(openShop_res =>{
-                            if(openShop_res){
-                              this.$store.dispatch('menu_4');
-                            }
+            this.$ajax
+                .get('login/wxRegister', {
+                    wxid: uni.getStorageSync('openid'), //uni.getStorageSync('openid'),
+                    tel: this.register.telNum,
+                    code: this.register.code
+                })
+                .then(res => {
+                    if (res.data.code == 0) {
+                        this.register.show = false;
+                        this.login(res.data.result.data);
+                        uni.removeStorageSync('recommendloginguid');
+                        this.login(res.data.result.data);
+                        this.$api.prePage() && (this.$api.prePage().isDoRefresh = true);
+                        uni.$emit('changeLoginState', {});
+                        uni.setStorageSync('isopenbuildcompany', res.data.result.data.isopenbuildcompany);
+                        if (res.data.result.data.isopenbuildcompany == 1) {
+                            this.$store.dispatch('menu_3');
+                            //已建店 到建店页面
+                            this.isOpenShop().then(openShop_res => {
+                                if (openShop_res) {
+                                    this.$store.dispatch('menu_4');
+                                }
+                                // if(res.data.result.data.haveNickName == 0){
+                                //     uni.navigateTo({
+                                //         url:'/pages/public/name?guid='+res.data.result.data.guid
+                                //     });
+                                // }else{
+                                //     uni.navigateBack();
+                                // }
+                            });
+                            // }else{
                             // if(res.data.result.data.haveNickName == 0){
                             //     uni.navigateTo({
                             //         url:'/pages/public/name?guid='+res.data.result.data.guid
-                            //     });
+                            //     })
                             // }else{
                             //     uni.navigateBack();
                             // }
-                        }) 
-                    // }else{
-                        // if(res.data.result.data.haveNickName == 0){
-                        //     uni.navigateTo({
-                        //         url:'/pages/public/name?guid='+res.data.result.data.guid
-                        //     })
-                        // }else{
-                        //     uni.navigateBack();
-                        // }
-                    }
-                    if (this.register.state == 0) {
-                        this.buys();
+                        }
+                        if (this.register.state == 0) {
+                            this.buys();
+                        } else {
+                            this.buycards();
+                        }
                     } else {
-                        this.buycards();
+                        this.$api.msg(res.data.msg);
                     }
-                } else {
-                    this.$api.msg(res.data.msg);
-                }
-            });
+                });
         },
-        isOpenShop(){
-            try{
-                 const promise = new Promise((resolve, reject) => {
-                     this.$ajax.get('com/hasCompany', {}).then(res => {
-                       if (res.data.code == 0) {
-                           let companyresult = res.data.result.data.companyresult; // 0-未创建店铺，1-已创建店铺
-                           let result = false;
-                           if (companyresult == 0) {
-                               result = false;
-                           } else {
-                               //已创建
-                               result = true;
-                           }
-                           resolve(result)
-                       }
-                   },reason => {
-                        resolve(false); // 出错了！
-                   });  
-                 })
-                 return promise
-            }catch(e){
+        isOpenShop() {
+            try {
+                const promise = new Promise((resolve, reject) => {
+                    this.$ajax.get('com/hasCompany', {}).then(
+                        res => {
+                            if (res.data.code == 0) {
+                                let companyresult = res.data.result.data.companyresult; // 0-未创建店铺，1-已创建店铺
+                                let result = false;
+                                if (companyresult == 0) {
+                                    result = false;
+                                } else {
+                                    //已创建
+                                    result = true;
+                                }
+                                resolve(result);
+                            }
+                        },
+                        reason => {
+                            resolve(false); // 出错了！
+                        }
+                    );
+                });
+                return promise;
+            } catch (e) {
                 return false;
-            } 
+            }
         }
     }
 };
@@ -1395,14 +1550,22 @@ page {
     display: flex;
     align-items: center;
     color: #ffffff;
+    border-radius: 10rpx;
     .con {
         padding-left: 30rpx;
+        display: flex;
+        align-items: center;
+        flex: 1;
         .new {
             font-size: 32rpx;
+            margin-right: 12rpx;
         }
         .old {
             font-size: 24rpx;
             text-decoration: line-through;
+        }
+        .totalSales{
+            font-size: 24rpx;
         }
     }
     .tip {
@@ -1428,10 +1591,10 @@ page {
 .introduce-section {
     background: #fff;
     padding: 20upx 30upx;
-
+    border-radius: 0 0 10rpx 10rpx;
     .title {
         font-size: 32upx;
-        color: $font-color-dark;
+        color: #333;
         line-height: 50upx;
         .preferential {
             background: $base-color;
@@ -1449,6 +1612,31 @@ page {
     .title-tip {
         font-size: 24upx;
         color: #c0c4cc;
+    }
+    .title-tips {
+        margin: 10rpx 0;
+        font-size: 30upx;
+        color: #333333;
+    }
+    .title-tip-list {
+        background: rgb(252, 249, 252);
+        border: 1rpx solid #f1f1f1;
+        position: relative;
+        padding: 20rpx;
+        border-radius: 10rpx;
+        font-size: 24rpx;
+        color: #333;
+        &::after {
+            content: '';
+            width: 20rpx;
+            height: 20rpx;
+            position: absolute;
+            left: 40rpx;
+            top: -10rpx;
+            transform: rotate(90deg);
+            background: rgb(252, 249, 252);
+            border-left: 1rpx solid #f1f1f1;
+        }
     }
     .price-box {
         padding: 10upx 0;
@@ -1496,8 +1684,7 @@ page {
 .share-section {
     display: flex;
     align-items: center;
-    background: #f1f1f1;
-    padding: 12upx 30upx;
+    padding: 20rpx 30rpx;
     .share-icon {
         display: flex;
         align-items: center;
@@ -1508,16 +1695,17 @@ page {
         font-size: 28upx;
         margin-right: 20upx;
         padding: 20upx;
-        padding-left: 60rpx;
+        padding-left: 40rpx;
         &:after {
             content: '';
-            width: 50upx;
+            width: 30upx;
             height: 50upx;
             border-radius: 50%;
             left: 0;
             top: -6upx;
             position: absolute;
             background: url(../../static/yes.png) no-repeat center;
+            background-size: 30rpx 30rpx;
         }
     }
     .icon-xingxing {
@@ -1555,6 +1743,8 @@ page {
     font-size: $font-sm + 2upx;
     color: $font-color-base;
     background: #fff;
+    margin: 20rpx 0;
+    border-radius: 10rpx;
     .c-row {
         display: flex;
         align-items: center;
@@ -1591,15 +1781,27 @@ page {
             flex: 1;
             display: block;
         }
+        .addrese {
+            width: 30rpx;
+            height: 30rpx;
+            background: url(../../static/address.png) no-repeat center;
+            background-size: 30rpx 30rpx;
+            margin-right: 10rpx;
+            display: inline-block;
+            vertical-align: sub;
+        }
     }
     .red {
-        color: $uni-color-primary;
+        color: #ee3847;
+        background: #feebeb;
+        margin-right: 10rpx;
+        padding: 4rpx 8rpx;
     }
 }
 
 //店铺
 .stores {
-    margin: 12upx 0;
+    margin: 12rpx 0 0 0;
     background: #ffffff;
     font-size: 32upx;
     display: flex;
@@ -1608,6 +1810,7 @@ page {
     -ms-flex-align: center;
     align-items: center;
     padding: 12upx 28upx;
+    border-radius: 10rpx 10rpx 0 0;
     .img {
         width: 100rpx;
         height: 100rpx;
@@ -1631,7 +1834,47 @@ page {
     }
     .btn {
         font-size: 24upx;
-        color: #909399;
+        color: #fff;
+        background: linear-gradient(to right, #ff6401, #ff0e3f);
+        padding: 20rpx 40rpx;
+        border-radius: 40rpx;
+    }
+}
+.stores-main {
+    background: #fff;
+    padding: 10rpx 10rpx 20rpx 10rpx;
+    border-radius: 0 0 10rpx 10rpx;
+    text {
+        font-size: 24rpx;
+        background: url(../../static/zjt.png) no-repeat right 10rpx center #fef3f3;
+        background-size: 10rpx;
+        color: #333;
+        padding: 10rpx 30rpx 10rpx 20rpx;
+        border-radius: 30rpx;
+        margin-right: 20rpx;
+        display: inline-block;
+    }
+    .lists {
+        overflow: hidden;
+        .item {
+            width: 23%;
+            margin: 1%;
+            float: left;
+            font-size: 28rpx;
+            color: #ee3847;
+            text-align: center;
+            .img {
+                border: 1rpx solid #f1f1f1;
+                border-radius: 10rpx;
+                overflow: hidden;
+                padding: 10rpx 0;
+                margin-bottom: 6rpx;
+                image {
+                    width: 100%;
+                    height: 160rpx;
+                }
+            }
+        }
     }
 }
 /* 评价 */
@@ -1645,7 +1888,7 @@ page {
         display: flex;
         align-items: center;
         height: 70upx;
-        font-size: $font-sm + 2upx;
+        font-size: 32rpx;
         color: $font-color-light;
         .tit {
             font-size: $font-base + 2upx;
@@ -1653,11 +1896,14 @@ page {
             margin-right: 4upx;
         }
         .tip {
-            flex: 1;
-            text-align: right;
+            font-size: 24rpx;
+            margin-left: 20rpx;
         }
         .icon-you {
             margin-left: 10upx;
+            flex: 1;
+            text-align: right;
+            font-size: 24rpx;
         }
     }
 }
@@ -1838,7 +2084,7 @@ page {
             height: 66upx;
             line-height: 66upx;
             border-radius: 100upx;
-            background: $uni-color-primary;
+            background: linear-gradient(to right, #ff6401, #ee3847);
             font-size: $font-base + 2upx;
             color: #fff;
             margin: 30upx auto 20upx;
@@ -1942,14 +2188,15 @@ page {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100upx;
+        height: 80upx;
+        margin: 10rpx;
+        border-radius: 40rpx;
         font-size: $font-base;
         padding: 0;
-        border-radius: 0;
-        background: $base-color;
+        background: linear-gradient(to right, #ff6401, #ee3847);
         flex-grow: 1;
         &.buy-now-btn {
-            background: rgb(248, 170, 46);
+            background: #ffa600;
         }
         &.on {
             width: 100%;
@@ -2049,7 +2296,7 @@ page {
         right: 10rpx;
     }
 }
-.maxmara{
+.maxmara {
     position: fixed;
     left: 0;
     right: 0;
@@ -2062,54 +2309,148 @@ page {
     z-index: 6;
 }
 
-.restar{
-    /deep/ .uni-popup__wrapper.uni-custom .uni-popup__wrapper-box{
+.restar {
+    /deep/ .uni-popup__wrapper.uni-custom .uni-popup__wrapper-box {
         padding: 20rpx 0 0 0;
         border-radius: 20rpx;
         position: relative;
     }
-    .close{
+    .close {
         position: absolute;
         right: 20rpx;
-        top:20rpx;
+        top: 20rpx;
         width: 60rpx;
         height: 60rpx;
         background: url(../../static/imgdel.png) no-repeat center;
     }
-    .title{
+    .title {
         font-size: 38rpx;
         color: #333;
         text-align: center;
     }
-    .uni-tip-content{
+    .uni-tip-content {
         overflow: hidden;
         display: flex;
         align-items: center;
-        border-bottom: 1px solid #EE3847;
+        border-bottom: 1px solid #ee3847;
         margin: 0 20rpx;
-        input{
-            margin:24rpx 12rpx;
+        input {
+            margin: 24rpx 12rpx;
             flex: 1;
         }
-        text{
+        text {
             font-size: 28rpx;
             padding: 20rpx 0;
             color: #969696;
         }
     }
-    .btnse{
+    .btnse {
         width: 80%;
         margin: 40rpx auto;
         padding: 20rpx;
         border-radius: 40rpx;
-            text-align: center;
-            font-size: 32rpx;
-                background: #EE3847;
-                color: #FFF;
+        text-align: center;
+        font-size: 32rpx;
+        background: #ee3847;
+        color: #fff;
     }
 }
 
-/deep/ .uni-popup{
+/deep/ .uni-popup {
     z-index: 99;
+}
+.recommend {
+    background: #fff;
+    border-radius: 10rpx;
+    margin: 10rpx 0;
+    padding: 20rpx;
+    .title {
+        text-align: center;
+        position: relative;
+
+        &:after {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            width: 150px;
+            height: 0;
+            content: '';
+            border-bottom: 1px solid #ccc;
+        }
+        view {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            font-size: 32rpx;
+            background: #fff;
+            padding: 0 8rpx;
+            image {
+                width: 40rpx;
+                height: 40rpx;
+                vertical-align: middle;
+                margin-right: 8rpx;
+            }
+            text {
+                vertical-align: middle;
+            }
+        }
+    }
+    .list {
+        overflow: hidden;
+        .item {
+            width: 31%;
+            margin: 1%;
+            float: left;
+            .img {
+                position: relative;
+                image {
+                    height: 210rpx;
+                    width: 100%;
+                }
+                .tip {
+                    position: absolute;
+                    z-index: 1;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: #f0ece1;
+                    font-size: 24rpx;
+                    color: #9f8d58;
+                    padding: 4rpx;
+                }
+            }
+            .titles {
+                font-size: 24rpx;
+                color: #333;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+            .price {
+                margin-top: 6rpx;
+                font-size: 26rpx;
+                color: #333;
+                font-weight: bold;
+            }
+        }
+    }
+}
+.swiper {
+    /deep/ .uni-swiper-dots-horizontal {
+        bottom: 0;
+    }
+    /deep/ .uni-swiper-dot {
+        width: 20px;
+        height: 10rpx;
+        border-radius: 4rpx;
+        background: #f5f5f5;
+        margin-right: 0;
+    }
+    /deep/ .uni-swiper-dot-active {
+        background: #ee3847;
+    }
 }
 </style>

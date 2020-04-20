@@ -27,7 +27,10 @@
         </view>
         
 		<view class="row default-row">
-			<text class="tit">设为默认</text>
+            <view class="tit">
+                <view class="name">设为默认</view>
+                <view>提醒:每次下单会默认推荐使用该地址</view>
+            </view>
 			<switch :checked="addressData.defaultaddressstate == 1" color="#fa436a" @change="switchChange" />
 		</view>
 		<button class="add-btn" @click="confirm">提交</button>
@@ -78,6 +81,12 @@
 				title
 			})
 		},
+        onNavigationBarButtonTap(e) {
+            if (!this.addressData.addressid) {
+            } else {
+                this.delAddress(this.addressData.addressid)
+            }
+        },
         onBackPress(){
             this.$api.ovPage()
         },
@@ -104,6 +113,30 @@
                         this.$api.msg(res.data.msg);
                     }
                 })
+            },
+            // 删除地址
+            delAddress(id) {
+                let _this = this;
+                uni.showModal({
+                    title: '删除地址',
+                    content: '确定要删除这个地址吗?',
+                    success: function(res) {
+                        if (res.confirm) {
+                            let data = {
+                                addressid: id
+                            };
+                            _this.$ajax.get('shoppingcart/deladdress', data).then(res => {
+                                if (res.data.code == 0) {
+                                    _this.$api.prePage().getAddressList();
+                                    uni.navigateBack();
+                                } else {
+                                    _this.$api.msg(res.data.msg);
+                                }
+                            });
+                        } else if (res.cancel) {
+                        }
+                    }
+                });
             },
 			// 获取地址详情
 			getAddressById() {
@@ -353,8 +386,15 @@
 	}
 	.default-row{
 		margin-top: 16upx;
+        height: auto;
+        padding: 30rpx;
 		.tit{
 			flex: 1;
+            font-size: 24rpx;
+            color: #333;
+            .name{
+                font-size: 32rpx;
+            }
 		}
 		switch{
 			transform: translateX(16upx) scale(.9);
@@ -369,8 +409,7 @@
 		margin: 60upx auto;
 		font-size: $font-lg;
 		color: #fff;
-		background-color: $base-color;
-		border-radius: 10upx;
-		box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
+        background: linear-gradient(to right, #FF6401 , #EE3847);
+		border-radius: 40upx;
 	}
 </style>

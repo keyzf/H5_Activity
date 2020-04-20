@@ -58,6 +58,33 @@
                 <view v-show="pics.length < 3" class="add" @click.stop="uploadImg"></view>
             </view>
         </view>
+        <!-- 上门取件 -->
+        <view class="door" v-show="refundForm.collectgood == 1">
+            <view class="title">
+                <text>上门取件</text>
+                <switch style="transform:scale(0.7)" color="#fa436a" :checked="addressChecked" @change="checkedState" />
+            </view>
+            <view class="come" v-show="addressChecked" @click="selectedAddress()">
+                <view class="name">
+                    <text>{{ refundForm.addressinfo.receivername }}</text>
+                    <text class="number">{{ refundForm.addressinfo.receivertel }}</text>
+                </view>
+                <view class="addrese" v-show="refundForm.addressinfo.addressid > 0">
+                    <text>地址:</text>
+                    <view class="tip">
+                        {{ refundForm.addressinfo.address }}
+                    </view>
+                </view>
+            </view>
+            <view class="come" v-show="!addressChecked" @click="selectedAddress()">
+                <view class="addrese">
+                    <text>请选择地址</text>
+                </view>
+            </view>
+        </view>
+        <view class="tips" v-show="refundForm.collectgood == 1">
+            提交售后后,售后专员可能与您电话沟通,请保持手机畅通
+        </view>
         <view class="footer">
             <text class="submit" @click="submitRefund">提交</text>
         </view>
@@ -69,6 +96,7 @@ export default {
     data() {
         return {
 			refundForm: {
+                collectgood: 0,
 				goodssattelist: [{
 					content: "未收到货",
 					goodssatte: 1,
@@ -94,20 +122,43 @@ export default {
 				}],
 				refundreasontitle: '退货原因',
 				refundtype: 0,
-				uploadimage: '上传图片(最多3张)'
+				uploadimage: '上传图片(最多3张)',
+                addressinfo: {
+                    address: '石家庄市',
+                    addressid: 0,
+                    receivername: '小葛',
+                    receivertel: '13344556677'
+                },
+                postkind: 1 // 1普通 2严选
 			},
+            addressChecked: true,
 			bopid: 0,
 			refundtype: 0,
 			memo: '',
 			goodsstate: 0,
 			refundreason: 0,
             pics: [],
-            submitState: true
+            submitState: true,
+            addressData: {
+                address: '石家庄市',
+                addressid: 0,
+                receivername: '小葛',
+                receivertel: '13344556677'
+            }
         };
     },
     onLoad(options) {
 		this.bopid = options.bopid;
 		this.refundtype = options.refundtype;
+        if (this.refundtype == 1) { // 退款及退货
+            uni.setNavigationBarTitle({
+                title: '退款并退货'
+            });
+        } else {
+            uni.setNavigationBarTitle({
+                title: '仅退款'
+            });
+        }
 		this.getRefundForm();
 	},
     onShow() {
@@ -126,6 +177,9 @@ export default {
 			} else {
 				this.goodsstate = value.split("_")[1];
 			}
+        },
+        checkedState(event) {
+            this.addressChecked = event.target.value;
         },
 		// 获取退款表单详情
 		getRefundForm() {
@@ -160,14 +214,16 @@ export default {
             }
             this.submitState = false;
 			this.$ajax.get('order/subrefundinfo', {
-				bopid: this.bopid,
-				refundnum: this.refundForm.maxrefundnum,
-				refundtype: this.refundtype,
-				goodssatte: this.goodsstate,
-				refundreason: this.refundreason,
-				picurl: this.pics.length == 0 ? '' : this.pics.join(','),
-				memo: this.memo
-			}).then(res => {
+                collectgood: this.addressChecked ? this.refundForm.collectgood : 0,
+                addressid: this.addressChecked ? this.refundForm.addressinfo.addressid : -1,
+                bopid: this.bopid,
+                refundnum: this.refundForm.maxrefundnum,
+                refundtype: this.refundtype,
+                goodssatte: this.goodsstate,
+                refundreason: this.refundreason,
+                picurl: this.pics.length == 0 ? '' : this.pics.join(','),
+                memo: this.memo
+            }).then(res => {
 				console.log(res);
 				if (res.data.code == 0) {
 					this.$api.msg('提交申请成功');
@@ -205,6 +261,17 @@ export default {
         deleteImg(index) {
             this.pics.splice(index, 1);
             this.$forceUpdate();
+        },
+        // 进入地址选择页面
+        selectedAddress() {
+            uni.navigateTo({
+                url: '/pages/address/address?source=1&postkind=' + this.refundForm.postkind
+            });
+        },
+        // 修改地址
+        updateOrderAddress() {
+            this.refundForm.addressinfo = this.addressData;
+            this.addressChecked = true;
         }
     }
 };
@@ -213,14 +280,57 @@ export default {
 <style lang="scss">
 page {
     background: $page-color-base;
-    padding-bottom: 100upx;
+    padding:20rpx 20rpx 100upx 20rpx;
+}
+.door{
+    margin: 20rpx 0;
+    background: #FFF;
+    border-radius: 18rpx;
+    padding: 20rpx 30upx;
+    .title{
+        font-size: 28rpx;
+        font-weight: bold;
+        color: #595757;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .come{
+        padding-right: 20rpx;
+        background: url(../../static/zjt.png)no-repeat right center;
+        background-size: 20rpx;
+    }
+    .name{
+        font-size: 28rpx;
+        color: #595757;
+        font-weight: bold;
+        padding: 8rpx 0;
+    }
+    .addrese{
+        font-size: 24rpx;
+        color: #929292;
+        display: flex;
+        .tip{
+            flex: 1;
+            margin-left: 6rpx;
+        }
+    }
+}
+.tips{
+    color: #929292;
+    font-size: 24rpx;
+    margin:  40rpx 0;
+    text-align: center;
 }
 .photos {
     margin-top: 20rpx;
     background: #ffffff;
     padding: 20rpx 30upx;
+    border-radius: 18rpx;
     .titles {
         font-size: 28rpx;
+        font-weight: bold;
+        color: #595757;
     }
     .photos-list {
         display: flex;
@@ -261,7 +371,9 @@ page {
 }
 .record {
     padding: 30upx;
-    border-bottom: 1px solid #e4e7ed;
+    font-size: 28rpx;
+    color: #595757;
+    font-weight: bold;
 }
 .address-section {
     padding: 30upx;
@@ -321,10 +433,9 @@ page {
     }
 }
 .goods-section {
-    margin-top: 16upx;
     background: #fff;
-    padding-bottom: 1px;
-
+    padding: 10rpx;
+    border-radius: 18rpx;
     .g-header {
         display: flex;
         align-items: center;
@@ -352,8 +463,6 @@ page {
     }
     .g-item {
         display: flex;
-        margin: 20upx 30upx;
-
         image {
             flex-shrink: 0;
             display: block;
@@ -412,6 +521,8 @@ page {
 .yt-list {
     margin-top: 16upx;
     background: #fff;
+    border-radius: 18rpx;
+    overflow: hidden;
 }
 
 .yt-list-cell {

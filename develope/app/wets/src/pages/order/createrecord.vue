@@ -48,6 +48,8 @@ export default {
                         // 填写物流：8
                         // 取消退货：0
                         switch(item.state) {
+                            case 0:
+                                break;
                             case 1: 
                                 break;
                             case 2: //直接退款、同意退款、拒绝退款（买家申请退货，待商家处理）
@@ -92,6 +94,9 @@ export default {
                                 
                                 break;
                         }
+                        if (item.collectGoodcancelBtn == 1) info.btn.push({type: 0, btnstr: '取消退货'});
+                        if (item.addmailno == 1) info.btn.push({type: 21, btnstr: '填写物流信息', sendExpressType: item.sendExpressType, showExpressNum: item.showExpressNum});
+                        if (item.cancelbutton == 1) info.btn.push({type: 0, btnstr: '取消退货'});
                         info.desc = item.createtime;
                         this.date.push(info);
                     });
@@ -191,6 +196,11 @@ export default {
                     });
                     break;
                 case 9: 
+                    break;
+                case 21:
+                    uni.navigateTo({
+                        url: '/pages/order/consignment_yanxuan?refundcode=' + this.refundcode + '&sendExpressType=' + btnData.sendExpressType + '&showExpressNum=' + btnData.showExpressNum
+                    });
                     break;
             }
         },
