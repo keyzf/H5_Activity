@@ -150,17 +150,17 @@
                 </view>
             </view>
         </view>
-        <view class="recommend">
-            <view class="title">
+        <view class="recommend" v-show="recommends.length != 0">
+            <view class="titles">
                 <view>
                     <image src="../../static/recommend.png" mode="aspectFit"></image>
                     <text>为您推荐</text>
                 </view>
             </view>
             <swiper class="swiper" indicator-dots="true" style="height: 680rpx;">
-                <swiper-item>
-                    <view class="list">
-                        <view class="item" v-for="(goods, index) in recommends" :key="index" @click="RecommendClick(index)">
+                <swiper-item v-for="s_count in (recommends.length == 0 ? 0 : Math.ceil(recommends.length/6))" :key="s_count">
+                    <view class="list" v-for="count in round(s_count)" :key="count">
+                        <view class="item" v-for="(goods, index) in find(s_count,count)" :key="index" @click="recommendClick(goods.id)">
                             <view class="img">
                                 <image :src="goods.url" mode="aspectFill"></image>
                                 <view class="tip clamp" v-show="goods.feature_short">{{ goods.feature_short }}</view>
@@ -179,7 +179,7 @@
         </view>
         <view v-if="data.isuse == 0 && data.stockState == 0" class="maxmara">{{ data.stockNullText }}</view>
         <view class="recommend">
-            <view class="title">
+            <view class="titles">
                 <view>
                     <image src="../../static/recommend.png" mode="aspectFit"></image>
                     <text>看了又看</text>
@@ -454,10 +454,12 @@ export default {
                 num: 4
             },
             recommends: [],
+            recommendsPage: 0,
             companyInfos: {
                 alist: [],
                 plist: []
-            }
+            },
+            guess: []
         };
     },
     onBackPress() {
@@ -486,6 +488,7 @@ export default {
         this.getCommentInfo();
         this.getRecommendForYou();
         this.getCompanyActivityAndRecommend();
+        this.getGuess();
     },
     onReady: function(res) {
         this.videoContext = uni.createVideoContext('myVideo');
@@ -510,15 +513,29 @@ export default {
                 productid: this.id
             }).then(res => {
                 console.log(res);
-                this.recommends = res.data.result.data;
+                let data = res.data.result.data;
+                this.recommends = data;
+                this.recommendsPage = data.length == 0 ? 0 : Math.ceil(data.length / 3);
             });
         },
         // 为你推荐商品点击
-        recommendClick(index) {
-            let pid = this.recommends[index].productid;
+        recommendClick(id) {
+            uni.navigateTo({
+                url: '/pages/product/product?productid=' + id
+            })
+        },
+        // 店铺商品
+        companyGoodClick(index) {
+            let pid = this.companyInfos.plist[index].productid;
             uni.navigateTo({
                 url: '/pages/product/product?productid=' + pid
             })
+        },
+        // 看了又看
+        getGuess() {
+            this.$ajax.get('homepage/getGuesslikeList', {}).then(res => {
+                this.guess = res.data.result.data;
+            });
         },
         // 店铺活动和商品
         getCompanyActivityAndRecommend() {
@@ -528,6 +545,10 @@ export default {
                 console.log(res);
                 this.companyInfos = res.data.result.data;
             });
+        },
+        // 筛选数组
+        selectList(index, end) {
+            return 
         },
         // 联系店家
         chat() {
@@ -1424,6 +1445,48 @@ export default {
             } catch (e) {
                 return false;
             }
+        },
+        //详情页
+        navToDetailPage(item) {
+            if (item.code == 'PROMOTION') {
+                uni.navigateTo({
+                    url: '/pages/product/catelist?id=' + item.activityid
+                });
+            } else if (item.code == 'MORE') {
+                uni.navigateTo({
+                    url: '/pages/product/catemore'
+                });
+            } else if (item.jumptype == 1) {
+                uni.navigateTo({
+                    url: '/pages/product/product?productid=' + item.productid
+                });
+            }else{
+                uni.navigateTo({
+                    url: '/pages/product/product?productid=' + item.productid
+                });
+            }
+        },
+        round(index) {
+            let data = 0;
+            let start = index == 0 ? 0 : (index - 1) * 6;
+            let end = index* 6;
+            this.recommends.forEach((item, _index) => {
+                if (_index >= start && _index < end) {
+                    data++;
+                }
+            });
+            return data > 3 ? 2 : 1;
+        },
+        find(index, countIndex) {
+            let data = [];
+            let start = index == 0 ? 0 : (index - 1) * 6 + (countIndex - 1) * 3;
+            let end = index * 6 + (countIndex - 2) * 3;
+            this.recommends.forEach((item, _index) => {
+                if (_index >= start && _index < end) {
+                    data.push(item);
+                }
+            });
+            return data;
         }
     }
 };
@@ -2364,7 +2427,7 @@ page {
     border-radius: 10rpx;
     margin: 10rpx 0;
     padding: 20rpx;
-    .title {
+    .titles {
         text-align: center;
         position: relative;
 

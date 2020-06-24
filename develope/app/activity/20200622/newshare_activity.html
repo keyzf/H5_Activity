@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<title>分享</title>
+		<script type="text/javascript" src="../ningXun-1.8.mini.js"></script>
+		<script type="text/javascript" src="../md5.js"></script>
+		<script type="text/javascript" src="../jweixin-1.4.1.js"></script>
+		<script type="text/javascript" src="newshare.js"></script>
+		<script type="text/javascript" src="../publicshare.js"></script>
+
+		<style type="text/css">
+			body,
+			p,
+			img,
+			div {
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+
+			body {
+				height: 100%;
+				background: #8310B7;
+			}
+
+			html {
+				min-height: 100%;
+			}
+
+			body.x {
+				position: fixed;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				overflow: hidden;
+			}
+
+			.translate {
+				margin: 16px;
+				background: #FFF;
+				border-radius: 15px;
+				padding: 12px;
+				display: flex;
+				justify-content: space-between;
+				color: #F9003C;
+			}
+
+			.translate .yesterday {
+				text-align: right;
+			}
+
+			.translate .tip {
+				font-size: 15px;
+			}
+
+			.translate .number {
+				font-size: 30px;
+				margin-top: 18px;
+			}
+
+			.yellowalert {
+				text-align: center;
+				font-size: 18px;
+				font-weight: bold;
+				color: #FFCD0F;
+			}
+
+			.record {
+				margin: 16px;
+				background: #621785;
+				padding: 12px;
+				border-radius: 15px;
+			}
+
+			.record .navigation {
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
+				color: #FFDC2F;
+				font-size: 15px;
+			}
+
+			.record .navigation .item {
+				padding: 0 10px 10px 10px;
+				border-bottom: 2px solid #621785;
+				cursor: pointer;
+			}
+
+			.record .navigation .item.x {
+				border-bottom: 2px solid #FFDC2F;
+				cursor: pointer;
+			}
+
+			.record .record_tip {
+				font-size: 12px;
+				color: #FFF;
+				text-align: center;
+				margin: 10px;
+				cursor: pointer;
+			}
+
+			.record .list .item {
+				border-top: 0.5px solid #dddddd;
+				display: flex;
+				align-items: center;
+				color: #FFF;
+				padding: 10px 0;
+			}
+
+			.record .list .item img {
+				width: 36px;
+				height: 36px;
+				min-width: 36px;
+				border-radius: 50%;
+			}
+
+			.record .list .item .main {
+				flex: 1;
+				padding-left: 8px;
+				word-break: break-all;
+			}
+
+			.record .list .item .main .title {
+				font-size: 12px;
+			}
+
+			.record .list .item .main .tip {
+				font-size: 12px;
+				color: #FCD3AB;
+			}
+
+			.theme {
+				position: relative;
+				background-size: 100% auto;
+				background-repeat: no-repeat;
+				display: flex;
+				flex-direction: column;
+			}
+			.theme .top{
+				position: absolute;
+				top: 25px;
+				width: 100%;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+
+			.theme .top .back {
+				
+				top: 14px;
+				left: 16px;
+				height: 18px;
+				width: 18px;
+				color: #FFF;
+				margin-left: 16px;
+				cursor: pointer;
+			}
+
+			.theme .top .tip {
+				/* position: absolute; */
+				top: 14px;
+				right: 16px;
+				font-size: 16px;
+				color: #FFF;
+				cursor: pointer;
+				margin-right: 16px;
+			}
+
+			.theme .bg {
+				width: 100%;
+			}
+
+			.theme .tips {
+				/* position: absolute; */
+				bottom: 30%;
+				width: 80%;
+				max-width: 414px;
+				left: 0;
+				right: 0;
+				margin: 50px auto 0;
+				cursor: pointer;
+			}
+
+			.theme .redpackage {
+
+				/* position: absolute; */
+				display: flex;
+				justify-content: center;
+				margin: 0 auto;
+
+			}
+
+			.theme .redpackage .redbg {
+				width: 70%;
+				height: 250px;
+				text-align: center;
+			}
+
+			.theme .redpackage .btn {
+				position: absolute;
+				/* top: 80%; */
+				bottom: 3%;
+				max-width: 200px;
+				left: 0;
+				right: 0;
+				margin: 0 auto;
+				cursor: pointer;
+			}
+
+			.more {
+				font-size: 12px;
+				color: #FFFFFF;
+				vertical-align: middle;
+				text-align: center;
+				margin: 3px 0;
+			}
+
+			.pupwindow {
+				position: fixed;
+				z-index: 500;
+				display: none;
+				flex-direction: column;
+				margin: 20px;
+				top: 20%;
+				left: 10%;
+				right: 10%;
+				bottom: 20%;
+				border: 1px solid #fff;
+				text-align: center;
+				border-radius: 5px;
+				background: #F8F8F8;
+				transition: all 0.3s;
+
+			}
+
+			.pupwindow .content {
+				padding: 0px 10px 5px 10px;
+				height: calc(100% - 90px);
+				overflow-y: auto;
+				display: block;
+				text-align: left;
+				align-items: flex-start;
+				font-size: 12px;
+			}
+
+			.pupwindow .title {
+				height: 25px;
+				margin: 10px;
+				font-size: 16px;
+				font-weight: bold;
+			}
+
+			.pupwindow .line {
+				width: 100%;
+				height: 0.5px;
+				background-color: #EA043B;
+				margin-left: auto;
+				margin-right: auto;
+				border: #FF4574 0.5px solid;
+				bottom: 35px;
+				position: absolute;
+			}
+
+			.pupwindow .close {
+				position: absolute;
+				bottom: 10px;
+				width: 100%;
+				height: 21px;
+				align-items: center;
+				text-align: center;
+				margin-left: auto;
+				margin-right: auto;
+				cursor: pointer;
+				color: #ee3847;
+			}
+
+			.mask {
+				position: fixed;
+				z-index: 300;
+				display: none;
+				top: -200px;
+				left: 0;
+				right: 0;
+				bottom: -200px;
+				background-color: #000;
+				opacity: 0.6;
+				filter: alpha(opacity=0.6);
+			}
+
+			.share {
+				position: fixed;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(0, 0, 0, 0.6);
+				z-index: 666;
+				display: none;
+			}
+
+			.share img {
+				width: 300px;
+				margin: 30px auto;
+				display: block;
+			}
+		</style>
+
+	</head>
+
+	<body οncοntextmenu='return false' οndragstart='return false' onselectstart ='return false' οnselect='document.selection.empty()' οncοpy='document.selection.empty()' onbeforecopy='return false' οnmοuseup='document.selection.empty()'>
+
+		<div class="mask"></div>
+		<div class="share">
+			<img src="./img/share.png">
+		</div>
+		<div class="pupwindow">
+			<p class="title">通知</p>
+			<div class="content"></div>
+			<div class="line"></div>
+			<p class="close">我知道了</p>
+		</div>
+
+		<div class="theme">
+			<img class="bg">
+			<!--src="//themes.51pingce.net/vegetables/319bg.png"-->
+			<div class="top">
+				<img class="back" src="img/back.png"></img>
+				<span class="tip">活动规则</span>
+			</div>
+			<img class="tips">
+			<!--src="//themes.51pingce.net/vegetables/319tip.png"-->
+			<div class="redpackage">
+				<img class="redbg" src="img/redbg.png">
+				<img class="btn" src="img/319btn.png">
+			</div>
+
+		</div>
+<div class="yellowalert">持续3个月享受新人消费红利</div>
+		<div class="translate">
+			<div class="total">
+				<p class="tip">总收益(元)</p>
+				<p class="number"></p>
+			</div>
+			<div class="yesterday">
+				<p class="tip">昨日收益(元)</p>
+				<p class="number"></p>
+			</div>
+		</div>
+		
+		<div class="record">
+			<div class="navigation">
+				<div class="item x" data-id="1">
+					收益记录
+				</div>
+				<div class="item" data-id="2">
+					我的邀请
+				</div>
+				<div class="item" data-id="3">
+					邀请排行
+				</div>
+			</div>
+			<p class="record_tip"></p>
+
+			<div id="template" style="display: none;">
+				<div class="item">
+					<img class="item_img" />
+					<div class="main">
+						<p class="title"></p>
+						<p class="tip"></p>
+					</div>
+					<p class="number"></p>
+				</div>
+			</div>
+
+			<div class="list">
+
+			</div>
+			<!--            <div class="list">-->
+			<!--                <div class="item">-->
+			<!--                    <img src="//themes.51pingce.net/vegetables/319bg.png" >-->
+			<!--                    <div class="main">-->
+			<!--                        <p class="title">135***4564消费</p>-->
+			<!--                        <p class="tip">天天拿红包.......</p>-->
+			<!--                    </div>-->
+			<!--                    <p class="number">￥12.25</p>-->
+			<!--                </div>-->
+			<!--            </div>-->
+		</div>
+
+		<div class="more" id="more" style="margin-bottom: 20px;display: none;"><img src="img/more.gif">正在加载...
+		</div>
+		<div class="more" id="noMore" style="margin-bottom: 20px;display: none;">我们是有底线的</div>
+	</body>
+</html>

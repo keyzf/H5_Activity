@@ -6,10 +6,12 @@
     <title>分享</title>
     <script type="text/javascript" src="../ningXun-1.8.mini.js"></script>
     <script type="text/javascript" src="../md5.js"></script>
+    <script type="text/javascript" src="../jweixin-1.4.1.js"></script>
     <script type="text/javascript" src="share.js"></script>
     <script type="text/javascript" src="../publicshare.js"></script>
     
     <style type="text/css">
+
         body, p, img, div {
             margin: 0;
             padding: 0;
@@ -17,7 +19,21 @@
         }
 
         body {
+            height: 100%;
             background: #F9003C;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body.x {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
         }
 
         .translate {
@@ -143,6 +159,7 @@
             left: 0;
             right: 0;
             margin: 0 auto;
+            cursor: pointer;
         }
 
         .theme .btn {
@@ -152,6 +169,7 @@
             left: 0;
             right: 0;
             margin: 0 auto;
+            cursor: pointer;
         }
 
         .more {
@@ -165,10 +183,8 @@
         .pupwindow {
             position: fixed;
             z-index: 500;
-            display: flex;
             display: none;
             flex-direction: column;
-            pointerEvents: "none";
             margin: 20px;
             top: 20%;
             left: 10%;
@@ -177,15 +193,15 @@
             border: 1px solid #fff;
             text-align: center;
             border-radius: 5px;
-            background: #FFFFFF;
+            background: #F8F8F8;
             transition: all 0.3s;
 
         }
 
         .pupwindow .content {
             padding: 0px 10px 5px 10px;
-            height: 72%;
-            overflow: auto;
+            height: calc(100% - 90px);
+            overflow-y: auto;
             display: block;
             text-align: left;
             align-items: flex-start;
@@ -224,15 +240,31 @@
         }
 
         .mask {
-            display: none;
-            filter: alpha(opacity=0);
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            background-color: #FF4574;
+            position: fixed;
             z-index: 300;
-            opacity: 0;
-            filter: alpha(opacity=0);
+            display: none;
+            top: -200px;
+            left: 0;
+            right: 0;
+            bottom: -200px;
+            background-color: #000;
+            opacity: 0.6;
+            filter: alpha(opacity=0.6);
+        }
+        .share {
+          position: fixed;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0, 0.6);
+          z-index: 666;
+          display: none;
+        }
+        .share img {
+          width: 300px;
+          margin: 30px auto;
+          display: block;
         }
     </style>
 
@@ -241,7 +273,9 @@
 <body>
 
 <div class="mask"></div>
-
+<div class="share">
+  <img src="./img/share.png">
+</div>
 <div class="pupwindow">
     <p class="title">通知</p>
     <div class="content"></div>
@@ -260,11 +294,11 @@
 <div class="translate">
     <div class="total">
         <p class="tip">总收益(元)</p>
-        <p class="number">300.00</p>
+        <p class="number"></p>
     </div>
     <div class="yesterday">
         <p class="tip">昨日收益(元)</p>
-        <p class="number">1.25</p>
+        <p class="number"></p>
     </div>
 </div>
 <div class="record">

@@ -98,7 +98,7 @@ Vue.prototype.$uuid = uuid;
 Vue.prototype.$wx = wechat;
 Vue.prototype.$jump = jump;
 Vue.prototype.$title = true;
-Vue.prototype.$api_url = 'https://www.holdsoft.cn/mall/';//'http://114.115.217.252:8001/HighMallServer/'
+Vue.prototype.$api_url = 'https://www.holdsoft.cn/mall/'; //'http://114.115.217.252:8001/HighMallServer/';
 Vue.use(new JjimWidget());
 Vue.component('cu-custom', cuCustom)
 Vue.prototype = Object.assign(Vue.prototype, {

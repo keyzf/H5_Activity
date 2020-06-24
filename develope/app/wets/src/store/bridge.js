@@ -1,7 +1,7 @@
 import Vue from 'vue'
 // import Vue from '../App.vue'
 
-function bridgeAndroidAndIOS(callbacks) {
+function bridgeAndroidAndIOS() {
 
     //ios
     function setupWebViewJavascriptBridge(callback) {
@@ -63,7 +63,6 @@ function bridgeAndroidAndIOS(callbacks) {
                         Authorization: JSON.parse(data).Authorization,
                         statusBarHeight: Number.parseInt(JSON.parse(data).statusBarHeight),
                     };
-                    callbacks();
                 });
 
             })
@@ -87,13 +86,11 @@ function bridgeAndroidAndIOS(callbacks) {
                         productID: data.productID,
                         statusBarHeight: data.statusBarHeight,
                     };
-                    callbacks();
                 })
             })
             break;
         default:
             console.log('运行在开发者工具上')
-            callbacks();
             break;
     }
 

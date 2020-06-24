@@ -25,7 +25,7 @@
                             <view class="yticon icon-xuanzhong2 checkbox" :class="{ checked: item.checked }" @click="check('shop', index)"></view>
                             <view style="flex-grow: 1;" class="name">
                                 <text>{{ item.companyname }}</text>
-                                <text class="tip">免运费</text>
+                                <!-- <text class="tip">免运费</text> -->
                             </view>
                         </view>
                         <uni-swipe-action v-for="(items, indexs) in item.goodsinfo" :key="indexs">
@@ -70,38 +70,24 @@
                     </view>
                 </block>
             </view>
-            <view class="undercarriage">
+            <view class="undercarriage" v-show="noCartList.length > 0">
                 <view class="title">
-                    <text>已下架商品(2)</text>
-                    <text class="close">全部删除</text>
+                    <text>已下架商品({{ noCartList.length }})</text>
+                    <text class="close" @click="delNoCarts">全部删除</text>
                 </view>
                 <view class="list">
-                    <view class="item xj">
+                    <view class="item xj" v-for="(item, index) in noCartList" :key="index">
                         <view class="img">
-                            <image src="../../static/adds.png" mode="aspectFit"></image>
+                            <image :src="item.pic.url" mode="aspectFit"></image>
                             <text></text>
                         </view>
                         <view class="main">
-                            <view class="titles"> 晒精华卡夫卡啦晒精华卡夫卡将 安耐晒精华卡夫卡啦卡gd... </view>
-                            <view class="tip">苍穹奶奶灰 大号</view>
-                            <view class="btn">
-                                <text>商品不支持购买</text>
+                            <view class="titles">{{ item.productname }}</view>
+                            <view class="tip">{{ item.attributeshow }}</view>
+                            <!-- <view class="btn">
+                                <text></text>
                                 <text class="btns">看相似</text>
-                            </view>
-                        </view>
-                    </view>
-                    <view class="item">
-                        <view class="img">
-                            <image src="../../static/adds.png" mode="aspectFit"></image>
-                            <text></text>
-                        </view>
-                        <view class="main">
-                            <view class="titles"> 晒精华卡夫卡啦晒精华卡夫卡将 安耐晒精华卡夫卡啦卡gd... </view>
-                            <view class="tip">苍穹奶奶灰 大号</view>
-                            <view class="btn">
-                                <text>商品不支持购买</text>
-                                <text class="btns">看相似</text>
-                            </view>
+                            </view> -->
                         </view>
                     </view>
                 </view>
@@ -174,6 +160,7 @@ export default {
             allChecked: false, //全选状态  true|false
             empty: false, //空白页现实  true|false
             cartList: [],
+            noCartList: [],
             delstat: false,
             options:[{text: '移入关注',style: {
                 backgroundColor: '#FFB500'
@@ -223,12 +210,23 @@ export default {
                     if (type == 'res') {
                         this.cartList = [];
                     }
-                    let cartList = list.map(item => {
+                    this.noCartList = [];
+                    let noIndex = [];
+                    let cartList = list.map((item, index) => {
                         item.checked = false;
                         for (var i = 0; i < item.goodsinfo.length; i++) {
                             item.goodsinfo[i].checked = false;
+                            if (item.goodsinfo[i].isuse == 0) {
+                                this.noCartList.push(item.goodsinfo[i]);
+                                item.goodsinfo.splice(i, 1);
+                                i--;
+                            }
                         }
+                        if (item.goodsinfo.length == 0) noIndex.push(index);
                         return item;
+                    });
+                    noIndex.forEach(item => {
+                        cartList.splice(item, 1);
                     });
                     this.allChecked = false;
                     this.cartList = cartList;
@@ -245,6 +243,36 @@ export default {
             // });
             // this.cartList = cartList;
             // this.calcTotal();  //计算总价
+        },
+        // 删除不能购买的商品
+        delNoCarts() {
+            let _this = this;
+            uni.showModal({
+                title: '提示',
+                content: '您确定全部删除商品吗',
+                success: function(res) {
+                    if (res.confirm) {
+                        let k = [];
+                        _this.noCartList.forEach(item => {
+                            k.push(item.id);
+                        });
+                        const data = {
+                            shopid: k
+                        };
+                        _this.$ajax.get('shoppingcart/delshop', data).then(res => {
+                            if (res.data.code == 0) {
+                                _this.load();
+                                _this.cartnumbers();
+                                _this.$api.msg('删除成功');
+                            } else {
+                                _this.$api.msg(res.data.msg);
+                            }
+                        });
+                    } else if (res.cancel) {
+                        console.log('用户点击取消');
+                    }
+                }
+            });
         },
 		more(){ },
         openindex(){

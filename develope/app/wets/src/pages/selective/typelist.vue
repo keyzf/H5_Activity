@@ -34,8 +34,7 @@
                     </view>
                     <view class="price-box clamp">
                         <text class="price">
-                            <text>￥</text>
-                            {{ item.newprice }}
+                            <text>￥</text>{{ item.newprice }}
                         </text>
                         <view v-if="item.activitylist.length > 0">
                             <text class="xe" v-for="ite in item.activitylist" :key="ite.wholetext" :style="{ color: ite.color, borderColor: ite.color }">{{ ite.wholetext }}</text>

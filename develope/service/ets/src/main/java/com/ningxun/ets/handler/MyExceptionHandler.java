@@ -14,6 +14,7 @@ public class MyExceptionHandler {
 
 	@ExceptionHandler(value = Exception.class)
 	public Result<?> userVlidata(Exception e) {
+		e.printStackTrace();
 		log.error(e.toString());
 		return ResultHandler.result(ResultEnum.UNKNOWN_EXCEPTION.getCode(), e.getMessage(), null);
 	}
