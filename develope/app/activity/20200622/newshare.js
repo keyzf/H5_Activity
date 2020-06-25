@@ -193,7 +193,7 @@ function earninglist() {
 		}
 		publicAjax("redpacket/incomeRecord", paramjson, "GET").then(function(result) {
 			$("#more").hide();
-			// console.log(result);
+			console.log(result);
 			if (result.code == 0) {
 				$(".record .record_tip").text(result.result.data.headText);
 				var shoplist = result.result.data.incomeList;
@@ -239,7 +239,7 @@ function myinviteRecordlist() {
 		}
 		publicAjax("redpacket/inviteRecord", paramjson, "GET").then(function(result) {
 			$("#more").hide();
-			// console.log(result);
+			console.log(result);
 			if (result.code == 0) {
 				$(".record .record_tip").text(result.result.data.headText);
 				var shoplist = result.result.data.inviteList;
@@ -248,7 +248,7 @@ function myinviteRecordlist() {
 					for (var i = 0; i < shoplist.length; i++) {
 						var _clone = _template.clone();
 						_clone.attr("data-id", shoplist[i].id)
-						_clone.find("img").attr("src", shoplist[i].headurl);
+						_clone.find("img").attr("src", shoplist[i].headUrl);
 						_clone.find(".main .title").append(shoplist[i].name);
 						_clone.find(".main .tip").append(shoplist[i].tel);
 						_clone.find(".number").append(shoplist[i].createtime);
@@ -286,7 +286,7 @@ function inviteRecordlist() {
 		}
 		publicAjax("redpacket/inviteRank", parajson, "GET").then(function(result) {
 			$("#more").hide();
-			// console.log(result);
+			console.log(result);
 			if (result.code == 0) {
 				$(".record .record_tip").text(result.result.data.headText);
 				var shoplist = result.result.data.rankList;
