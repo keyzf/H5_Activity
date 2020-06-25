@@ -63,8 +63,7 @@
           if (!userinfo.guid) {
             this.$api.msg('请先登录');
           } else {
-            location.href = 'http://holdsoft.holdsoft.cn/activity/20200319/share_activity.html?guid=' + userinfo.guid +
-              '&token=' + userinfo.token + '&AppCode=WXMall'
+            location.href = item.weburl+'?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall'
           }
         } else if (item.code == 'WX_LOTTERY') {
           uni.navigateTo({

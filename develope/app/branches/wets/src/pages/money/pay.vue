@@ -96,7 +96,7 @@
                 success: function(res) {
                   // 支付成功后 目前 直接成功并跳转
                   uni.redirectTo({
-                    url: '/pages/money/paySuccess?ordernum=' + _this.ordernum
+                    url: '/pages/paysuccess/paysuccess?ordernumber=' + _this.ordernum
                   });
                 }
               });

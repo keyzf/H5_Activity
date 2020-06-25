@@ -88,7 +88,7 @@ const MyAPI = (url, needSubDomain, method, data) => {
   atoken = Vue.prototype.globaldata.token || CONFIG.token;
   let welfareid = Vue.prototype.globaldata.welfareid || "";
   let AppCode = Vue.prototype.globaldata.AppCode || "WXMall";
-  let MVer = Vue.prototype.globaldata.MVer || "20041501";
+  let MVer = Vue.prototype.globaldata.MVer || "20061801";
 
   data['guid'] = guid;
   data['welfareid'] = welfareid;

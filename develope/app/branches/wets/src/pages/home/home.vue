@@ -1,6 +1,6 @@
 <template>
   <view class="coent">
-    <homePage ref="home" v-if="page_code=='home'" :datalist="datalist" :carouselList="carouselList"></homePage>
+    <homePage ref="home" v-if="page_code=='home'" :datalist="datalist"></homePage>
     <pageTwo ref="category" v-if="page_code=='category'"></pageTwo>
     <pageThree ref="shop" v-if="page_code=='shop'"></pageThree>
     <pagefore ref="cart" v-if="page_code=='cart'"></pagefore>
@@ -33,7 +33,6 @@
       return {
         backshow: false,
         datalist: [],
-        carouselList: [],
         elastic: [{
           begintime: "2020-02-18 19:24:16",
           code: "PROMOTION",
@@ -107,11 +106,6 @@
       if (this.$wx.isWechat()) this.$wx.share();
       this.$ajax.get('homepage/homepageInfo190507', {}).then(res => {
         this.datalist = res.data.result.data;
-        this.datalist.forEach(item => {
-          if(item.type == 12){
-            this.carouselList = item.newhomepagepic;
-          }
-        })
       });
       var _this = this;
       uni.$on('changeLoginState', function(data) {
@@ -196,8 +190,7 @@
               if (!userinfo.guid) {
                 this.$api.msg('请先登录');
               } else {
-                location.href = 'http://holdsoft.holdsoft.cn/activity/20200319/share_activity.html?guid=' + userinfo.guid +
-                  '&token=' + userinfo.token + '&AppCode=WXMall'
+                location.href = this.elastic[index].h5url+'?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall'
               }
             } else {
               uni.navigateTo({
@@ -227,8 +220,6 @@
       load() {
         this.$ajax.get('homepage/homepageInfo190507', {}).then(res => {
           this.datalist = res.data.result.data;
-          let carouselList = this.datalist[0].newhomepagepic;
-          this.carouselList = carouselList;
         });
       },
       backtop() {

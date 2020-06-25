@@ -190,22 +190,28 @@
 
     methods: {
       gofl() {
-        if (uni.getStorageSync('userInfo').guid) {
-          uni.navigateTo({
-            url: '/pages/welfare/welfare'
-          })
-        }else{
-          this.$api.msg('请登录');
-        }
+        // if (uni.getStorageSync('userInfo').guid) {
+        //   uni.navigateTo({
+        //     url: '/pages/welfare/welfare'
+        //   })
+        // }else{
+        //   this.$api.msg('请登录');
+        // }
+        uni.navigateTo({
+          url:'/pages/user/attentionproductlist'
+        })
       },
       gofls() {
-        if (uni.getStorageSync('userInfo').guid) {
-          uni.navigateTo({
-            url: '/pages/fenXiao/fenxiaoMain/fenxiaoMain'
-          })
-        }else{
-          this.$api.msg('请登录');
-        }
+        // if (uni.getStorageSync('userInfo').guid) {
+        //   uni.navigateTo({
+        //     url: '/pages/fenXiao/fenxiaoMain/fenxiaoMain'
+        //   })
+        // }else{
+        //   this.$api.msg('请登录');
+        // }
+        uni.navigateTo({
+          url:'/pages/product/rushbuy'
+        })
       },
       onClick(e) {
         console.log('当前点击的是第' + e.index + '个按钮，点击内容是' + e.content.text)

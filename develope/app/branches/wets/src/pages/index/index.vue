@@ -18,8 +18,8 @@
       <view slot="right" class="search_box" @click.stop="msages"><text v-if="msgtip > 0" class="msgtip"></text></view>
       <view slot="transparentFixedRight" class="search_transparent_box" @click.stop="msages"><text v-if="msgtip > 0"
           class="msgtip"></text></view>
-      <view slot="right" class="search_boxs" @click.stop="goenvelopes"></view>
-      <view slot="transparentFixedRight" class="search_transparent_boxs" @click.stop="goenvelopes"></view>
+     <!-- <view slot="right" class="search_boxs"></view>
+      <view slot="transparentFixedRight" class="search_transparent_boxs"></view> -->
     </nav-bar>
 
     <!-- 头部轮播 -->
@@ -264,12 +264,12 @@
         scrollleft: 0,
         goodsTypeId: 0,
         suspensions:false,
-        suspension:{}
+        suspension:{},
+        carouselList:[]
       };
     },
     props: {
-      datalist: Array,
-      carouselList: Array
+      datalist: Array
     },
     computed: {
       ...mapState(['jump_shop']),
@@ -295,25 +295,29 @@
       uni.$on('changeLoginState', function(data) {
         _this.$ajax.get('homepage/homepageInfo190507', {}).then(res => {
           res.data.result.data.forEach(item => {
-            if (item.type == 27) {
+              if(item.type == 12){
+                _this.carouselList = item.newhomepagepic;
+              }else if (item.type == 27) {
+                _this.goodsTypeId = item.tablist[0].itemid;
+                uni.showLoading({
+                  title: '加载中'
+                })
+                _this.load(0);
+              }
+          })
+        });
+      });
+      _this.$ajax.get('homepage/homepageInfo190507', {}).then(res => {
+        res.data.result.data.forEach(item => {
+            if(item.type == 12){
+              _this.carouselList = item.newhomepagepic;
+            }else if (item.type == 27) {
               _this.goodsTypeId = item.tablist[0].itemid;
               uni.showLoading({
                 title: '加载中'
               })
               _this.load(0);
             }
-          })
-        });
-      });
-      _this.$ajax.get('homepage/homepageInfo190507', {}).then(res => {
-        res.data.result.data.forEach(item => {
-          if (item.type == 27) {
-            _this.goodsTypeId = item.tablist[0].itemid;
-            uni.showLoading({
-              title: '加载中'
-            })
-            _this.load(0);
-          }
         })
       });
       this.$ajax.get('homepage/getSearchboxShading', {}).then(res => {
@@ -389,7 +393,6 @@
         }
       },
       singlejump(item) {
-        console.log(item)
         var _this = this;
         if (item.jumptype == 0) {
           
@@ -435,8 +438,7 @@
           if (!userinfo.guid) {
             _this.$api.msg('请先登录');
           } else {
-            location.href = 'http://holdsoft.holdsoft.cn/activity/20200319/share_activity.html?guid=' + userinfo.guid +
-              '&token=' + userinfo.token + '&AppCode=WXMall'
+            location.href = item.h5url+'?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall'
           }
         } else if (item.code == 'GROUPBUYING') {
           uni.navigateTo({
@@ -482,7 +484,7 @@
           location.href = '';
         } else if (item.jumptype == 8) {
           let userInfo = uni.getStorageSync('userInfo') || '';
-          location.href = item.h5url + "?guid=" + userInfo.guid;
+          location.href = item.h5url + '?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall';
         } else {
           _this.$api.msg('功能开发中');
         }
@@ -534,8 +536,7 @@
           if (!userinfo.guid) {
             _this.$api.msg('请先登录');
           } else {
-            location.href = 'http://holdsoft.holdsoft.cn/activity/20200319/share_activity.html?guid=' + userinfo.guid +
-              '&token=' + userinfo.token + '&AppCode=WXMall'
+            location.href = item.h5url+'?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall'
           }
         } else if (item.activity_code == 'GROUPBUYING') {
           uni.navigateTo({
@@ -581,7 +582,7 @@
           location.href = '';
         } else if (item.jumptype == 8) {
           let userInfo = uni.getStorageSync('userInfo') || '';
-          location.href = item.h5url + "?guid=" + userInfo.guid;
+          location.href = item.h5url + '?guid=' + userinfo.guid + '&token=' + userinfo.token + '&AppCode=WXMall';
         } else {
           _this.$api.msg('功能开发中');
         }
@@ -681,19 +682,6 @@
           url: '/pages/draw/draw?form=10'
         });
       },
-      goenvelopes() {
-        // 跳转红包页面
-        // uni.navigateTo({
-        //   url: '/pages/activity/activity'
-        // })
-        let userinfo = uni.getStorageSync('userInfo');
-        if (!userinfo.guid) {
-          this.$api.msg('请先登录');
-        } else {
-          location.href = 'http://holdsoft.holdsoft.cn/activitydebug/20200622/newshare_activity.html?guid=' + userinfo.guid +
-            '&token=' + userinfo.token + '&AppCode=WXMall'
-        }
-      }
     }
   };
 </script>
