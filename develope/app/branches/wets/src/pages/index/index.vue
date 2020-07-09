@@ -41,6 +41,11 @@
         <swiper-item v-for="(item, index) in carouselList" :key="index" class="carousel-item" @click="singlejump(item)"><img
             :src="item.url" /></swiper-item>
       </swiper>
+      <view class="barrage" :animation="animationData" v-if="send.length > 0">
+        <view>
+          {{sends.user_name}} 刚刚抽取了 {{sends.prize_name}}
+        </view>
+      </view>
     </view>
     
     <!-- 分类 -->
@@ -265,7 +270,10 @@
         goodsTypeId: 0,
         suspensions:false,
         suspension:{},
-        carouselList:[]
+        carouselList:[],
+        send: [],
+        sends:{},
+        animationData:{}
       };
     },
     props: {
@@ -282,6 +290,7 @@
         })
         return k
       },
+      
     },
     watch: {
       touTiaoDatas(newCount, oldCount) {
@@ -354,6 +363,8 @@
           this.msgtip = number;
         }
       });
+      
+      
       var now = new Date();
       var startDate = new Date();
       startDate.setFullYear(2020, 5, 11);
@@ -363,6 +374,35 @@
       endDate.setHours(23, 59, 59);
       if (now >= startDate && now <= endDate) {
         // this.draw = true
+        uni.request({
+          url: 'http://39.107.114.246/ets-service/lottery/list',
+          method: 'POST',
+          data: {
+            pageNo:1,
+            pageSize:50,
+          },
+          header: {
+            'content-type': 'application/json',
+          },
+          success: (res) => {
+            if (res.data.code == 0) {
+              this.send = res.data.res
+              this.sends = this.send[parseInt(Math.random()*this.send.length)]
+              
+              setInterval(() => {
+                this.sends = this.send[parseInt(Math.random()*this.send.length)]
+                var animationRun = uni.createAnimation({
+                  duration: 1000,
+                  timingFunction: 'ease'
+                })
+                animationRun.opacity(1).step();
+                animationRun.opacity(1).step();
+                animationRun.opacity(0).step();
+                this.animationData = animationRun.export();
+              }, 4000)
+            }
+          }
+        });
       }
     },
     methods: {
@@ -889,6 +929,19 @@
       border-radius: 0 0 6% 6%;
       background: #ee3847;
       box-sizing: content-box;
+    }
+    .barrage{
+      position: absolute;
+      left: 30rpx;
+      bottom: 10rpx;
+      z-index: 6;
+      view{
+        background: rgba(0,0,0,0.5);
+        border-radius: 30rpx;
+        font-size: 28rpx;
+        color: #FFF;
+        padding: 10rpx 20rpx;
+      }
     }
   }
 

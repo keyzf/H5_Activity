@@ -10,6 +10,10 @@ public class LotteryReqDTO {
 
     private String userName;
 
+    private Integer lotteryType;
+
+    private String orderId;
+
     public String getGuid() {
         return guid;
     }
@@ -32,5 +36,21 @@ public class LotteryReqDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public Integer getLotteryType() {
+        return lotteryType;
+    }
+
+    public void setLotteryType(Integer lotteryType) {
+        this.lotteryType = lotteryType;
     }
 }

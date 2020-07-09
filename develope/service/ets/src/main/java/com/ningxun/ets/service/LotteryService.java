@@ -21,4 +21,6 @@ public interface LotteryService {
     void logPointInfo(LogPointReqDTO logPointReqDTO);
 
     List<Map<String, Object>> listPrizeRecords(LotteryRecordsReqDTO req);
+
+    JSONObject addLotteryTimes(LotteryReqDTO req);
 }

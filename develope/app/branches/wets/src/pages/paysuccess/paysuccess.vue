@@ -111,7 +111,7 @@
       var that = this;
       if (this.isapp()) {
         that.$util.bridgeAndroidAndIOS(function() {
-          that.stateBarHeight = that.globaldata.statusBarHeight + 85 || 100;
+          that.stateBarHeight = that.globaldata.statusBarHeight + 110 || 110;
           that.orderNumber = that.globaldata.orderNumber || ''; //20200416154259
           that.getPayresult();
         })
@@ -159,6 +159,37 @@
         }).catch(err => {
           console.log(err);
         })
+        uni.request({
+          url: 'http://39.107.114.246/ets-service/lottery/add_times',
+          method: 'POST',
+          data: {
+            guid: uni.getStorageSync('userInfo').guid,
+            orderId: this.orderNumber,
+            lotteryType:3
+          },
+          header: {
+            'content-type': 'application/json',
+          },
+          success: (res) => {
+            if (res.data.res.code == 0) {
+              uni.showModal({
+                title: '',
+                content: '恭喜你！获得2次大转盘抽奖机会！100%中奖！',
+                cancelText:'继续购物',
+                confirmText:'去抽奖',
+                success: function (res) {
+                  if (res.confirm) {
+                    uni.navigateTo({
+                      url:'/pages/draw/draw'
+                    })
+                  } else if (res.cancel) {
+                    console.log('用户点击取消');
+                  }
+                }
+              });
+            }
+          }
+        });
       },
       /**
        * @param {Object} e
@@ -514,23 +545,23 @@
       }
 
       .successbt {
-        display: flex;
-        flex-direction: row;
-        margin-top: 30rpx;
-        justify-content: center;
-        align-items: center;
-
-        .btn {
-          height: 45rpx;
-          line-height: 48rpx;
-          border: 1rpx solid #FFFFFF;
-          color: #FFFFFF;
-          margin: 0 15rpx;
-          padding: 2rpx 25rpx;
-          font-size: 24rpx;
-          text-align: center;
-          border-radius: 40rpx;
-        }
+      	display: flex;
+      	flex-direction: row;
+      	margin-top: 30rpx;
+      	justify-content: center;
+      	align-items: center;
+      
+      	.btn {
+      		height: 45rpx;
+      		line-height: 45rpx;
+      		border: 1rpx solid #FFFFFF;
+      		color: #FFFFFF;
+      		margin: 0 25rpx;
+      		padding: 2rpx 25rpx;
+      		font-size: 28rpx;
+      		text-align: center;
+      		border-radius: 40rpx;
+      	}
       }
     }
 

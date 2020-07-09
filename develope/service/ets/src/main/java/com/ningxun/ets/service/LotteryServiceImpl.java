@@ -5,11 +5,13 @@ import com.ningxun.ets.dto.LogPointReqDTO;
 import com.ningxun.ets.dto.LotteryRecordsReqDTO;
 import com.ningxun.ets.dto.LotteryReqDTO;
 import com.ningxun.ets.entity.ActivityLogEntity;
+import com.ningxun.ets.entity.LotteryRecordEntity;
 import com.ningxun.ets.entity.PrizeCodeEntity;
 import com.ningxun.ets.entity.PrizeEntity;
 import com.ningxun.ets.manager.ActivityLogManager;
 import com.ningxun.ets.manager.LotteryManager;
 import com.ningxun.ets.manager.PrizeManager;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +87,8 @@ public class LotteryServiceImpl implements LotteryService {
                 if (prizeEntity.getState() == 0) {//奖品
                     PrizeCodeEntity prizeCodeEntity = prizeManager.findOneByPrizeId(prizeEntity.getId());
                     prizeCodeEntity.setState(1);
-                    if (null != prizeManager.savePrizeCode(prizeCodeEntity) && lotteryManager.convertCoupon(guid, token, prizeCodeEntity.getCouponCode()).getInteger("code") == 0) {//修改兑换码状态
+                    // && lotteryManager.convertCoupon(guid, token, prizeCodeEntity.getCouponCode()).getInteger("code") == 0
+                    if (null != prizeManager.savePrizeCode(prizeCodeEntity)) {//修改兑换码状态
                         lotteryManager.updateStateByGuid(guid, prizeEntity.getId(), prizeCodeEntity.getCouponCode(), userName);
                         mark = false;
                     }
@@ -128,6 +132,54 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
             return lotteryManager.listMinePrizes(req.getGuid(), pageable).getContent();
         }
+    }
+
+    @Override
+    public JSONObject addLotteryTimes(LotteryReqDTO req) {
+        JSONObject resultJson = new JSONObject();
+
+        LotteryRecordEntity lotteryRecordEntity = new LotteryRecordEntity();
+        lotteryRecordEntity.setLotteryType(req.getLotteryType());
+        lotteryRecordEntity.setState(0);
+        lotteryRecordEntity.setGuid(req.getGuid());
+        lotteryRecordEntity.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
+        if (req.getLotteryType() == 2 || req.getLotteryType() == 3) {//app下单，微信下单
+            if (StringUtils.isEmpty(req.getOrderId())) {
+                resultJson.put("code", -1);
+                resultJson.put("msg", "订单号不能为空");
+                return resultJson;
+            } else {
+                lotteryRecordEntity.setOrderId(req.getOrderId());
+            }
+            Integer orderNum = lotteryManager.countByGuidAndOrderId(req.getGuid(), req.getOrderId());
+            if (null != orderNum && orderNum > 0) {
+                resultJson.put("code", -1);
+                resultJson.put("msg", "该订单号已添加抽奖次数");
+                return resultJson;
+            }
+        } else if (req.getLotteryType() == 4) {//关注
+
+        } else {
+            resultJson.put("code", -1);
+            resultJson.put("msg", "请传入正确类型");
+            return resultJson;
+        }
+
+        List<LotteryRecordEntity> list = new ArrayList<>();
+        LotteryRecordEntity lotteryRecordEntity1 = new LotteryRecordEntity();
+        BeanUtils.copyProperties(lotteryRecordEntity,lotteryRecordEntity1);
+        list.add(lotteryRecordEntity);
+        list.add(lotteryRecordEntity1);
+        if (null != lotteryManager.saveAll(list)) {
+            resultJson.put("code", 0);
+            resultJson.put("lotteryNum", lotteryManager.countByGuidAndState(req.getGuid(), 0));
+            resultJson.put("msg", "添加成功");
+        } else {
+            resultJson.put("code", -1);
+            resultJson.put("msg", "添加失败");
+        }
+        return resultJson;
     }
 
 }

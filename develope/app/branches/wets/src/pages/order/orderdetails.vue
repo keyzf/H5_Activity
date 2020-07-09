@@ -222,6 +222,7 @@
         </view> -->
       <uni-popup ref="assemble" class="assembles" type="center" @touchmove.stop="">
         <view class="layer">
+          <text class="del" @click="closeshare"></text>
           <view class="assemble">
             <view class="imgs">
               <image :src="item" mode="aspectFill" v-for="(item,index) in orderDetail.groupbuymember" :key="index"></image>
@@ -292,7 +293,10 @@
     },
     methods: {
       openshare() {
-        this.$refs.assemble.open();
+        this.$refs.assemble.close();
+        uni.navigateTo({
+          url: '/pages/order/share?ordernumber=' + this.ordernum + '&teamguid=' + this.orderDetail.takegroupbuyteamguid
+        })
       },
       // 二维码生成
       createQrcode(str) {
@@ -432,6 +436,9 @@
       closetel() {
         this.telpopup = false;
       },
+      closeshare() {
+        this.$refs.assemble.close()
+      },
       telshow(e) {
         if (e.show == false) {
           this.telpopup = false;
@@ -440,8 +447,8 @@
       // 复制单号
       copyOrder() {
         var _this = this;
-        let clipboard = new Clipboard(".cobyOrderSn",{
-          text: function () {
+        let clipboard = new Clipboard(".cobyOrderSn", {
+          text: function() {
             return _this.orderDetail.fictitiousOrderDetilInfo.converturl
           }
         });
@@ -966,7 +973,7 @@
   }
 
   .assemble {
-    margin: 20rpx 30rpx;
+    margin: 20rpx 50rpx;
 
     .imgs {
       text-align: center;
@@ -1012,21 +1019,30 @@
     /deep/ .uni-popup__wrapper-box {
       background: url(../../static/share_group_buy_pop.webp) no-repeat center !important;
       background-size: 100% 100% !important;
-      ;
       width: 750rpx;
       height: 760rpx;
       max-width: inherit !important;
       max-height: inherit !important;
-      ;
     }
 
     .layer {
       width: 90%;
       margin: 0 auto;
       margin-top: 320rpx;
+      position: relative;
+
+      .del {
+        background: url(../../static/del.png) no-repeat center;
+        background-size: 60rpx 60rpx;
+        width: 100rpx;
+        height: 100rpx;
+        position: absolute;
+        right: 40rpx;
+        top: -80rpx;
+      }
 
       .btn {
-        margin-top: 40rpx;
+        margin-top: 80rpx;
         background: rgb(220, 208, 38);
         color: $base-color;
         font-weight: bold;

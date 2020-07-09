@@ -82,4 +82,15 @@ public class LotteryController {
         return ResultHandler.result(lotteryService.listPrizeRecords(req));
     }
 
+    @PostMapping("/add_times")
+    public Result addLotteryTimes(@RequestBody @Valid LotteryReqDTO req, BindingResult bindingResult) throws Exception {
+        if (bindingResult.hasErrors()) {
+            return ResultHandler.result(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+        }
+        if (!lotteryService.whetherActivityTime()) {
+            return ResultHandler.result(-1, "不在活动期间内", null);
+        }
+        return ResultHandler.result(lotteryService.addLotteryTimes(req));
+    }
 }

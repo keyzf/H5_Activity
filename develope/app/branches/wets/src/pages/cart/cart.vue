@@ -197,6 +197,11 @@
         // }else{
         //   this.$api.msg('请登录');
         // }
+        // uni.navigateTo({
+        //   url:'/pages/oneyuangroup/oneyuangroup'
+        // })
+        
+        
         uni.navigateTo({
           url:'/pages/user/attentionproductlist'
         })
@@ -210,8 +215,13 @@
         //   this.$api.msg('请登录');
         // }
         uni.navigateTo({
-          url:'/pages/product/rushbuy'
+          url:'/pages/product/assemble'
         })
+        
+        
+        // uni.navigateTo({
+        //   url:'/pages/product/rushbuy'
+        // })
       },
       onClick(e) {
         console.log('当前点击的是第' + e.index + '个按钮，点击内容是' + e.content.text)
@@ -583,6 +593,7 @@
           });
         });
         if (goodsData.length > 0) {
+          console.log(goodsData)
           uni.navigateTo({
             url: '/pages/order/createOrder?type=cart&data=' + JSON.stringify({
               goodsData: goodsData

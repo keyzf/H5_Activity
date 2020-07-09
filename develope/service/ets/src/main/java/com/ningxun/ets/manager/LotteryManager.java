@@ -41,7 +41,7 @@ public class LotteryManager {
         start.setTime(startDate);
 
         Calendar end = Calendar.getInstance();
-        Date endDate = sdf.parse("2020-06-28 00:00:00");
+        Date endDate = sdf.parse("2020-07-28 00:00:00");
         end.setTime(endDate);
 
         return now.after(start) && now.before(end);
@@ -134,4 +134,13 @@ public class LotteryManager {
     public Page<Map<String, Object>> listPrizes(Pageable pageable) {
         return lotteryRecordDAO.listPrizes(pageable);
     }
+
+    public List<LotteryRecordEntity> saveAll(List<LotteryRecordEntity> lotteryRecordEntityList) {
+        return lotteryRecordDAO.saveAll(lotteryRecordEntityList);
+    }
+
+    public Integer countByGuidAndOrderId(String guid, String orderId) {
+        return lotteryRecordDAO.countByGuidAndOrderIdAndState(guid, orderId, 0);
+    }
+
 }

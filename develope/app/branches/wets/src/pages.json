@@ -1618,6 +1618,20 @@
         "navigationStyle": "custom",
         "enablePullDownRefresh": true
       }
+    }, {
+      "path": "pages/oneyuangroup/oneyuangroup",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }, {
+      "path": "pages/oneyuangroup/detail",
+      "style": {}
+    }, {
+      "path": "pages/order/share",
+      "style": {}
+    }, {
+      "path": "pages/order/joinleague",
+      "style": {}
     }
   ],
   "globalStyle": {

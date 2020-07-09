@@ -21,7 +21,10 @@ public class LotteryRecordEntity {
     private String userName;
 
     @Column(name = "lottery_type")
-    private Integer lotteryType;
+    private Integer lotteryType;//0登录，1分享，2app下单,3微信下单,4关注
+
+    @Column(name = "order_id")
+    private String orderId;//下单时传,一个订单只能添加两次抽奖次数
 
     @Column(name = "state")
     private Integer state;
@@ -108,5 +111,13 @@ public class LotteryRecordEntity {
 
     public void setLotteryTime(Timestamp lotteryTime) {
         this.lotteryTime = lotteryTime;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

@@ -49,9 +49,9 @@
 			</view> -->
             </view>
             <view class="share-section">
-                <view class="share-icon" v-for="(item, index) in data.after_sale_list" :key="index">
+                <view class="share-icon" :class="{x:item.type == 2}" v-for="(item, index) in data.after_sale_list" :key="index">
                     <text class="yticon icon-xingxing"></text>
-                    {{ item }}
+                    {{ item.text }}
                 </view>
             </view>
             <view class="c-list">
@@ -1291,6 +1291,14 @@
                 top: -6upx;
                 position: absolute;
                 background: $uni-color-primary;
+            }
+            &.x{
+              border: 0;
+              background: #f1f1f1;
+              color: #969696;
+              &:after {
+                  content: none;
+              }
             }
         }
 

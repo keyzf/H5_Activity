@@ -316,4 +316,9 @@ module.exports = {
   getcounpon: (data) => {
   	return MyAPI('product/getReceiveCoupon', false, 'GET', data)
   },
+  // -----------------------1元拼购---------------------------------------
+  //1元拼购首页数据
+  oneyuanList: (data) => {
+  	return MyAPI('groupbuyone/homepage', false, 'GET', data)
+  },
 }

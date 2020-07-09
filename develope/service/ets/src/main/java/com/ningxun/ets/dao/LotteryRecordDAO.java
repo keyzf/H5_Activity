@@ -36,4 +36,5 @@ public interface LotteryRecordDAO extends JpaRepository<LotteryRecordEntity, Int
             countQuery = "SELECT COUNT(id) FROM lottery_record  WHERE state = 1 AND prize_id IS NOT NULL", nativeQuery = true)
     Page<Map<String, Object>> listPrizes(Pageable pageable);
 
+    Integer countByGuidAndOrderIdAndState(String guid, String orderId, Integer state);
 }
