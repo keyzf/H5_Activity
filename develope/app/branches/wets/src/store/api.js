@@ -80,21 +80,19 @@ const MyAPI = (url, needSubDomain, method, data) => {
 
   // h5单独测试的时候,用临时的token和guid
 
-  if ((Vue.prototype.globaldata.guid || CONFIG.guid || '').length == 0) {
+  if ((Vue.prototype.globaldata.guid || uni.getStorageSync('userInfo').guid || '').length == 0) {
     getToken();
   }
-
-  let guid = Vue.prototype.globaldata.guid || CONFIG.guid;
-  atoken = Vue.prototype.globaldata.token || CONFIG.token;
+  
+  let guid = Vue.prototype.globaldata.guid || uni.getStorageSync('userInfo').guid||'';//9125ce8d751f465aac9d555bdb305dcf
+  atoken = Vue.prototype.globaldata.token || uni.getStorageSync('userInfo').token;
   let welfareid = Vue.prototype.globaldata.welfareid || "";
   let AppCode = Vue.prototype.globaldata.AppCode || "WXMall";
   let MVer = Vue.prototype.globaldata.MVer || "20061801";
-
+  
   data['guid'] = guid;
   data['welfareid'] = welfareid;
   data = sign(mypath, data);
-
-
 
   if (method == "GET") {
     // url拼接参数
@@ -132,7 +130,6 @@ const MyAPI = (url, needSubDomain, method, data) => {
         },
         fail: (err) => {
           reject(err)
-          console.log(err.msg);
           uni.showModal({
             title: '提示',
             content: '请求失败,请稍后重试',
@@ -220,6 +217,10 @@ module.exports = {
   myorder: (data) => {
     return MyAPI('benefits/myorder', false, 'GET', data)
   },
+  // 获取商品规格
+  getGoodGuiGe: (data) => {
+  	return MyAPI('benefits/ShoppingCart', false, 'GET', data)
+  },
   // 敬请期待
   expecting: (data) => {
     return MyAPI('benefits/expecting', false, 'GET', data)
@@ -227,6 +228,10 @@ module.exports = {
   // 购物车显示
   shoppingCart: (data) => {
     return MyAPI('benefits/shoppingCart', false, 'GET', data)
+  },
+  // 进页面获取购物车信息
+  firstInCartInfo: (data) => {
+  	return MyAPI('benefits/getShopcartSkus', false, 'GET', data)
   },
   // 重选
   chongXuan: (data) => {
@@ -238,14 +243,14 @@ module.exports = {
   },
   // 结算
   checkOut: (data) => {
-    return MyAPI('benefits/checkOut', false, 'GET', data)
+    return MyAPI('shoppingcart/Checkoutfix', false, 'GET', data)
   },
   //兑换优惠券
   exchangeCoupon: (data) => {
     return MyAPI('benefits/amountExchange', false, 'GET', data)
   },
   //获取余额明细
-  getMoneyDetail: (data) => {
+  getMoneyDetails: (data) => {
     return MyAPI('benefits/amountDetails', false, 'GET', data)
   },
   //支付成功
@@ -261,6 +266,10 @@ module.exports = {
   //选择优惠券
   selectLuck: (data) => {
     return MyAPI('lottery/choosePrize', false, 'GET', data)
+  },
+  //选择优惠券
+  selectLuckRedpack: (data) => {
+    return MyAPI('redpacket/getRebateRedpacket', false, 'GET', data)
   },
   // ----------------------------- 分销 -----------------------------
   
@@ -320,5 +329,10 @@ module.exports = {
   //1元拼购首页数据
   oneyuanList: (data) => {
   	return MyAPI('groupbuyone/homepage', false, 'GET', data)
+  },
+  // ---------------------- 点滴关怀 -------------------------------------
+  // 获取token
+  dianDiLoginToken: (data) => {
+  	return MyAPI('diandi/getLoginToken', false, 'GET', data)
   },
 }

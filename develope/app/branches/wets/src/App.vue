@@ -516,6 +516,13 @@
       color: #9f8d58;
       padding: 4rpx;
     }
+    .tipimg {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
   }
 
   .clamp {
@@ -762,7 +769,7 @@
       }
 
       .item-con {
-        padding: 4rpx 10rpx 20rpx 10rpx;
+        padding: 4rpx 10rpx 10rpx 10rpx;
       }
     }
 
@@ -771,6 +778,8 @@
       height: 330upx;
       border-radius: 3px;
       overflow: hidden;
+      font-size: 0;
+      position: relative;
 
       img {
         width: 100%;
@@ -786,18 +795,43 @@
         width: 100%;
         height: 330upx;
       }
+           
+      .tip {
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #f0ece1;
+        font-size: 24rpx;
+        color: #9f8d58;
+        padding: 4rpx;
+      }
+      .tipimg {
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+      }
     }
 
     .title {
-      font-size: $font-lg;
+      font-size: 28rpx;
       color: $font-color-dark;
-      line-height: 1.5;
+      line-height: 1.4;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       margin-bottom: 8rpx;
-
+      img{
+        height: 36rpx;
+        display: inline-block;
+        vertical-align: sub;
+        margin-right: 8rpx;
+      }
       .presell {
         padding: 0rpx 8rpx;
         background: $uni-color-primary;
@@ -807,7 +841,30 @@
         border-radius: 6rpx;
       }
     }
-
+    .titles {
+      font-size: 28rpx;
+      color: $font-color-dark;
+      line-height: 1.4;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      margin-bottom: 8rpx;
+      img{
+        height: 36rpx;
+        display: inline-block;
+        vertical-align: sub;
+        margin-right: 8rpx;
+      }
+      .presell {
+        padding: 0rpx 8rpx;
+        background: $uni-color-primary;
+        font-size: 24rpx;
+        color: white;
+        margin-right: 12rpx;
+        border-radius: 6rpx;
+      }
+    }
     .price-box {
       display: flex;
       align-items: center;
@@ -832,11 +889,17 @@
     }
 
     .price {
-      font-size: $font-lg;
+      font-size: 28rpx;
       color: $uni-color-primary;
       line-height: 1;
     }
-
+    .oldprice{
+      font-size: 24rpx;
+      color: #969699;
+      text{
+        text-decoration: line-through;
+      }
+    }
     .typename {
       font-size: 24rpx;
       color: white;

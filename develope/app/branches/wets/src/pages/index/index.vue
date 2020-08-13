@@ -180,15 +180,21 @@
             <image v-if="item.isNewOnShelvesProduct == 1" class="label" :src="item.newOnShelvesProductIcon" mode="aspectFit"></image>
             <view class="image-wrapper">
               <uimg :src="item.url"></uimg>
+              <image v-if="item.mainpicIcon != ''" :src="item.mainpicIcon" mode="aspectFit" class="tipimg"></image>
+              <view class="tip clamp" v-if="item.mainpicIcon == '' && item.feature_short != ''">{{item.feature_short}}</view>
             </view>
             <view class="item-con">
-              <view class="title"><text v-if="item.presell" class="presell">{{item.presell}}</text>{{ item.name }}</view>
-              <view class="price-box clamp">
-                <text class="price">{{ item.price }}</text>
-                <text v-if="item.activitylist.length == 0">{{ item.sales }}</text>
-                <view v-else>
-                  <text v-for="ite in item.activitylist" :key="ite.wholetext" :style="{color:ite.color,borderColor:ite.color}">{{ ite.wholetext }}</text>
-                </view>
+              <view class="title"><img v-if="item.titleIcon != ''" :src="item.titleIcon"><text v-if="item.presell" class="presell">{{item.presell}}</text>{{ item.name }}</view>
+              <view class="price-box">
+                <text class="price">{{ item.priceHeader }}{{ item.price }}</text>
+              </view>
+              <view class="oldprice">{{ item.oldpriceHeader }} <text>{{ item.oldprice }}</text></view>
+              <view class="clamp">
+                  <view class="typename">
+                      <block v-if="item.selficon.url"><image :src="item.selficon.url" mode="aspectFit"></image></block>
+                      <block v-else><text>{{ item.typename }}</text></block>
+                  </view>
+                  <text class="companyname" @click.stop="goshop(item)">{{ item.companyname }}</text>
               </view>
             </view>
           </view>
@@ -233,6 +239,7 @@
   import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
   import countdown from '@/components/countdown/countdown.vue';
   import navBar from '@/components/navBar/index.vue';
+  import API from "@/store/api.js";
   import {
     mapState
   } from 'vuex';
@@ -406,6 +413,17 @@
       }
     },
     methods: {
+      goshop(it){
+        if(it.isself ==0){
+          uni.navigateTo({
+              url: '/pages/product/shop?cguid=' + it.cguid
+          });
+        }else if(it.isself == 1){
+          uni.navigateTo({
+              url: '/pages/product/shopproductlist?cguid=' + it.cguid
+          });
+        }
+      },
       leftscroll(e) {
         var left = e.detail;
         var gd = (left.scrollLeft / left.scrollWidth * 100).toFixed(2)
@@ -455,8 +473,12 @@
             url: '/pages/product/rushbuy'
           });
         } else if (item.code == 'POSTER') {
-          if(item.activityid.toString().indexOf("@")>-1){
-            var cd = item.activityid.split('@');
+          if(item.h5url){
+            uni.navigateTo({
+              url: '/pages/selective/selective?id=' + item.activityid
+            });
+          }else if(item.activityid.toString().indexOf("@")>-1){
+            var cd = item.activityid.toString().split('@');
             uni.navigateTo({
               url: '/pages/selective/selective?id=' + cd[0]
             });
@@ -473,6 +495,10 @@
           uni.navigateTo({
             url: '/pages/product/ranking'
           });
+        } else if (item.code == 'GROUPBUYONE') {
+          uni.navigateTo({
+            url: '/pages/oneyuangroup/oneyuangroup'
+          });
         } else if (item.code == 'H5_NOSTATUS') {
           let userinfo = uni.getStorageSync('userInfo');
           if (!userinfo.guid) {
@@ -486,7 +512,7 @@
           });
         } else if (item.code == 'BENEFIT') {
           uni.navigateTo({
-            url: '/pages/product/welfare'
+            url: '/pages/welfare/welfare'
           });
         } else if (item.code == 'COUPON') {
           uni.navigateTo({
@@ -515,6 +541,30 @@
           uni.navigateTo({
             url: '/pages/product/fashionable?id=' + item.activityid
           });
+        } else if (item.code == 'THIRDPARTY_DIANDI') {
+          let userinfo = uni.getStorageSync('userInfo');
+          if (!userinfo.guid) {
+            _this.$api.msg('请先登录');
+          } else {
+            API.dianDiLoginToken({
+              dianDiJumpType : item.activityid
+            }).then(res => {
+              let resData = res.data.result.data
+              if (res.data.code == -1) {
+                uni.showModal({
+                  title: '提示',
+                  content: res.data.msg,
+                  showCancel: false
+                })
+                return
+              } 
+              // 跳转到点滴
+              let _url = resData.method_url+'?'+'surl='+resData.login_url+'&force=true&login_token='+resData.login_token
+              window.location.href = _url
+            }).catch(err => {
+              console.log(err);
+            })
+          }
         } else if (item.code == 'CONSUMERANK') {
           let userinfo = uni.getStorageSync('userInfo');
           if (userinfo.guid) {
@@ -530,7 +580,6 @@
         }
       },
       singlejumps(item) {
-        console.log(item)
         var _this = this;
         if (item.jumptype == 0) {
           
@@ -553,8 +602,12 @@
             url: '/pages/product/rushbuy'
           });
         } else if (item.activity_code == 'POSTER') {
-          if(item.itemid.toString().indexOf("@")>-1){
-            var cd = item.itemid.split('@');
+          if(item.h5url){
+            uni.navigateTo({
+              url: '/pages/selective/selective?id=' + item.itemid
+            });
+          }else if(item.itemid.toString().indexOf("@")>-1){
+            var cd = item.itemid.toString().split('@');
             uni.navigateTo({
               url: '/pages/selective/selective?id=' + cd[0]
             });
@@ -567,9 +620,37 @@
           uni.navigateTo({
             url: '/pages/draw/draw?form=11'
           });
+        } else if (item.activity_code == 'THIRDPARTY_DIANDI') {
+          let userinfo = uni.getStorageSync('userInfo');
+          if (!userinfo.guid) {
+            _this.$api.msg('请先登录');
+          } else {
+            API.dianDiLoginToken({
+              dianDiJumpType : item.activityid
+            }).then(res => {
+              let resData = res.data.result.data
+              if (res.data.code == -1) {
+                uni.showModal({
+                  title: '提示',
+                  content: res.data.msg,
+                  showCancel: false
+                })
+                return
+              } 
+              // 跳转到点滴
+              let _url = resData.method_url+'?'+'surl='+resData.login_url+'&force=true&login_token='+resData.login_token
+              window.location.href = _url
+            }).catch(err => {
+              console.log(err);
+            })
+          }
         } else if (item.activity_code == 'RANKLIST') {
           uni.navigateTo({
             url: '/pages/product/ranking'
+          });
+        } else if (item.activity_code == 'GROUPBUYONE') {
+          uni.navigateTo({
+            url: '/pages/oneyuangroup/oneyuangroup'
           });
         } else if (item.activity_code == 'H5_NOSTATUS') {
           let userinfo = uni.getStorageSync('userInfo');
@@ -584,7 +665,7 @@
           });
         } else if (item.activity_code == 'BENEFIT') {
           uni.navigateTo({
-            url: '/pages/product/welfare'
+            url: '/pages/welfare/welfare'
           });
         } else if (item.activity_code == 'COUPON') {
           uni.navigateTo({

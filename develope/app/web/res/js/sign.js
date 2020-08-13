@@ -6,11 +6,16 @@ $(document).on("click", ".classify-item", function() {
 		$(this).addClass("x");
 		signup = $(this).attr("data-id");
 		if (signup == 2) {
+      $(".business").children().eq(1).hide();
+      $(".business").children().eq(0).show();
 			$(".company").show();
 			$(".team").hide();
 		} else if (signup == 1) {
 			$(".team").show();
 			$(".company").hide();
+		} else if (signup == 3) {
+			$(".business").children().eq(0).hide();
+			$(".business").children().eq(1).show();
 		}
 	}
 });
@@ -64,33 +69,61 @@ function preview(obj) {
 
 
 $(".btn").click(function() {
-	var data = check();
-	if (!data) {
-
-	} else {
-		layer.load(1, {
-			shade: [0.3, '#393D49']
-		});
-		$.ajax({
-			type: "POST",
-			url: "http://114.115.217.252:8001/HighMallServer/helppoorcompetition2019/signup",
-			data: data,
-			async: true,
-			success: function(result) {
-				layer.closeAll('loading');
-				if (result.code == 0) {
-					$(".form-list").hide();
-					$(".info-list .name").text(data.userName);
-					$(".info-list .companyName").text(data.companyName);
-					$(".info-list .tel").text(data.tel);
-					$(".info-list").show();
+	if (signup == 3) {
+	 var data = checks();
+	 if (data) {
+	 	layer.load(1, {
+	 		shade: [0.3, '#393D49']
+	 	});
+	   
+	 	$.ajax({
+	 		type: "POST",
+	 		url: "http://114.115.217.252:8001/HighMallServer/helppoorcompetition2019/studentsSignUp",
+	 		data: data,
+	 		async: true,
+	 		success: function(result) {
+	 			layer.closeAll('loading');
+	 			if (result.code == 0) {
+	 				$(".form-list").hide();
+	 				$(".info-list .name").text(data.userName);
+	 				$(".info-list .tel").text(data.tel);
+	 				$(".info-list").show();
+	 			}
+	 			layer.msg(result.msg);
+	 		},
+	 		error: function(status) {
+	 			layer.closeAll('loading');
+	 		}
+	 	});
+	 }
+	} else  {
+		var data = check();
+		if (data) {
+			layer.load(1, {
+				shade: [0.3, '#393D49']
+			});
+		  
+			$.ajax({
+				type: "POST",
+				url: "http://114.115.217.252:8001/HighMallServer/helppoorcompetition2019/signup",
+				data: data,
+				async: true,
+				success: function(result) {
+					layer.closeAll('loading');
+					if (result.code == 0) {
+						$(".form-list").hide();
+						$(".info-list .name").text(data.userName);
+						$(".info-list .companyName").text(data.companyName);
+						$(".info-list .tel").text(data.tel);
+						$(".info-list").show();
+					}
+					layer.msg(result.msg);
+				},
+				error: function(status) {
+					layer.closeAll('loading');
 				}
-				layer.msg(result.msg);
-			},
-			error: function(status) {
-				layer.closeAll('loading');
-			}
-		});
+			});
+		}
 	}
 });
 
@@ -196,6 +229,101 @@ function check() {
 			data.originalCompanyName = comName;
 		} else if (signup == 1) {
 			data.teamMemberJson = teamMember;
+		}else{
+      console.log(data)
+    }
+		return data;
+	} else {
+		layer.msg(msg);
+		return false;
+	}
+}
+
+
+function checks() {
+	var mark = true;
+	var msg = "";
+  var userName = $(".userNames").val();
+  if (mark && userName == "") {
+    msg = "请填写负责人姓名";
+  	mark = false;
+  }
+  var phone = $(".tels").val();
+  if (mark && phone == "") {
+  	msg = "请填写手机号";
+  	mark = false;
+  }
+  var code = $(".verificationCodes").val();
+  if (mark && code == "") {
+  	msg = "请填写验证码";
+  	mark = false;
+  }
+  var schoolNames = $(".schoolNames").val();
+  if (mark && schoolNames == "") {
+  	msg = "请填写学校名称";
+  	mark = false;
+  }
+  var projectName = $(".projectNames").val();
+  if (mark && projectName == "") {
+  	msg = "请填写项目名称";
+  	mark = false;
+  }
+  var applicableFileds = $(".applicableFiledss").val();
+  if (mark && applicableFileds == "") {
+  	msg = "请填写适用领域";
+  	mark = false;
+  }
+  var projectIntroduction = $(".projectIntroductions").val();
+  if (mark && projectIntroduction == "") {
+  	msg = "请填写项目简介";
+  	mark = false;
+  }
+  var idCard = $(".idCardNumbers").val();
+  if (mark && idCard == "") {
+  	msg = "请填写身份证号";
+  	mark = false;
+  }
+  var frontUrl = $(".idCards .uploadImg").eq(0).attr("src");
+  if (mark && $(".idCards .uploadImg").eq(0).attr("data-id") == 0) {
+  	msg = "请上传身份证正面";
+  	mark = false;
+  }
+  var backUrl = $(".idCards .uploadImg").eq(1).attr("src");
+  if (mark && $(".idCards .uploadImg").eq(1).attr("data-id") == 0) {
+  	msg = "请上传身份证背面";
+  	mark = false;
+  }
+  var holdUrl = $(".idCards .uploadImg").eq(2).attr("src");
+  if (mark && $(".idCards .uploadImg").eq(2).attr("data-id") == 0) {
+  	msg = "请上传手持身份证";
+  	mark = false;
+  }
+  var address = $(".addresss").val();
+  if (mark && address == "") {
+    msg = "请填写负责人地址";
+  	mark = false;
+  }
+  
+  var teamMember;
+  if (mark) {
+  	teamMember = getMembers();
+  }
+	
+	if (mark) {
+		var data = {
+			"userName": userName,
+      "tel": phone,
+      "verificationCode": code,
+      "schoolName":schoolNames,
+      "projectName":projectName,
+      "applicableFileds":applicableFileds,
+      "projectIntroduction":projectIntroduction,
+      "idCardNumber": idCard,
+      "idCardFrontPhotoUrl": frontUrl,
+      "idCardBackPhotoUrl": backUrl,
+      "idCardHoldPhotoUrl": holdUrl,
+			"address": address,
+      "teamMemberJson":teamMember
 		}
 		return data;
 	} else {
@@ -204,6 +332,8 @@ function check() {
 	}
 }
 
+
+
 var mark = true;
 $(document).on("click", ".code-tip", function() {
 	var regexp = /^1\d{10}$/;
@@ -211,6 +341,17 @@ $(document).on("click", ".code-tip", function() {
 	if (regexp.test(phoneNum)) {
 		if (mark) {
 			getCode(phoneNum);
+		}
+	} else {
+		layer.msg("请输入正确的手机号!");
+	}
+});
+$(document).on("click", ".code-tips", function() {
+	var regexp = /^1\d{10}$/;
+	var phoneNum = $(".tels").val();
+	if (regexp.test(phoneNum)) {
+		if (mark) {
+			getCodes(phoneNum);
 		}
 	} else {
 		layer.msg("请输入正确的手机号!");
@@ -242,11 +383,13 @@ function countdown() {
 	if (down == 0) {
 		mark = true;
 		$(".code-tip").text("获取验证码");
+		$(".code-tips").text("获取验证码");
 		down = 90;
 		return false;
 	} else {
 		mark = false;
 		$(".code-tip").text("重新发送(" + down + ")");
+		$(".code-tips").text("重新发送(" + down + ")");
 		down--;
 	}
 	setTimeout(function() {
@@ -298,6 +441,28 @@ $(document).on("click", ".addMember", function() {
 		$(this).parent().parent().remove();
 	}
 });
+$(document).on("click", ".addMembers", function() {
+	var memberName = $(this).parent().find(".memberNames").val();
+	var memberCard = $(this).parent().find(".idcardss").val();
+	if ($(".addMembers").length >= 5) {
+		layer.msg("不能添加更多的团队成员了!");
+		return;
+	}
+	if (memberName == "" || memberName == "") {
+		layer.msg("请填写成员姓名及身份证号后再添加!");
+		return;
+	}
+	var type = $(this).attr("data-type");
+	if (type == 0) {
+		var _template = $(this).parent().parent().clone();
+		$(_template).find("input").val("");
+		$(this).attr("data-type", 1);
+		$(this).text("删除团队成员");
+		$(this).parent().parent().after(_template);
+	} else if (type == 1) {
+		$(this).parent().parent().remove();
+	}
+});
 
 function getMember() {
 	var jsons = [];
@@ -305,6 +470,25 @@ function getMember() {
 	$(".member").each(function() {
 		var memberName = $(this).find(".memberName").val();
 		var idcard = $(this).find(".idcard").val();
+		if (memberName != "" && idcard != "") {
+			jsons.push(new Object({
+				realname: memberName,
+				idnumber: idcard
+			}));
+		}
+	});
+	if (jsons.length > 0) {
+		return JSON.stringify(jsons);
+	} else {
+		return "";
+	}
+}
+function getMembers() {
+	var jsons = [];
+	var mark = true;
+	$(".members").each(function() {
+		var memberName = $(this).find(".memberNames").val();
+		var idcard = $(this).find(".idcardss").val();
 		if (memberName != "" && idcard != "") {
 			jsons.push(new Object({
 				realname: memberName,

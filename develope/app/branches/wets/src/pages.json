@@ -259,7 +259,8 @@
     }, {
       "path": "pages/user/recharge",
       "style": {
-        "navigationBarTitleText": "充值"
+        "navigationBarTitleText": "充值",
+        "navigationStyle": "custom"
       }
     }, {
       "path": "pages/user/ub_pay",
@@ -274,12 +275,14 @@
     }, {
       "path": "pages/user/accounts",
       "style": {
-        "navigationBarTitleText": "转账"
+        "navigationBarTitleText": "转账",
+        "navigationStyle": "custom"
       }
     }, {
       "path": "pages/user/accounts-user",
       "style": {
-        "navigationBarTitleText": "转账用户"
+        "navigationBarTitleText": "转账用户",
+        "navigationStyle": "custom"
       }
     }, {
       "path": "pages/user/invalidenvelopes",
@@ -1503,6 +1506,11 @@
         "navigationStyle": "custom"
       }
     }, {
+      "path": "pages/paysuccess/scanpay_paysuccess",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }, {
       "path": "pages/order/welfare_new_order",
       "style": {
         "navigationStyle": "custom"
@@ -1632,6 +1640,26 @@
     }, {
       "path": "pages/order/joinleague",
       "style": {}
+    }, {
+      "path": "pages/dianDi/dianDiLogIn",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }, {
+      "path": "pages/dianDi/dianDiPay",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }, {
+      "path": "pages/user/balance",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }, {
+      "path": "pages/user/redpacketinfo",
+      "style": {
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {

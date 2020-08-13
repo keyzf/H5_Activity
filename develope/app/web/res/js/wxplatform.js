@@ -4,6 +4,31 @@ var pageSize = 6;
 var keyword = "";
 
 $(function() {
+  var now = new Date();
+  
+  var startDate1 = new Date('2020-8-11 0:0:0');
+  var startDate2 = new Date('2020-9-11 0:0:0');
+  var startDate3 = new Date('2020-10-11 0:0:0');
+  var startDate4 = new Date('2020-11-11 0:0:0');
+  var lidow = $(".procedure-list .procedure-item")
+
+  if (now < startDate1) {
+    
+  }else if(now < startDate2){
+    lidow.eq(1).find('img').attr("src",'res/img/sxjs_2.png')
+  }else if(now < startDate3){
+    lidow.eq(1).find('img').attr("src",'res/img/sxjs_2.png')
+    lidow.eq(2).find('img').attr("src",'res/img/sxjs_3.png')
+  }else if(now < startDate4){
+    lidow.eq(1).find('img').attr("src",'res/img/sxjs_2.png')
+    lidow.eq(2).find('img').attr("src",'res/img/sxjs_3.png')
+    lidow.eq(3).find('img').attr("src",'res/img/sxjs_4.png')
+  }else{
+    lidow.eq(1).find('img').attr("src",'res/img/sxjs_2.png')
+    lidow.eq(2).find('img').attr("src",'res/img/sxjs_3.png')
+    lidow.eq(3).find('img').attr("src",'res/img/sxjs_4.png')
+    lidow.eq(4).find('img').attr("src",'res/img/sxjs_5.png')
+  }
 	searchShop();
 });
 

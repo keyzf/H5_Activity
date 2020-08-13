@@ -65,6 +65,9 @@ export default {
         this.orderList = [];
         this.getOrderList('');
     },
+    onReachBottom() {
+      this.getOrderMore();
+    },
     methods: {
         //首次加载
         loadData(source) {

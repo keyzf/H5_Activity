@@ -225,9 +225,11 @@
           <image v-if="item.isNewOnShelvesProduct == 1" class="label" :src="item.newOnShelvesProductIcon" mode="aspectFit"></image>
           <view class="image-wrapper">
             <uimg :src="item.url"></uimg>
+            <image v-if="item.mainpicIcon != ''" :src="item.mainpicIcon" mode="aspectFit" class="tipimg"></image>
+            <view class="tip clamp" v-if="item.mainpicIcon == '' && item.feature_short != ''">{{item.feature_short}}</view>
           </view>
           <view class="item-con">
-            <view class="titles clamp"><text v-if="item.presell" class="presell">{{item.presell}}</text>{{ item.name }}</view>
+            <view class="titles"><text v-if="item.presell" class="presell">{{item.presell}}</text>{{ item.name }}</view>
             <view class="price-box clamp">
               <text class="price">{{ item.price }}</text>
               <text v-if="item.activitylist.length == 0">{{ item.sales }}</text>

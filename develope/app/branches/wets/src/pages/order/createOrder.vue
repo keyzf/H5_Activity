@@ -38,7 +38,14 @@
           <text class="spec">{{ goods.attributeshow }}</text>
           <view class="price-box">
             <text class="price">{{ goods.newprice }}</text>
+            <block v-if="welfareid == ''">
+              
             <text class="number">x{{ goods.number }}</text>
+            </block>
+            <block v-else>
+              <uni-number-box class="step" :index="goodsid" :min="1" :value="goods.number" :isMin="goods.number === 1"
+                :zindex="index" @eventChange="numberChange" style="flex: 1;justify-content: flex-end;"></uni-number-box>
+            </block>
           </view>
           <text class="receivetimetips">{{ goods.receiveTimeTips }}</text>
         </view>
@@ -100,10 +107,10 @@
         <text class="cell-tit clamp">运费</text>
         <text class="cell-tip">￥{{ price.freight }}</text>
       </view>
-      <!-- <view class="yt-list-cell b-b">
-                <text class="cell-tit clamp">立减</text>
-                <text class="cell-tip">{{ price.subtractnow }}</text>
-            </view> -->
+      <view class="yt-list-cell b-b" v-if="welfareAmount">
+          <text class="cell-tit clamp">立减</text>
+          <text class="cell-tip">{{ welfareAmount }}</text>
+      </view>
     </view>
     <view class="addclamp" v-show="addressData.address">
       {{ addressData.address }}
@@ -162,8 +169,10 @@
 
 <script>
   import uniPopup from '@/components/uni-popup/uni-popup.vue';
+  import uniNumberBox from '@/components/uni-number-box.vue';
   export default {
     components: {
+      uniNumberBox,
       uniPopup
     },
     data() {
@@ -263,23 +272,33 @@
         daniurechargenumber: '',
         daniurechargenumbertip: '',
         openGroupbuyOneTeam: 0,
-        groupbuyOneTeamGuid:0
+        groupbuyOneTeamGuid:0,
+        welfareAmountDetail:'',
+        welfareAmount:'',
+        welfareid:'',
+        apisource:'',
+        skuinfo:''
       };
     },
     onLoad(option) {
-      let data = JSON.parse(option.data);
-      //商品数据
-      data.goodsData.forEach(item => {
-        this.ids.push(item.attr_val);
-        this.numbers.push(item.number);
-        this.keywords.push(item.keywords);
-        this.skuid = item.skuid;
-      });
-      this.daniurechargenumber = data.daniurechargenumber;
-      this.daniurechargenumbertip = data.daniurechargenumbertip;
-      this.openGroupbuyOneTeam = data.openGroupbuyOneTeam ? data.openGroupbuyOneTeam : 0;
-      this.groupbuyOneTeamGuid = data.groupbuyOneTeamGuid ? data.groupbuyOneTeamGuid : 0;
+      if(option.data){
+        let data = JSON.parse(option.data);
+        //商品数据
+        data.goodsData.forEach(item => {
+          this.ids.push(item.attr_val);
+          this.numbers.push(item.number);
+          this.keywords.push(item.keywords);
+          this.skuid = item.skuid;
+        });
+        this.daniurechargenumber = data.daniurechargenumber;
+        this.daniurechargenumbertip = data.daniurechargenumbertip;
+        this.openGroupbuyOneTeam = data.openGroupbuyOneTeam ? data.openGroupbuyOneTeam : 0;
+        this.groupbuyOneTeamGuid = data.groupbuyOneTeamGuid ? data.groupbuyOneTeamGuid : 0;
+      }
       
+      
+      this.welfareid = option.welfareid || '';
+      this.skuinfo = option.skuinfo || '';
       this.type = option.type;
       this.getGoodsInfo();
     },
@@ -299,9 +318,14 @@
         let data = {};
         let url = '';
         if (this.type == 'cart') {
-          data.shopids = this.ids;
-          data.addressid = this.addressData.addressid;
-          data.couponid = this.price.couponid;
+          if(this.skuinfo){
+            data.welfareid = this.welfareid;
+            data.skuinfo = this.skuinfo;
+          }else{
+            data.shopids = this.ids;
+            data.addressid = this.addressData.addressid;
+            data.couponid = this.price.couponid;
+          }
           url = 'shoppingcart/Checkoutfix';
         } else {
           data.number = this.numbers[0];
@@ -316,118 +340,122 @@
           url = 'shoppingcart/directCheckoutfix';
         }
         this.$ajax.get(url, data).then(res => {
-          console.log(res);
-          uni.hideLoading();
-          if (res.data.code == 0) {
-            let dataInfo = res.data.result.data;
-            this.data = dataInfo;
-            dataInfo.forEach(item => {
-              this.tip.addresstipinfo = item.addresstipinfo;
-              this.addressData.address = item.addressinfo.address;
-              this.addressData.addressid = item.addressinfo.addressid;
-              this.addressData.addresstype = item.addressinfo.addresstype;
-              this.addressData.defaultaddressstate = item.addressinfo.defaultaddressstate;
-              this.addressData.guid = item.addressinfo.guid;
-              this.addressData.level = item.addressinfo.level;
-              this.addressData.postcode = item.addressinfo.postcode;
-              this.addressData.receivername = item.addressinfo.receivername;
-              this.addressData.receivertel = item.addressinfo.receivertel;
-              this.shopinggoods = item.shopinggoodslist;
-              this.increment.privilegepoint = item.privilegepoint;
-              this.increment.privilegepointvalue = item.privilegepointvalue;
-              this.increment.redpacketmoney = item.redpacketmoney;
-              this.increment.redpacketmoneyinfo = item.redpacketmoneyinfo;
-              this.increment.extra_price = item.extra_price;
-              this.increment.extra_value = item.extra_value;
-              this.price.saleid = item.saleid;
-              this.price.saletitle = item.saleid == -1 ? '无' : item.saletitle;
-              this.price.price_true = item.price_true;
-              this.price.price_usecoupon = item.price_usecoupon;
-              this.price.price_usecouponandub = item.price_usecouponandub;
-              this.price.price_useextra = item.price_useextra;
-              this.price.price_usemealcard = item.price_usemealcard;
-              this.price.price_usepoint = item.price_usepoint;
-              this.price.totalprice = item.totalprice;
-              this.price.freight = item.freight;
-              this.price.couponid = item.couponid;
-              this.defultCoupon = item.couponid;
-              this.price.couptitle = item.couponid == -1 ? '无' : item.coupon;
-              this.price.gearinfoid = item.gearinfoid;
-              this.price.customAddress = item.customAddress;
-              this.couponproduct = item.couponproduct;
-              this.price.discounttype = item.discounttype;
-              this.sid = item.sid;
-              this.tip.isaddresstipforcityproductids = item.isaddresstipforcityproductids;
-              this.idcard.needcheckidnumber = item.needcheckidnumber;
-              this.idcard.msg = item.needcheckidnumbertip;
-              this.tip.isaddresstipforcity = item.isaddresstipforcity;
-              this.tip.isaddresstip = item.isaddresstip;
-              this.postkind = item.postkind;
-            });
-            this.extraState = this.increment.extra_value > 0 ? true : false;
-            if (this.price.discounttype == 1 && this.increment.privilegepointvalue > 0) {
-              this.selectIncrement('privilegepoint');
-            } else if (this.price.discounttype == 2) {
-              this.selectIncrement('coupon');
-            } else if (this.price.discounttype == 3) {
-              this.selectIncrement('sale');
-            } else if (this.price.discounttype == 4 && this.increment.redpacketmoney > 0) {
-              this.selectIncrement('redpacket');
-            }
-            this.getPrice();
-            if (this.addressData.addressid == -3) {
-              uni.showModal({
-                title: '温馨提示',
-                content: '您当前还没有严选商品的收货地址，是否前往添加？',
-                cancelText: '稍后添加',
-                confirmText: '立即前往',
-                confirmColor: '#000000',
-                success: res => {
-                  this.popupState = false;
-                  if (res.confirm) {
-                    uni.navigateTo({
-                      url: '/pages/address/address?source=1&isCustomAddress=' + this.data[0].isCustomAddress +
-                        '&cguid=' + this.data[0].cguid + '&customAddress=' + this.data[0].customAddress +
-                        '&postkind=' + this.postkind
-                    });
-                  }
-                }
-              });
-            }
-            if (this.tip.isaddresstip && this.popupState && this.data[0].isFictitious == 0) {
-              let addresstipinfo = this.tip.addresstipinfo;
-              uni.showModal({
-                title: '温馨提示',
-                content: addresstipinfo,
-                cancelText: '确定',
-                confirmText: '修改',
-                confirmColor: '#000000',
-                success: res => {
-                  this.popupState = false;
-                  if (res.confirm) {
-                    uni.navigateTo({
-                      url: '/pages/address/address?source=1&isCustomAddress=' + this.data[0].isCustomAddress +
-                        '&cguid=' + this.data[0].cguid + '&customAddress=' + this.data[0].customAddress +
-                        '&postkind=' + this.postkind
-                    });
-                  }
-                }
-              });
-            }
-            if (this.tip.isaddresstipforcity == 1) {
-              this.getproductinfoforcity();
-            }
-          } else {
+          this.setdata(res)
+        });
+      },
+      setdata(res){
+        uni.hideLoading();
+        if (res.data.code == 0) {
+          let dataInfo = res.data.result.data;
+          this.data = dataInfo;
+          dataInfo.forEach(item => {
+            this.tip.addresstipinfo = item.addresstipinfo;
+            this.addressData.address = item.addressinfo.address;
+            this.addressData.addressid = item.addressinfo.addressid;
+            this.addressData.addresstype = item.addressinfo.addresstype;
+            this.addressData.defaultaddressstate = item.addressinfo.defaultaddressstate;
+            this.addressData.guid = item.addressinfo.guid;
+            this.addressData.level = item.addressinfo.level;
+            this.addressData.postcode = item.addressinfo.postcode;
+            this.addressData.receivername = item.addressinfo.receivername;
+            this.addressData.receivertel = item.addressinfo.receivertel;
+            this.shopinggoods = item.shopinggoodslist;
+            this.increment.privilegepoint = item.privilegepoint;
+            this.increment.privilegepointvalue = item.privilegepointvalue;
+            this.increment.redpacketmoney = item.redpacketmoney;
+            this.increment.redpacketmoneyinfo = item.redpacketmoneyinfo;
+            this.increment.extra_price = item.extra_price;
+            this.increment.extra_value = item.extra_value;
+            this.price.saleid = item.saleid;
+            this.price.saletitle = item.saleid == -1 ? '无' : item.saletitle;
+            this.price.price_true = item.price_true;
+            this.price.price_usecoupon = item.price_usecoupon;
+            this.price.price_usecouponandub = item.price_usecouponandub;
+            this.price.price_useextra = item.price_useextra;
+            this.price.price_usemealcard = item.price_usemealcard;
+            this.price.price_usepoint = item.price_usepoint;
+            this.price.totalprice = item.totalprice;
+            this.price.freight = item.freight;
+            this.price.couponid = item.couponid;
+            this.defultCoupon = item.couponid;
+            this.price.couptitle = item.couponid == -1 ? '无' : item.coupon;
+            this.price.gearinfoid = item.gearinfoid;
+            this.price.customAddress = item.customAddress;
+            this.couponproduct = item.couponproduct;
+            this.price.discounttype = item.discounttype;
+            this.sid = item.sid;
+            this.tip.isaddresstipforcityproductids = item.isaddresstipforcityproductids;
+            this.idcard.needcheckidnumber = item.needcheckidnumber;
+            this.idcard.msg = item.needcheckidnumbertip;
+            this.tip.isaddresstipforcity = item.isaddresstipforcity;
+            this.tip.isaddresstip = item.isaddresstip;
+            this.postkind = item.postkind;
+          });
+          this.ids = dataInfo[0].shopids;
+          this.apisource = dataInfo[0].apisource;
+          this.extraState = this.increment.extra_value > 0 ? true : false;
+          if (this.price.discounttype == 1 && this.increment.privilegepointvalue > 0) {
+            this.selectIncrement('privilegepoint');
+          } else if (this.price.discounttype == 2) {
+            this.selectIncrement('coupon');
+          } else if (this.price.discounttype == 3) {
+            this.selectIncrement('sale');
+          } else if (this.price.discounttype == 4 && this.increment.redpacketmoney > 0) {
+            this.selectIncrement('redpacket');
+          }
+          this.getPrice();
+          if (this.addressData.addressid == -3) {
             uni.showModal({
-              title: '提示',
-              content: res.data.msg,
-              showCancel: false,
+              title: '温馨提示',
+              content: '您当前还没有严选商品的收货地址，是否前往添加？',
+              cancelText: '稍后添加',
+              confirmText: '立即前往',
+              confirmColor: '#000000',
               success: res => {
-                uni.navigateBack();
+                this.popupState = false;
+                if (res.confirm) {
+                  uni.navigateTo({
+                    url: '/pages/address/address?source=1&isCustomAddress=' + this.data[0].isCustomAddress +
+                      '&cguid=' + this.data[0].cguid + '&customAddress=' + this.data[0].customAddress +
+                      '&postkind=' + this.postkind
+                  });
+                }
               }
             });
           }
-        });
+          if (this.tip.isaddresstip && this.popupState && this.data[0].isFictitious == 0) {
+            let addresstipinfo = this.tip.addresstipinfo;
+            uni.showModal({
+              title: '温馨提示',
+              content: addresstipinfo,
+              cancelText: '确定',
+              confirmText: '修改',
+              confirmColor: '#000000',
+              success: res => {
+                this.popupState = false;
+                if (res.confirm) {
+                  uni.navigateTo({
+                    url: '/pages/address/address?source=1&isCustomAddress=' + this.data[0].isCustomAddress +
+                      '&cguid=' + this.data[0].cguid + '&customAddress=' + this.data[0].customAddress +
+                      '&postkind=' + this.postkind
+                  });
+                }
+              }
+            });
+          }
+          if (this.tip.isaddresstipforcity == 1) {
+            this.getproductinfoforcity();
+          }
+        } else {
+          uni.showModal({
+            title: '提示',
+            content: res.data.msg,
+            showCancel: false,
+            success: res => {
+              uni.navigateBack();
+            }
+          });
+        }
       },
       // 获取优惠券
       getSelectcoupon() {
@@ -464,7 +492,8 @@
           data = {
             addressid: this.addressData.addressid,
             shopids: this.ids,
-            number: this.numbers,
+            apisource:this.apisource,
+            // number: this.numbers,
             //gearinfoid: this.price.gearinfoid,
             gearinfoid: -1,
             couponid: this.price.discounttype == 2 ? this.price.couponid : -1,
@@ -472,7 +501,8 @@
             extra_value: this.extraState ? this.increment.extra_value : '0',
             bonuspoint: this.privilegepointState ? this.increment.privilegepointvalue : '0',
             saleid: this.price.discounttype == 3 ? this.price.saleid : -1,
-            redpacketmoney: this.redpacketState ? this.increment.redpacketmoney : '0'
+            redpacketmoney: this.redpacketState ? this.increment.redpacketmoney : '0',
+            
           }
         } else {
           data = {
@@ -514,6 +544,8 @@
             this.price.price_usemealcard = data.price_usemealcard;
             this.price.shouldpay = data.shouldpay;
             this.price.subtractnow = data.subtractnow;
+            this.welfareAmount = data.welfareAmount;
+            this.welfareAmountDetail = data.welfareAmountDetail;
           } else {
             this.$api.msg(res.data.msg);
           }
@@ -579,7 +611,32 @@
         }, timer);
       },
       numberChange(data) {
-        this.number = data.number;
+        uni.showLoading({
+          title: '加载中'
+        });
+        var skuinfo = [];
+        this.shopinggoods.forEach((value, index) => {
+          value.goodsinfo.forEach((val, ind) => {
+            if (ind == data.index && index == data.zindex) {
+              skuinfo.push({
+                skuid: val.skuid.toString(),
+                number: data.number
+              })
+            } else {
+              skuinfo.push({
+                skuid: val.skuid.toString(),
+                number: val.number
+              })
+            }
+          })
+        })
+        this.$ajax.get('shoppingcart/Checkoutfix', {
+          addressid: this.addressData.addressid,
+          welfareid: this.welfareid,
+          skuinfo: JSON.stringify(skuinfo)
+        }).then(res => {
+          this.setdata(res)
+        });
       },
       changePayType(type) {
         this.payType = type;
@@ -687,13 +744,10 @@
             });
           });
         });
-        let shopids = '';
-        this.ids.forEach(item => {
-          shopids += item + ',';
-        });
+       
         data.addressid = this.addressData.addressid;
         data.product = JSON.stringify(product);
-        data.shopids = this.type == 'cart' ? shopids.substring(0, shopids.lastIndexOf(',')) : '';
+        data.shopids = this.type == 'cart' ? this.ids: '';
         data.bonuspoint = 0;
         data.freight = this.price.freight;
         data.notes = this.notes;
@@ -710,6 +764,9 @@
         data.saleid = this.price.discounttype == 3 ? this.price.saleid : -1;
         data.groupbuyactivityguid = this.groupbuyactivityguid;
         data.takegroupbuyteamguid = this.takegroupbuyteamguid;
+        data.welfareAmount = this.welfareAmount;
+        data.welfareAmountDetail = this.welfareAmountDetail;
+        data.apisource = this.apisource;
         //data.contractid = '';
         //data.accountpay = '';
         data.redpacketmoney = this.increment.redpacketmoney;
@@ -717,13 +774,13 @@
         this.daniurechargenumber ? data.daniurechargenumber = this.daniurechargenumber : '';
         this.openGroupbuyOneTeam ? data.openGroupbuyOneTeam = this.openGroupbuyOneTeam : '';
         this.groupbuyOneTeamGuid ? data.groupbuyOneTeamGuid = this.groupbuyOneTeamGuid : '';
+        
         this.$ajax.get('order/addorder', data).then(res => {
-          console.log(res);
           if (res.data.code == 0) {
             let data = res.data.result.data;
             let url = '';
             if (this.price.price_usemealcard == '¥0.00') {
-              url = '/pages/order/orderdetails?ordernum=' + res.data.result.data.ordernum + '&price=' + data.real_price;
+              url = '/pages/paysuccess/paysuccess?ordernumber=' + res.data.result.data.ordernum ;
             } else {
               if (data.type == 1) {
                 url = '/pages/order/order?state=0';
@@ -921,7 +978,7 @@
     padding: 30upx 0;
     background: #fff;
     position: relative;
-
+    word-break: break-all;
     .order-content {
       display: flex;
       align-items: center;

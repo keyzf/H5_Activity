@@ -48,16 +48,23 @@
       },
       tablist(item) {
         if (item.code == 'POSTER') {
-          var cd = item.activityid.split('@');
-          if (cd.length > 1) {
+          if(item.h5url){
             uni.navigateTo({
-              url: '/pages/selective/selective?id=' + cd[0] + "&cguid=" + item.cguid
+              url: '/pages/selective/selective?id=' + item.activityid
             });
-          } else {
-            uni.navigateTo({
-              url: '/pages/product/poster?id=' + cd[0]
-            });
+          }else {
+            var cd = item.activityid.toString().split('@');
+            if (cd.length > 1) {
+              uni.navigateTo({
+                url: '/pages/selective/selective?id=' + cd[0] + "&cguid=" + item.cguid
+              });
+            } else {
+              uni.navigateTo({
+                url: '/pages/product/poster?id=' + cd[0]
+              });
+            }
           }
+          
         } else if (item.code == 'H5_NOSTATUS') {
           let userinfo = uni.getStorageSync('userInfo');
           if (!userinfo.guid) {
@@ -73,13 +80,17 @@
           uni.navigateTo({
             url: '/pages/product/ranking'
           });
+        } else if (item.code == 'GROUPBUYONE') {
+          uni.navigateTo({
+            url: '/pages/oneyuangroup/oneyuangroup'
+          });
         } else if (item.code == 'GROUPBUYING') {
           uni.navigateTo({
             url: '/pages/product/assemble'
           });
         } else if (item.code == 'BENEFIT') {
           uni.navigateTo({
-            url: '/pages/product/welfare'
+            url: '/pages/welfare/welfare'
           });
         } else if (item.code == 'COUPON') {
           uni.navigateTo({

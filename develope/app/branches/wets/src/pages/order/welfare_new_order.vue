@@ -133,9 +133,9 @@
                     success: function(res) {
                       if (res.confirm) {
                         // 走下面
-                        _this.addOrder()
-                      }else{
                         _this.clickAddress()
+                      }else{
+                        _this.addOrder()
                       }
                     }
                   });
@@ -154,7 +154,6 @@
           skuinfo: this.skuinfo,
           notes:this.notes
         }).then(res => {
-          console.log(res)
           if (res.data.code == 0) {
             if(res.data.result.data.jumppaymethods == 0){
               uni.redirectTo({
@@ -166,7 +165,7 @@
               })
             }
           } else {
-            
+            this.$api.msg(res.data.msg)
           }
         });
       },
@@ -174,7 +173,7 @@
         uni.showLoading({
           title: '加载中'
         });
-        this.$ajax.get('benefits/checkOut', {
+        this.$ajax.get('shoppingcart/Checkoutfix', {
           addressid: this.addressid,
           guid: this.guid,
           welfareid: this.welfareid,
@@ -182,11 +181,11 @@
           skuinfo: this.skuinfo
         }).then(res => {
           if (res.data.code == 0) {
-            this.data = res.data.result.data;
-            this.addressData = res.data.result.data.addressinfo;
-            this.addressid = res.data.result.data.addressinfo.addressid;
+            this.data = res.data.result.data[0];
+            this.addressData = res.data.result.data[0].addressinfo;
+            this.addressid = res.data.result.data[0].addressinfo.addressid;
           } else {
-            
+            this.$api.msg(res.data.msg)
           }
           uni.hideLoading();
         });
@@ -213,7 +212,7 @@
           })
         })
         this.skuinfo = JSON.stringify(skuinfo);
-        this.$ajax.get('benefits/checkOut', {
+        this.$ajax.get('shoppingcart/Checkoutfix', {
           addressid: this.addressid,
           guid: this.guid,
           welfareid: this.welfareid,
@@ -221,10 +220,10 @@
           skuinfo: this.skuinfo
         }).then(res => {
           if (res.data.code == 0) {
-            this.data = res.data.result.data;
-            this.addressData = res.data.result.data.addressinfo;
+            this.data = res.data.result.data[0];
+            this.addressData = res.data.result.data[0].addressinfo;
           } else {
-
+            this.$api.msg(res.data.msg)
           }
           uni.hideLoading();
         });

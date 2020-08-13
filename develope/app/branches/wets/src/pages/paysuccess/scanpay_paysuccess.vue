@@ -42,7 +42,6 @@
 			<view v-if="lucktype == 1" class="goodlucktype0">
 				<image class="roateluck" @click="gotogetLuck(0)" mode="aspectFit" src="/../../static/paysuccess/luckroate.png"></image>
 			</view>
-
 			<view v-if="lucktype == 3" class="goodlucktype1">
 				<view class="title">下单有奖励</view>
 				<view class="subtitle">领取奖励</view>
@@ -84,7 +83,7 @@
 </template>
 
 <script>
-	const API = require('../../common/api.js')
+	import API from "@/store/api.js";
 	import goodsItemTwo from '../../components/lmw/goodsitem.vue'
 	import luckitem from '../../components/lmw/luckitem.vue'
 	import Vue from 'vue'
@@ -117,13 +116,18 @@
 				showrecomend:false
 			}
 		},
-		onLoad() {
-			setTimeout(()=>{
-				this.stateBarHeight = this.globaldata.statusBarHeight+85||100;
-				this.orderNumber = this.globaldata.orderNumber||'20200515243809';//
-				this.getpayResultQR();
-				// this.getPayresult();
-			},600)
+		onLoad(o) {
+      var that = this;
+      if (this.isapp()) {
+        that.$util.bridgeAndroidAndIOS(function() {
+          that.stateBarHeight = that.globaldata.statusBarHeight + 85||100;
+          that.orderNumber = that.globaldata.orderNumber||'20200515243809';//
+          that.getpayResultQR();
+        })
+      } else {
+        that.orderNumber = o.orderNumber;
+        that.getpayResultQR();
+      }
 			
 		},
 		onPageScroll: function(e) { //nvue暂不支持滚动监听，可用bindingx代替
@@ -240,50 +244,67 @@
 			 * 返回
 			 */
 			back() {
-				this.callHandler('CallNative', {
-					'key': 'back'
-				});
+				this.$jump.back();
 			},
 			/**
 			 * 去首页
 			 */
 			goIndex() {
-				this.callHandler('CallNative', {
-					'key': 'homepage'
-				});
-			},
+        if (this.isapp()) {
+          this.callHandler('CallNative', {
+            'key': 'homepage'
+          });
+        } else {
+          this.backs()
+        }
+      },
+      backs() {
+        var xh = getCurrentPages();
+        xh.forEach((item, index) => {
+          if (item.route.indexOf('/pages/') == -1 || item.route.indexOf('/home/home') > -1) {
+            uni.navigateBack({
+              delta: xh.length - index
+            })
+          }
+        })
+      },
 			/**
 			 * 查看订单
 			 */
 			goOrderdetail() {
-				this.callHandler('CallNative', {
-					'key': 'orderdetail'
-				});
+				if (this.isapp()) {
+				  this.callHandler('CallNative', {
+				    'key': 'orderdetail'
+				  });
+				} else {
+				  uni.redirectTo({
+				    url: '/pages/order/order?state=2'
+				  });
+				}
 			},
 			/**
 			 * 去商品详情
 			 */
 			goodsdetail(id) {
-				this.callHandler('CallNative', {
-					'key': 'goodsdetail',
-					'productid': id
-				});
+				this.$jump.jumpMethod(id);
 			},
 			/**
 			 * @param {Object} type
 			 * 去抽奖
 			 */
 			gotogetLuck(type) {
-				switch (type) {
-					case 0: //去转盘
-						this.callHandler('CallNative', {
-							'key': 'rotary',
-							'orderNumber': '123456'
-						});
-						break;
-					case 1: //
-
-						break;
+				if (this.isapp()) {
+				  switch (type) {
+				    case 0: //去转盘
+				      this.callHandler('CallNative', {
+				        'key': 'rotary',
+				        'orderNumber': '123456'
+				      });
+				      break;
+				    case 1: //
+				
+				      break;
+				  }
 				}
 			},
 			/**
@@ -291,17 +312,30 @@
 			 * 不同的中奖类型跳转
 			 */
 			goluckresult(type) {
-				switch (type) {
-					case 0: //去优惠券列
-						this.callHandler('CallNative', {
-							'key': 'couponlist'
-						});
-						break;
-					case 1: //去转盘抽奖
-						this.callHandler('CallNative', {
-							'key': 'rotary'
-						});
-						break;
+				if (this.isapp()) {
+				  switch (type) {
+				    case 0: //去优惠券列
+				      this.callHandler('CallNative', {
+				        'key': 'couponlist'
+				      });
+				      break;
+				    case 1: //去转盘抽奖
+				      this.callHandler('CallNative', {
+				        'key': 'rotary'
+				      });
+				      break;
+				  }
+				}else{
+				  switch (type) {
+				    case 0: //去优惠券列
+				      uni.navigateTo({
+				        url:'/pages/user/coupon'
+				      })
+				      break;
+				    case 1: //去转盘抽奖
+				      this.$api.msg('功能开发中')
+				      break;
+				  }
 				}
 			},
 			/**
@@ -310,7 +344,14 @@
 			dianZan() {
 				this.praise();
 			},
-
+      isapp() {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/holdmall/i) == 'holdmall') {
+          return true;
+        } else {
+          return false;
+        }
+      }
 		}
 	}
 </script>

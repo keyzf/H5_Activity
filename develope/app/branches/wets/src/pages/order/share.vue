@@ -168,7 +168,7 @@
                       },
                       {
                         type: 'qrcode',
-                        text: 'http://etstest.51pingce.net:8180/#/pages/order/joinleague?teamGuid=' + data.teamguid,
+                        text: 'http://ets.51pingce.net/pages/order/joinleague?teamGuid=' + data.teamguid,
                         size: bgObj.width * 0.3,
                         dx:30,
                         dy: 820,

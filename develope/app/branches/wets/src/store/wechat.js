@@ -194,7 +194,7 @@ function share(data, url) {
     jweixin.ready(function() {
       var shareData = {
         title: data ? data.title : '电科商城',
-        desc: data ? data.desc : '石家庄最优惠的网上商城',
+        desc: data ? data.desc : '电科人自己的网上商城',
         link: rediractUrl,
         imgUrl: data ? data.imgUrl : 'http://ets.51pingce.net/static/logo.png',
         success: function(res) {

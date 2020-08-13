@@ -23,6 +23,7 @@ function jumpMethod(productId) {
 
 function jumpApp(type, id) {
   var ua = findAgent();
+  console.log(ua.match(/holdmall/i) == 'holdmall')
   if (ua.match(/holdmall/i) == 'holdmall') {
     // 初始化bridge
     var data;
@@ -53,11 +54,11 @@ function jumpApp(type, id) {
       uni.navigateTo({
         url: '/pages/product/catelist?id=' + id
       });
-    } else if (type == 'PRODUCT') {
+    } else if (type == 2) {
       uni.navigateTo({
         url: '/pages/product/product?productid=' + id
       });
-    } else if (type == 'H5') {
+    } else if (type == 3) {
       location.href = id;
     }
   }

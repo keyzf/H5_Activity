@@ -41,32 +41,31 @@
       </template>
       <template v-if="row.elementType == 'PRODUCTS'">
         <block v-if="row.display.rowNumber == 1">
-            <view class="list" :key="row.elementId">
-              <view class="item" :class="{x:index % 2 != 0}" v-for="(item,index) in row.detail" :key="index" @click="goproducts(item)">
-                <image class="stata" :src="item.newOnShelvesProductIcon" mode="aspectFill" v-if="item.isNewOnShelvesProduct == 1"></image>
-                <image class="img" :src="item.productPicUrl" mode="aspectFill" v-if="index % 2 == 0"></image>
-                <view class="main">
-                  <view class="title">{{item.productName}}</view>
-                  <view class="tip" v-html="item.detail"></view>
-                  <view v-if="row.display.isShowActivity == 1">
-                    <text class="tips" v-for="im in item.activity" :key="im.content" :style="{background:im.color}">{{im.title}}</text>
-                  </view>
-                  <view class="price">
-                    <text class="new">{{item.newPrice}}</text>
-                    <text class="old" v-if="row.display.isShowOldPrice == 1">{{item.oldPrice}}</text>
-                  </view>
-                  <view class="buy">
-                    <image :src="row.display.shopcartPicUrl" mode="aspectFill"></image>
-                  </view>
+          <view class="list" :key="row.elementId">
+            <view class="item" :class="{x:index % 2 != 0}" v-for="(item,index) in row.detail" :key="index" @click="goproducts(item)">
+              <image class="stata" :src="item.newOnShelvesProductIcon" mode="aspectFill" v-if="item.isNewOnShelvesProduct == 1"></image>
+              <image class="img" :src="item.productPicUrl" mode="aspectFill" v-if="index % 2 == 0"></image>
+              <view class="main">
+                <view class="title">{{item.productName}}</view>
+                <view class="tip" v-html="item.detail"></view>
+                <view v-if="row.display.isShowActivity == 1">
+                  <text class="tips" v-for="im in item.activity" :key="im.content" :style="{background:im.color}">{{im.title}}</text>
                 </view>
-                <image class="img" :src="item.productPicUrl" mode="aspectFill" v-if="index % 2 != 0"></image>
+                <view class="price">
+                  <text class="new">{{item.newPrice}}</text>
+                  <text class="old" v-if="row.display.isShowOldPrice == 1">{{item.oldPrice}}</text>
+                </view>
+                <view class="buy">
+                  <image :src="row.display.shopcartPicUrl" mode="aspectFill"></image>
+                </view>
               </view>
+              <image class="img" :src="item.productPicUrl" mode="aspectFill" v-if="index % 2 != 0"></image>
             </view>
+          </view>
         </block>
         <block v-else-if="row.display.rowNumber == 2">
           <view class="goods-list">
-            <view class="goods-item" v-for="(item, index) in row.detail" :key="index"
-              @click="goproducts(item)">
+            <view class="goods-item" v-for="(item, index) in row.detail" :key="index" @click="goproducts(item)">
               <image v-if="item.isNewOnShelvesProduct == 1" class="label" :src="item.newOnShelvesProductIcon" mode="aspectFit"></image>
               <view class="image-wrapper">
                 <image :src="item.productPicUrl" mode="aspectFill"></image>
@@ -85,10 +84,15 @@
             <view class="unset">
               <view class="item" v-for="(item,index) in row.detail" @click="goproducts(item)" :key="index">
                 <image :src="item.productPicUrl" mode="aspectFill"></image>
-                <view class="title">{{item.productName}}</view>
+                <img v-if="item.mainpicIcon" :src="item.mainpicIcon" class="img">
+                <view class="title">
+                  <img v-if="item.titleIcon" :src="item.titleIcon"> {{item.productName}}</view>
                 <view>
-                  <text class="new">￥{{item.newPrice}}</text>
-                  <text class="old">￥{{item.oldPrice}}</text>
+                  <view class="new">{{item.priceHeader}} ￥{{item.newPrice}}</view>
+                  <view class="old" v-if="row.display.isShowOldPrice == 1">{{item.oldpriceHeader}} ￥{{item.oldPrice}}</view>
+                  <block v-if="row.display.isShowActivity == 1">
+                    <text class="tips" v-for="im in item.activitylist" :key="im.wholetext" :style="{color:im.color,borderColor:im.color}">{{im.wholetext}}</text>
+                  </block>
                 </view>
               </view>
             </view>
@@ -105,10 +109,12 @@
           <view class="unset">
             <view class="item" v-for="(item,index) in row.detail" @click="goproduct(item)" :key="index">
               <image :src="item.url" mode="aspectFill"></image>
-              <view class="title">{{item.name}}</view>
+              <img v-if="item.mainpicIcon" :src="item.mainpicIcon" class="img">
+              <view class="title">
+                <img v-if="item.titleIcon" :src="item.titleIcon"> {{item.name}}</view>
               <view>
-                <text class="new">￥{{item.newprice}}</text>
-                <text class="old" v-if="row.display.isShowOldPrice == 1">￥{{item.oldprice}}</text>
+                <view class="new">{{item.priceHeader}} ￥{{item.newprice}}</view>
+                <view class="old" v-if="row.display.isShowOldPrice == 1">{{item.oldpriceHeader}} ￥{{item.oldprice}}</view>
                 <block v-if="row.display.isShowActivity == 1">
                   <text class="tips" v-for="im in item.activitylist" :key="im.wholetext" :style="{color:im.color,borderColor:im.color}">{{im.wholetext}}</text>
                 </block>
@@ -123,10 +129,12 @@
           <view class="unset">
             <view class="item" v-for="(item,index) in row.detail" @click="goproduct(item)" :key="index">
               <image :src="item.url" mode="aspectFill"></image>
-              <view class="title">{{item.name}}</view>
+              <img v-if="item.mainpicIcon" :src="item.mainpicIcon" class="img">
+              <view class="title">
+                <img v-if="item.titleIcon" :src="item.titleIcon"> {{item.name}}</view>
               <view>
-                <text class="new">￥{{item.newprice}}</text>
-                <text class="old" v-if="row.display.isShowOldPrice == 1">￥{{item.oldprice}}</text>
+                <view class="new">{{item.priceHeader}} ￥{{item.newprice}}</view>
+                <view class="old" v-if="row.display.isShowOldPrice == 1">{{item.oldpriceHeader}} ￥{{item.oldprice}}</view>
                 <block v-if="row.display.isShowActivity == 1">
                   <text class="tips" v-for="im in item.activitylist" :key="im.wholetext" :style="{color:im.color,borderColor:im.color}">{{im.wholetext}}</text>
                 </block>
@@ -177,7 +185,7 @@
             </scroll-view>
             <image src="../../static/xjt.png" mode="aspectFill" @click="openelastic(row)" v-if="row.detail.length>4"></image>
           </view>
-      
+
           <view class="goods-list">
             <view class="goods-item" v-for="(item, index) in row.list" @click="goproduct(item)" :key="index">
               <view class="image-wrapper">
@@ -215,20 +223,21 @@
             </scroll-view>
             <image src="../../static/xjt.png" mode="aspectFill" @click="openelastics(row)" v-if="row.detail.length>4"></image>
           </view>
-      
           <view class="goods-list" v-if="row.select >= 0">
-            <view class="goods-item" v-for="(item, index) in row.detail[row.select].productList" @click="goproduct(item)" :key="index">
+            <view class="goods-item" v-for="(item, index) in row.detail[row.select].productList" @click="goproduct(item)"
+              :key="index">
               <view class="image-wrapper">
                 <image :src="item.url" mode="aspectFill"></image>
+                <image v-if="item.mainpicIcon != ''" :src="item.mainpicIcon" mode="aspectFit" class="tipimg"></image>
+                <view class="tip clamp" v-if="item.mainpicIcon == '' && item.feature_short != ''">{{item.feature_short}}</view>
               </view>
               <view class="item-con">
-                <view class="title">{{ item.name }}</view>
-                <view class="price-box clamp">
-                  <text class="price"><text>￥</text>{{ item.newprice }}</text>
-                  <template v-if="item.activitylist.length > 0">
-                    <text class="se" v-for="ite in item.activitylist" :key="ite.wholetext" :style="{color:ite.color,borderColor:ite.color}">{{ ite.wholetext }}</text>
-                  </template>
+                <view class="title"><img v-if="item.titleIcon != ''" :src="item.titleIcon"><text v-if="item.presell"
+                    class="presell">{{item.presell}}</text>{{ item.name }}</view>
+                <view class="price-box">
+                  <text class="price">{{ item.priceHeader }}{{ item.newprice }}</text>
                 </view>
+                <view class="oldprice">{{ item.oldpriceHeader }} <text>{{ item.oldprice }}</text></view>
               </view>
             </view>
           </view>
@@ -293,18 +302,18 @@
         elastictop: 0,
         rowlist: [],
         scroll_left: 0,
-        first:false,
-        title:'',
+        first: false,
+        title: '',
       };
     },
     onLoad(option) {
       var that = this;
       uni.showLoading({
-        title:'加载中',
-        mask:true
+        title: '加载中',
+        mask: true
       })
       var ua = window.navigator.userAgent.toLowerCase();
-      if(option.form){
+      if (option.form) {
         that.id = option.id;
         that.load();
         if (ua.match(/holdmall/i) == 'holdmall') {
@@ -314,8 +323,8 @@
             showstatebar: '1'
           }, function(responseData) {});
         }
-        
-      }else if (ua.match(/holdmall/i) == 'holdmall') {
+
+      } else if (ua.match(/holdmall/i) == 'holdmall') {
         that.backstate = true;
         that.$util.bridgeAndroidAndIOS(function() {
           that.id = uni.getStorageSync('parameter').activityID;
@@ -350,17 +359,17 @@
           this.list.forEach(function(item, index) {
             if (item.elementType == 'CATEGORY_TAB') {
               that.tablist(item, 0);
-            }else if(item.elementType == 'INLET_TAB'){
+            } else if (item.elementType == 'INLET_TAB') {
               that.$set(item, 'select', 0);
-            }else if(item.elementType == 'SEARCH'){
+            } else if (item.elementType == 'SEARCH') {
               sousuo = false;
-            }else if(item.elementType == 'TITLE'){
-              if(item.detail[0].name){
+            } else if (item.elementType == 'TITLE') {
+              if (item.detail[0].name) {
                 that.title = item.detail[0].name;
               }
             }
           })
-          if(sousuo && that.backstate){
+          if (sousuo && that.backstate) {
             that.first = true;
           }
           uni.hideLoading()
@@ -442,7 +451,7 @@
         var that = this;
         that.loadingType = 'more';
         this.list.forEach(function(item, ind) {
-          if(item.elementType == 'INLET_TAB'){
+          if (item.elementType == 'INLET_TAB') {
             that.$set(item, 'select', index);
           }
         })
@@ -458,7 +467,7 @@
         this.elasticatarts = false;
       },
       tablist(item, index) {
-        if(item.detail[index]){
+        if (item.detail[index]) {
           var that = this;
           that.$ajax.get('poster/getCategoryProductPage', {
             categoryId: item.detail[index].category_id,
@@ -480,7 +489,7 @@
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/holdmall/i) == 'holdmall') {
           this.$jump.jumpApps(item.code, item.activityid);
-        }else{
+        } else {
           if (item.code == 'POSTER') {
             uni.navigateTo({
               url: '/pages/selective/selective?id=' + item.activityid.split('@')[0]
@@ -495,7 +504,7 @@
             });
           } else if (item.code == 'BENEFIT') {
             uni.navigateTo({
-              url: '/pages/product/welfare'
+              url: '/pages/welfare/welfare'
             });
           } else if (item.code == 'COUPON') {
             uni.navigateTo({
@@ -558,7 +567,7 @@
                 }
               }
             });
-          }else if(item.elementType == 'INLET_TAB'){
+          } else if (item.elementType == 'INLET_TAB') {
             var zdom = item.detail[item.select];
             var zlist = zdom.productList;
             that.$ajax.get('poster/getInletTabProductPage', {
@@ -743,9 +752,11 @@
     background: #FFF;
     padding: 20rpx 0;
     height: 290rpx;
+
     &.x {
       margin-top: 44px;
     }
+
     .carousel {
       width: 100%;
       height: 100%;
@@ -767,6 +778,7 @@
     background: #FFF;
     padding: 0 20rpx;
     margin-bottom: 20rpx;
+
     .item {
       padding: 0 0 10px 0;
       width: 25%;
@@ -926,8 +938,18 @@
         width: 32%;
         background: #FFF;
         margin: 0.6%;
+        position: relative;
 
         image {
+          width: 100%;
+          height: 260rpx;
+        }
+
+        .img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
           width: 100%;
           height: 260rpx;
         }
@@ -944,6 +966,13 @@
           font-size: 24rpx;
           padding: 0 8rpx;
           word-break: break-all;
+
+          img {
+            height: 32rpx;
+            display: inline-block;
+            vertical-align: sub;
+            margin-right: 8rpx;
+          }
         }
 
         .new {
@@ -999,6 +1028,10 @@
 
     &.x {
       width: 70%;
+    }
+
+    /deep/ .uni-scroll-view-content {
+      white-space: nowrap;
     }
 
     .item {
@@ -1113,30 +1146,8 @@
   .goods-list {
     background: #FFF;
 
-    .title {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      max-height: 80rpx;
-      line-height: 40rpx;
-      color: #333333;
-      font-size: 28rpx;
-      margin-bottom: 6rpx;
-      word-break: break-all;
-    }
-
     .price-box {
       justify-content: inherit;
-
-      .price {
-        font-size: 40rpx;
-
-        text {
-          font-size: 24rpx;
-        }
-      }
 
       .se {
         display: inline-block;

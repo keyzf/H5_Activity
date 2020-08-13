@@ -26,7 +26,7 @@
               <view class="shops">
                 <view style="min-width:0;flex: 1;" v-if="item.products.length==1">
                   <view class="goods-box-single" v-for="(goodsItem, goodsIndex) in item.products" :key="goodsIndex"
-                    @click="jumpOrderDetail(goodsItem)">
+                    @click="jumpOrderDetail(goodsItem,item.thirdPartyType)">
                     <image class="goods-img" :src="goodsItem.url" mode="aspectFill"></image>
                     <view class="right">
                       <text class="title clamp">{{goodsItem.productname}}</text>
@@ -37,7 +37,7 @@
                 </view>
                 <view v-else class="goods-box">
                   <scroll-view scroll-x>
-                    <view v-for="(goodsItem, goodsIndex) in item.products" :key="goodsIndex" @click="jumpOrderDetail(goodsItem)"
+                    <view v-for="(goodsItem, goodsIndex) in item.products" :key="goodsIndex" @click="jumpOrderDetail(goodsItem,item.thirdPartyType)"
                       class="goods-item">
                       <image class="goods-img" :src="goodsItem.url" mode="aspectFill"></image>
                     </view>
@@ -51,7 +51,7 @@
 
             </view>
 
-            <view class="action-box b-t" v-show="item.state < 5">
+            <view class="action-box b-t" v-show="item.state < 5 && item.thirdPartyType !=1">
               <button v-show="item.state == 0" class="action-btn" @click="cancelOrder('cancelOrder', item)">取消订单</button>
               <button v-show="item.closeorderbtn == 1" class="action-btn" @click="cancelOrders(item)">取消订单</button>
               <button v-show="item.state == 0" class="action-btn" @click="cancelOrder('resetCart', item)">退回购物车</button>
@@ -73,6 +73,7 @@
 <script>
   import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
   import empty from "@/components/empty";
+  import API from "@/store/api.js";
   export default {
     components: {
       uniLoadMore,
@@ -208,8 +209,30 @@
         this.loadData('tabChange');
       },
       // 跳转订单详情
-      jumpOrderDetail(order) {
-        this.nacTo('/pages/order/orderdetails?ordernum=' + order.ordernum);
+      jumpOrderDetail(order,type) {
+        if(type == 1){
+          API.dianDiLoginToken({
+            dianDiJumpType : 2,
+            dianDiOrderNumber : order.ordernum
+          }).then(res => {
+            let resData = res.data.result.data
+            if (res.data.code == -1) {
+              uni.showModal({
+                title: '提示',
+                content: res.data.msg,
+                showCancel: false
+              })
+              return
+            } 
+            // 跳转到点滴
+            let _url = resData.method_url+'?'+'surl='+resData.login_url+'&force=true&login_token='+resData.login_token
+            window.location.href = _url
+          }).catch(err => {
+            console.log(err);
+          })
+        }else{
+          this.nacTo('/pages/order/orderdetails?ordernum=' + order.ordernum);
+        }
       },
       // 页面跳转
       nacTo(url) {

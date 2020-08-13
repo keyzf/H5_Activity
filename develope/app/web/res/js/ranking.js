@@ -14,28 +14,27 @@ $(document).on("click", ".classify-item", function() {
 		$(this).addClass("x");
 		signupGroup = $(this).attr("data-id");
 		lastId = "";
-		if (signupGroup < 4) {
+		if (signupGroup < 6) {
+      $("#tip").hide();
 			$("#good").hide();
 			$("#shop").show();
 			$(".shopList").empty();
 			getCompany();
 		} else {
 			$("#shop").hide();
-			$("#good").show();
+      $(".more").hide();
+			$("#good").hide();
 			$(".goodsList").empty();
-			getGoods();
+      $("#tip").show();
 		}
 		$(".empty").hide();
 	}
 });
 
 $(document).on("click", ".more", function() {
-	if (signupGroup < 4) {
+	if (signupGroup < 6) {
 		lastId = $(".shopList .item").last().attr("data-id");
 		getCompany();
-	} else if (signupGroup = 4) {
-		lastId = $(".goodsList .item").last().attr("data-id");
-		getGoods();
 	}
 });
 
@@ -43,10 +42,10 @@ function getCompany() {
 	$(".more").hide();
 	$.ajax({
 		type: "POST",
-		url: "http://114.115.217.252:8001/HighMallServer/helppoorcompetition2019/ranklist",
+		url: "http://114.115.217.252:8001/HighMallServer/helppoorcompetition2019/newRanklist",
 		data: {
 			"lastId": lastId,
-			"type": signupGroup,
+			"rankType": signupGroup,
 			"pageSize": pageSize
 		},
 		success: function(result) {

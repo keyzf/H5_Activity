@@ -4,21 +4,18 @@
       <text>支付金额</text>
       <text class="price">{{ price }}</text>
     </view>
-
     <view class="pay-type-list">
-    <view class="type-item b-b" @click="changePayType(2)">
+      <view class="type-item b-b" @click="changePayType(item.paycode,item.useState)" v-for="(item,index) in list" :key="index" v-if="item.paycode != 'ALIPAY'">
 				<!-- <text class="icon yticon icon-weixinzhifu"></text> -->
 				<view class="con">
-					<text class="tit">微信支付</text>
-					<text>推荐使用微信支付</text>
+					<text class="tit">{{item.title}}</text>
+					<text v-if="item.paycode == 'WXPAY'">推荐使用微信支付</text>
 				</view>
 				<label class="radio">
-					<radio value="" color="#fa436a" :checked='payType == 2' />
-					</radio>
+					<radio color="#fa436a" :disabled="true" :checked='payType == item.paycode' /></radio>
 				</label>
 			</view>
-    <view class="type-item b-b" @click="changePayType(3)">
-				<!-- <text class="icon yticon icon-alipay"></text> -->
+    <!-- <view class="type-item b-b" @click="changePayType(3)">
 				<view class="con">
 					<text class="tit">餐卡支付</text>
 				</view>
@@ -28,16 +25,14 @@
 				</label>
 			</view>
 			<view class="type-item" @click="changePayType(4)">
-				<!-- <text class="icon yticon icon-erjiye-yucunkuan"></text> -->
 				<view class="con">
 					<text class="tit">朋友代付</text>
-					<!-- <text>可用余额 ¥198.5</text> -->
 				</view>
 				<label class="radio">
 					<radio value="" color="#fa436a" :checked='payType == 4' />
 					</radio>
 				</label>
-			</view>
+			</view> -->
     </view>
     
     <text class="mix-btn" @click="pay">确认支付</text>
@@ -53,29 +48,49 @@
     },
     data() {
       return {
-        payType: 2,
+        list:[],
+        payType: 'WXPAY',
         orderInfo: {},
-        ordernum: 20190926174462,
-        price: 0.00,
+        ordernum: 0,
+        price: "0.00",
         show:false,
-        openpassword:0
+        openpassword:0,
+        type:false
       };
     },
     onLoad(options) {
       this.ordernum = options.ordernum;
-      this.price = options.price;
+      if(options.type){
+        this.type = true;
+        this.$ajax.get('diandi/paymethods', {}).then(res => {
+          if(res.data.code == 0){
+            this.list = res.data.result.data;
+          }
+        });
+      }else{
+        this.$ajax.get('order/paymethods', {}).then(res => {
+          if(res.data.code == 0){
+            this.list = res.data.result.data;
+          }
+        });
+      }
+      this.changePayType(this.payType,1)
     },
     onShow() {
       if (this.$wx.isWechat()) this.$wx.share();
     },
     onBackPress() {
-      this.$api.ovPage()
+      if(this.type){
+        history.go(-1)
+      }else{
+        this.$api.ovPage()
+      }
     },
     methods: {
       pay() {
         let _this = this;
         // 初始化成功
-        if (this.payType == 2 && this.$wx.isWechat()) {
+        if (this.payType == 'WXPAY' && this.$wx.isWechat()) {
           uni.showLoading({
             title: '加载中...'
           });
@@ -104,7 +119,7 @@
               _this.$api.msg('支付拉取失败');
             }
           });
-        }else if(this.payType == 3){
+        }else if(this.payType == 'MEALPAY'){
           if(this.openpassword ==0){
             uni.showLoading({
               title: '支付中...'
@@ -124,29 +139,47 @@
           }else{
             this.show = true
           }
-        }else if(this.payType == 4){
+        }else if(this.payType == 'OTHERPAY'){
           uni.navigateTo({
             url:'/pages/money/friend?ordernumber='+this.ordernum
           })
         }
       },
       //选择支付方式
-      changePayType(type) {
-        let _this = this;
-        _this.$ajax.get('order/chosepaytype', {
-          ordernumber: _this.ordernum,
-          dealtype:type
-        }).then(res => {
-          if(res.data.code == 0){
-            _this.ordernum = res.data.result.data.ordernumber;
-            _this.price = res.data.result.data.payprice
-            _this.openpassword = res.data.result.data.openpassword
-            _this.payType = type;
-          }else{
-            _this.$api.msg(res.data.msg);
-            uni.navigateBack()
+      changePayType(type,is) {
+        if(is == 1){
+          let _this = this;
+          let types = 2;
+          if(type == 'WXPAY'){
+            types = 2;
+          }else if(type == 'MEALPAY'){
+            types = 3;
+          }else if(type == 'OTHERPAY'){
+            types = 4;
           }
-        });
+          let urls ;
+          if(this.type){
+            urls = 'diandi/chosepaytype';
+          }else{
+            urls = 'order/chosepaytype';
+          }
+          _this.$ajax.get(urls, {
+            ordernumber: _this.ordernum,
+            dealtype:types
+          }).then(res => {
+            if(res.data.code == 0){
+              _this.ordernum = res.data.result.data.ordernumber;
+              _this.price = res.data.result.data.payprice;
+              _this.openpassword = res.data.result.data.openpassword;
+              _this.payType = type;
+            }else{
+              _this.$api.msg(res.data.msg);
+              uni.navigateBack()
+            }
+          });
+        }else{
+          this.$api.msg('当前订单类型不支持该支付方式！');
+        }
       },
       close(res) {
         let _this = this;

@@ -179,6 +179,12 @@
               case "POSTER":
                 url = '/pages/product/poster?id=' + direction.split(",")[1];
                 break;
+              case "GROUPBUYONE":
+                url = '/pages/oneyuangroup/oneyuangroup';
+                break;
+              case "MYCOUPON":
+                url = '/pages/user/coupon';
+                break;
               default:
                 url = "/pages/product/catelist?id=" + direction.split(",")[1];
                 break;

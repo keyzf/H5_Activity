@@ -18,13 +18,15 @@
             <image v-if="items.isNewOnShelvesProduct == 1" class="label" :src="items.newOnShelvesProductIcon" mode="aspectFit"></image>
             <view class="image-wrapper">
               <uimg :src="items.productPicUrl"></uimg>
+              <image v-if="items.mainpicIcon != ''" :src="items.mainpicIcon" mode="aspectFit" class="tipimg"></image>
+              <view class="tip clamp" v-if="items.mainpicIcon == '' && items.feature_short != ''">{{items.feature_short}}</view>
             </view>
             <view class="item-con">
-              <view class="title clamp">{{ items.productName }}</view>
-              <view class="price-box clamp">
-                <text class="price">{{ items.newPrice }}</text>
-                <text>{{ items.oldPrice }}</text>
+              <view class="title"><img v-if="items.titleIcon != ''" :src="items.titleIcon"><text v-if="items.presell" class="presell">{{items.presell}}</text>{{ items.productName }}</view>
+              <view class="price-box">
+                <text class="price">{{ items.priceHeader }}{{ items.newprice }}</text>
               </view>
+              <view class="oldprice">{{ items.oldpriceHeader }} <text>{{ items.oldprice }}</text></view>
             </view>
           </view>
         </view>

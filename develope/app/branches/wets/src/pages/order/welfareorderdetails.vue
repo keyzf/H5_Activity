@@ -544,7 +544,7 @@ page {
 	padding: 30upx 0;
 	background: #fff;
 	position: relative;
-
+  
 	.order-content {
 		display: flex;
 		align-items: center;

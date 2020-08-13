@@ -811,7 +811,7 @@ page {
     padding: 30upx 0;
     background: #fff;
     position: relative;
-
+    word-break: break-all;
     .order-content {
         display: flex;
         align-items: center;

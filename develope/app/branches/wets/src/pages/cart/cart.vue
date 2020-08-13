@@ -29,7 +29,7 @@
               </view>
             </view>
             <uni-swipe-action v-for="(items, indexs) in item.goodsinfo" :key="indexs">
-              <uni-swipe-action-item :options="options" @click="onClick" @change="change">
+              <uni-swipe-action-item @click="onClick(data,indexs)" @change="change">
                 <view class="cart-item" :class="items.isuse == 0 ? 'xj' : ''">
                   <view class="yticon icon-xuanzhong2 checkbox" :class="{ checked: items.checked }" @click="check('item', index, indexs)"></view>
                   <view class="image-wrapper" @click="check('item', index, indexs)">
@@ -190,6 +190,7 @@
 
     methods: {
       gofl() {
+        // 新福利
         // if (uni.getStorageSync('userInfo').guid) {
         //   uni.navigateTo({
         //     url: '/pages/welfare/welfare'
@@ -197,9 +198,6 @@
         // }else{
         //   this.$api.msg('请登录');
         // }
-        // uni.navigateTo({
-        //   url:'/pages/oneyuangroup/oneyuangroup'
-        // })
         
         
         uni.navigateTo({
@@ -207,6 +205,7 @@
         })
       },
       gofls() {
+        //分销
         // if (uni.getStorageSync('userInfo').guid) {
         //   uni.navigateTo({
         //     url: '/pages/fenXiao/fenxiaoMain/fenxiaoMain'
@@ -214,8 +213,21 @@
         // }else{
         //   this.$api.msg('请登录');
         // }
+        //拼团
+        // uni.navigateTo({
+        //   url:'/pages/product/assemble'
+        // })
+        //大转盘
+        // uni.navigateTo({
+        //   url:'/pages/draw/draw'
+        // })
+        //一元购
+        // uni.navigateTo({
+        //   url:'/pages/oneyuangroup/oneyuangroup'
+        // })
+        //分销
         uni.navigateTo({
-          url:'/pages/product/assemble'
+          url:'/pages/fenXiao/fenxiaoMain/fenxiaoMain'
         })
         
         
@@ -225,6 +237,26 @@
       },
       onClick(e) {
         console.log('当前点击的是第' + e.index + '个按钮，点击内容是' + e.content.text)
+        let k = [];
+        _this.cartList.forEach(item => {
+          item.goodsinfo.forEach(it => {
+            if (it.checked) {
+              k.push(it.id);
+            }
+          });
+        });
+        const data = {
+          shopid: k
+        };
+        _this.$ajax.get('shoppingcart/delshop', data).then(res => {
+          if (res.data.code == 0) {
+            _this.load();
+            _this.cartnumbers();
+            _this.$api.msg('删除成功');
+          } else {
+            _this.$api.msg(res.data.msg);
+          }
+        });
       },
       change(open) {
         console.log('当前开启状态：' + open)

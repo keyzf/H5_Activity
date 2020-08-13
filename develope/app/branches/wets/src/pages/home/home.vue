@@ -28,6 +28,7 @@
   import pagefive from "../user/user";
   import footerNav from "../../components/footer/footer_nav.vue";
   import uniPopup from '@/components/uni-popup/uni-popup.vue';
+  import API from "@/store/api.js";
   export default {
     data() {
       return {
@@ -166,21 +167,56 @@
               uni.navigateTo({
                 url: '/pages/product/fashionable?id=' + this.elastic[index].itemid
               });
+            } else if (this.elastic[index].code == 'GROUPBUYONE') {
+              uni.navigateTo({
+                url: '/pages/oneyuangroup/oneyuangroup'
+              });
+            } else if (this.elastic[index].code == 'THIRDPARTY_DIANDI') {
+              let userinfo = uni.getStorageSync('userInfo');
+              if (!userinfo.guid) {
+                this.$api.msg('请先登录');
+              } else {
+                API.dianDiLoginToken({
+                  dianDiJumpType : this.elastic[index].itemid
+                }).then(res => {
+                  let resData = res.data.result.data
+                  if (res.data.code == -1) {
+                    uni.showModal({
+                      title: '提示',
+                      content: res.data.msg,
+                      showCancel: false
+                    })
+                    return
+                  } 
+                  // 跳转到点滴
+                  let _url = resData.method_url+'?'+'surl='+resData.login_url+'&force=true&login_token='+resData.login_token
+                  window.location.href = _url
+                }).catch(err => {
+                  console.log(err);
+                })
+              }
             } else if (this.elastic[index].code == 'PROMOTION') {
               uni.navigateTo({
                 url: '/pages/product/catelist?id=' + this.elastic[index].itemid
               });
             } else if (this.elastic[index].code == 'POSTER') {
-              var cd = this.elastic[index].itemid.split('@');
-              if (cd.length > 1) {
+              if(this.elastic[index].h5url){
                 uni.navigateTo({
-                  url: '/pages/selective/selective?id=' + cd[0]
+                  url: '/pages/selective/selective?id=' + this.elastic[index].itemid
                 });
-              } else {
-                uni.navigateTo({
-                  url: '/pages/product/poster?id=' + cd[0]
-                });
+              }else {
+                var cd = this.elastic[index].itemid.toString().split('@');
+                if (cd.length > 1) {
+                  uni.navigateTo({
+                    url: '/pages/selective/selective?id=' + cd[0]
+                  });
+                } else {
+                  uni.navigateTo({
+                    url: '/pages/product/poster?id=' + cd[0]
+                  });
+                }
               }
+              
             } else if (this.elastic[index].code == 'MYCOUPON') {
               uni.navigateTo({
                 url: '/pages/user/coupon'

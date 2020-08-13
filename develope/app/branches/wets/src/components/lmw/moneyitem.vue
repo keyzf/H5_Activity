@@ -53,7 +53,7 @@
 				let b = this.money.substr(0, 1);
 				let m = this.money.substr(1, this.money.length - 3);
 				let e = this.money.substr(this.money.length - 2, this.money.length - 1);
-				return "<div style='color:#000000;font-size:15px;display:inline;'>-￥" + b +
+				return "<div style='color:#000000;font-size:15px;display:inline;'>-" + b +
 					"</div><div  style='color:#000000;font-size:15px;display:inline;'>" + m +
 					"</div><div  style='color:#000000;font-size:15px;display:inline;'>" + e + "</div>"
 			},
@@ -120,7 +120,6 @@
 			
 			.reason {
 				font-size: 28rpx;
-				width: 650rpx;
 				color: #333333;
 				/** 对象作为伸缩盒子模型显示 **/
 				display: -webkit-box;
@@ -131,7 +130,6 @@
 			}
 
 			.money {
-				width: 100rpx;
 				text-align: right;
 				// color: #000000;
 				// font-weight: bold;

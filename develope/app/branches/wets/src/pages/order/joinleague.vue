@@ -233,7 +233,7 @@
 
   .assembles {
     /deep/ .uni-popup__wrapper-box {
-      background: url(../../static/share_group_buy_pop.webp) no-repeat center !important;
+      background: url(../../static/share_group_buy_pop.png) no-repeat center !important;
       background-size: 100% 100% !important;
       width: 750rpx;
       height: 760rpx;

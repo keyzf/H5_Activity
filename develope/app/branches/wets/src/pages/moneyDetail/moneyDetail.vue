@@ -80,16 +80,14 @@
       },
       //加载更多
       loadMore() {
-        console.log("触发加载更多")
         if (this.data.hasmore) {
-          console.log("加载更多")
           this.getlistdata(this.data.list[this.data.list.length - 1].id);
         }
       },
       getlistdata(lid) {
         this.data.hasmore = false;
-        API.getMoneyDetail({
-          welfareid: this.welfareid,
+        API.getMoneyDetails({
+          welfareid: this.globaldata.welfareid,
           pagesize: '10',
           lid: lid
         }).then(res => {
@@ -99,11 +97,9 @@
             this.data.loadingText = "没有更多数据了"
             this.data.hasmore = false;
           } else {
-            // this.page = page + 1;
             this.data.hasmore = true;
           }
           this.data.list = this.data.list.concat(res.data.result.data.amountDetails);
-
         }).catch(err => {
           console.log(err);
           uni.stopPullDownRefresh();
@@ -115,7 +111,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   page {
     height: 100%;
     width: 100%;

@@ -125,11 +125,11 @@
         <view class="item" v-if="orderDetail.ordernumber != ''">
           <text class="cell-tit">订单编号：</text><text class="cell-tip">{{ orderDetail.ordernumber }}</text>
         </view>
-        <view class="item" v-if="orderDetail.ordernumber != ''">
-          <text class="cell-tit">下单时间：</text><text class="cell-tip">{{ orderDetail.ordernumber }}</text>
+        <view class="item" v-if="orderDetail.createtime != ''">
+          <text class="cell-tit">下单时间：</text><text class="cell-tip">{{ orderDetail.createtime }}</text>
         </view>
-        <view class="item" v-if="orderDetail.ordernumber != ''">
-          <text class="cell-tit">发货时间：</text><text class="cell-tip">{{ orderDetail.ordernumber }}</text>
+        <view class="item" v-if="orderDetail.delivertime != ''">
+          <text class="cell-tit">发货时间：</text><text class="cell-tip">{{ orderDetail.delivertime }}</text>
         </view>
         <view class="item" v-if="orderDetail.paymenttime">
           <text class="cell-tit">付款时间：</text>
@@ -578,7 +578,7 @@
     position: relative;
     border-radius: 8rpx;
     margin-bottom: 20rpx;
-
+    word-break: break-all;
     &.zjt {
       background: url(../../static/zjt.png) no-repeat right 6rpx center #FFFFFF;
       background-size: 16rpx;
@@ -1017,7 +1017,7 @@
 
   .assembles {
     /deep/ .uni-popup__wrapper-box {
-      background: url(../../static/share_group_buy_pop.webp) no-repeat center !important;
+      background: url(../../static/share_group_buy_pop.png) no-repeat center !important;
       background-size: 100% 100% !important;
       width: 750rpx;
       height: 760rpx;
