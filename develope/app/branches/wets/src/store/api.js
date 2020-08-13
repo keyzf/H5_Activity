@@ -267,7 +267,7 @@ module.exports = {
   selectLuck: (data) => {
     return MyAPI('lottery/choosePrize', false, 'GET', data)
   },
-  //选择优惠券
+  //选择优惠券红包
   selectLuckRedpack: (data) => {
     return MyAPI('redpacket/getRebateRedpacket', false, 'GET', data)
   },
